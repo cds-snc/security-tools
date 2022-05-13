@@ -1,0 +1,70 @@
+[
+  {
+    "name" : "neo4j",
+    "environment" : [
+      {
+        "name" : "NEO4J_dbms_memory_pagecache_size",
+        "value" : "4G"
+      },
+      {
+        "name" : "NEO4J_dbms.memory.heap.initial_size",
+        "value" : "4G"
+      },
+      {
+        "name" : "NEO4J_dbms_memory_heap_max__size",
+        "value" : "4G"
+      },
+      {
+        "name" : "NEO4J_ACCEPT_LICENSE_AGREEMENT",
+        "value" : "yes"
+      }
+    ],
+    "essential" : true,
+    "image" : "${NEO4J_IMAGE}",
+    "mountPoints" : [
+      {
+        "sourceVolume" : "${EFS_VOLUME_NAME}",
+        "containerPath" : "/var/lib/neo4j/data",
+        "readOnly" : false
+      }
+    ],
+    "logConfiguration" : {
+      "logDriver" : "awslogs",
+      "options" : {
+        "awslogs-group": "${AWS_LOGS_GROUP}",
+        "awslogs-region": "${AWS_LOGS_REGION}",
+        "awslogs-stream-prefix": "${AWS_LOGS_STREAM_PREFIX}"
+      }
+    },
+    "ulimits" : [
+      {
+        "name" : "nofile",
+        "softLimit" : 400000,
+        "hardLimit" : 400000
+      }
+    ],
+    "portMappings" : [
+      {
+        "hostPort" : 7474,
+        "ContainerPort" : 7474,
+        "Protocol" : "tcp"
+      },
+      {
+        "hostPort" : 7473,
+        "ContainerPort" : 7473,
+        "Protocol" : "tcp"
+      },
+      {
+        "hostPort" : 7687,
+        "ContainerPort" : 7687,
+        "Protocol" : "tcp"
+      }
+    ],
+    "secrets" : [
+      {
+        "name" : "NEO4J_AUTH",
+        "valueFrom" : "${NEO4J_AUTH}"
+      }
+    ]
+  }
+]

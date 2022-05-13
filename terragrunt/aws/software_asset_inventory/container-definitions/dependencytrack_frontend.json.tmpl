@@ -1,0 +1,28 @@
+[
+  {
+    "name" : "${DEPENDENCYTRACK_FRONTEND_SERVICE_NAME}",
+    "environment" : [
+      {
+        "name" : "API_BASE_URL",
+        "value" : "https://api.dependencies.security.cdssandbox.xyz"
+      }
+    ],
+    "essential" : true,
+    "image" : "${DEPENDENCYTRACK_FRONTEND_IMAGE}",
+    "logConfiguration" : {
+      "logDriver" : "awslogs",
+      "options" : {
+        "awslogs-group": "${AWS_LOGS_GROUP}",
+        "awslogs-region": "${AWS_LOGS_REGION}",
+        "awslogs-stream-prefix": "${AWS_LOGS_STREAM_PREFIX}"
+      }
+    },
+    "portMappings" : [
+      {
+        "hostPort" : 8080,
+        "ContainerPort" : 8080,
+        "Protocol" : "tcp"
+      }
+    ]
+  }
+]

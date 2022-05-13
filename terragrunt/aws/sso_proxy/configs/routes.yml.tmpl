@@ -1,0 +1,61 @@
+- from: https://auth.security.cdssandbox.xyz
+  to: http://auth.794722365809.local:8000
+  policy:
+    - allow:
+        or:
+          - domain:
+              is: security.cdssandbox.xyz
+  cors_allow_preflight: true
+  timeout: 30s
+
+- from: https://neo4j.security.cdssandbox.xyz
+  to: http://${CLOUD_ASSET_INVENTORY_LOAD_BALANCER_DNS}:7474
+  allow_websockets: true
+  preserve_host_header: true
+  cors_allow_preflight: true
+  policy:
+      - allow:
+          or:
+            - domain:
+                is: cds-snc.ca
+
+- from: https://bolt.security.cdssandbox.xyz
+  to: http://${CLOUD_ASSET_INVENTORY_LOAD_BALANCER_DNS}:7687
+  allow_websockets: true
+  preserve_host_header: true
+  cors_allow_preflight: true
+  set_response_headers:
+    Access-Control-Allow-Origin: https://neo4j.security.cdssandbox.xyz
+  policy:
+      - allow:
+          or:
+            - domain:
+                is: cds-snc.ca
+
+- from: https://dependencies.security.cdssandbox.xyz
+  to: https://${SOFTWARE_ASSET_INVENTORY_LOAD_BALANCER_DNS}:8080
+  preserve_host_header: true
+  policy:
+      - allow:
+          or:
+            - domain:
+                is: cds-snc.ca
+
+- from: https://sbom.security.cdssandbox.xyz
+  to: https://${SOFTWARE_ASSET_INVENTORY_LOAD_BALANCER_DNS}:8081
+  preserve_host_header: true
+  allow_public_unauthenticated_access: true
+  policy:
+      - allow:
+          or:
+            - http_method:
+                is: POST
+
+- from: https://api.dependencies.security.cdssandbox.xyz
+  to: https://${SOFTWARE_ASSET_INVENTORY_LOAD_BALANCER_DNS}:8081
+  preserve_host_header: true
+  policy:
+      - allow:
+          or:
+            - domain:
+                is: cds-snc.ca

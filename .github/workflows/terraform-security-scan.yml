@@ -1,0 +1,31 @@
+
+name: "Terraform security scan"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "terragrunt/**"
+      - ".github/workflows/terraform-security-scan.yml"      
+  pull_request:
+    paths:
+      - "terragrunt/**"
+      - ".github/workflows/terraform-security-scan.yml"
+
+jobs:
+  terraform-security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Checkov security scan
+        uses: bridgecrewio/checkov-action@99bb2caf247dfd9f03cf984373bc6043d4e32ebf # latest as of March 9, 2022
+        with:
+          config_file: terragrunt/.checkov.yml
+          directory: terragrunt/aws
+          framework: terraform
+          output_format: cli
+          quiet: true
+          soft_fail: false

@@ -1,0 +1,78 @@
+[
+  {
+    "name" : "${DEPENDENCYTRACK_SERVICE_NAME}",
+    "cpu" : 4096,
+    "environment" : [
+      {
+        "name" : "ALPINE_DATABASE_MODE",
+        "value" : "external"
+      },
+      {
+        "name" : "ALPINE_DATABASE_URL",
+        "value" : "${ALPINE_DATABASE_URL}"
+      },
+      {
+        "name" : "ALPINE_DATABASE_DRIVER",
+        "value" : "org.postgresql.Driver"
+      },
+      {
+        "name" : "ALPINE_DATABASE_DRIVER_PATH",
+        "value" : "/extlib/postgresql-42.2.5.jar"
+      },
+      {
+        "name" : "ALPINE_DATABASE_POOL_ENABLED",
+        "value" : "true"
+      },
+      {
+        "name" : "ALPINE_DATABASE_POOL_MAX_SIZE",
+        "value" : "20"
+      },
+      {
+        "name" : "ALPINE_DATABASE_POOL_MIN_IDLE",
+        "value" : "10"
+      },
+      {
+        "name" : "ALPINE_DATABASE_POOL_IDLE_TIMEOUT",
+        "value" : "300000"
+      },
+      {
+        "name" : "ALPINE_DATABASE_POOL_MAX_LIFETIME",
+        "value" : "600000"
+      }
+    ],
+    "essential" : true,
+    "image" : "dependencytrack/apiserver:latest",
+    "mountPoints" : [
+      {
+        "sourceVolume" : "${DEPENDENCYTRACK_SERVICE_NAME}",
+        "containerPath" : "/data",
+        "readOnly" : false
+      }
+    ],
+    "logConfiguration" : {
+      "logDriver" : "awslogs",
+      "options" : {
+        "awslogs-group": "${AWS_LOGS_GROUP}",
+        "awslogs-region": "${AWS_LOGS_REGION}",
+        "awslogs-stream-prefix": "${AWS_LOGS_STREAM_PREFIX}"
+      }
+    },
+    "portMappings" : [
+      {
+        "hostPort" : 8080,
+        "ContainerPort" : 8080,
+        "Protocol" : "tcp"
+      }
+    ],
+    "secrets" : [
+      {
+        "name" : "ALPINE_DATABASE_USERNAME",
+        "valueFrom" : "${ALPINE_DATABASE_USERNAME}"
+      },
+      {
+        "name" : "ALPINE_DATABASE_PASSWORD",
+        "valueFrom" : "${ALPINE_DATABASE_PASSWORD}"
+      }
+    ]
+  }
+]

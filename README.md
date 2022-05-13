@@ -1,10 +1,15 @@
-# Generic Project Template
+# Security Tools
+La version française sera disponible bientôt
 
-This repository provides some base files for setting up a repository at
-CDS. Plan is to create more project template for specific technologies:
+## Description
 
-- project-template-terraform
-- project-template-python
-- project-template-nodejs
+This repository will contain various tools used by CDS to ensure the confidentiality, integrity and availability of CDS applications and services.
 
-Note that default community health files are maintained at https://github.com/cds-snc/.github 
+## Services
+
+- SSO Proxy : AWS, ECS, Google SSO, [Pomerium](https://github.com/pomerium/pomerium)
+- Cloud Asset Inventory: AWS, ECS, Lambda [Cartography](https://github.com/lyft/cartography), Neo4j
+
+## License
+
+This code is released under the MIT License. See [LICENSE](LICENSE).
