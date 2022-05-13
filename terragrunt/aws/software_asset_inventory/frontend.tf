@@ -17,9 +17,8 @@ resource "aws_ecs_service" "dependencytrack_frontend" {
   }
 
   network_configuration {
-    security_groups  = [aws_security_group.dependencytrack.id, module.dependencytrack_db.proxy_security_group_id]
-    subnets          = var.vpc_private_subnet_ids
-    assign_public_ip = true
+    security_groups = [aws_security_group.dependencytrack.id, module.dependencytrack_db.proxy_security_group_id]
+    subnets         = var.vpc_private_subnet_ids
   }
 
   tags = {
