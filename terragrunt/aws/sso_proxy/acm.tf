@@ -62,3 +62,22 @@ resource "aws_acm_certificate_validation" "internal_domain_certificate_validatio
   certificate_arn         = aws_acm_certificate.internal_domain.arn
   validation_record_fqdns = [for record in aws_route53_record.internal_domain_dns_validation : record.fqdn]
 }
+
+# Provides an SES domain identity resource
+resource "aws_ses_domain_identity" "security_tools" {
+  domain = "security.cdssandbox.xyz"
+}
+
+resource "aws_route53_record" "security_tools_amazonses_verification_record" {
+  zone_id = aws_route53_zone.internal_domain.zone_id
+  name    = "_amazonses.${aws_ses_domain_identity.security_tools.id}"
+  type    = "TXT"
+  ttl     = "600"
+  records = [aws_ses_domain_identity.security_tools.verification_token]
+}
+
+resource "aws_ses_domain_identity_verification" "security_tools_verification" {
+  domain = aws_ses_domain_identity.security_tools.id
+
+  depends_on = [aws_route53_record.security_tools_amazonses_verification_record]
+}

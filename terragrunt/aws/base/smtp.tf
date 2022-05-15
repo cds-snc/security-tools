@@ -1,8 +1,3 @@
-# Provides an SES email identity resource
-resource "aws_ses_email_identity" "security_tools" {
-  email = "no-reply@security.cdssandbox.xyz"
-}
-
 resource "aws_iam_user" "security_tools" {
   name = "SecurityToolsNotificationIAMUser"
 }
@@ -36,6 +31,6 @@ resource "aws_iam_group_policy" "security_tools_automation_policy" {
 data "aws_iam_policy_document" "security_tools_automation" {
   statement {
     actions   = ["ses:SendEmail", "ses:SendRawEmail"]
-    resources = [aws_ses_email_identity.security_tools.arn]
+    resources = ["arn:aws:ses:${var.region}:${var.account_id}:identity/${var.domain_name}"]
   }
 }
