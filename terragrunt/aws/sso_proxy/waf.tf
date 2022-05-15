@@ -14,7 +14,7 @@ resource "aws_wafv2_web_acl" "sso_proxy_waf" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 
   default_action {
@@ -169,12 +169,12 @@ resource "aws_cloudwatch_log_group" "sso_proxy_waf" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
 resource "aws_kinesis_firehose_delivery_stream" "sso_proxy_waf" {
-  name        = "aws-waf-logs-${var.product_name}"
+  name        = "aws-waf-logs-${var.product_name}-${var.tool_name}"
   destination = "extended_s3"
 
   server_side_encryption {
@@ -191,7 +191,7 @@ resource "aws_kinesis_firehose_delivery_stream" "sso_proxy_waf" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 

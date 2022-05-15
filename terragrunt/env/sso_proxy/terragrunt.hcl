@@ -8,11 +8,6 @@ dependencies {
 
 dependency "base" {
   config_path = "../base"
-
-  mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
-  mock_outputs = {
-    cartography_repository_url = "https://12345678910.dkr.ecr.region.amazonaws.com/foo"
-  }
 }
 
 dependency "cloud_asset_inventory" {
@@ -34,7 +29,7 @@ dependency "software_asset_inventory" {
 }
 
 inputs = {
-  product_name              = "security-tools-sso-proxy"
+  tool_name                 = "sso-proxy"
   pomerium_image            = "pomerium/pomerium"
   pomerium_image_tag        = "git-74310b3d"
   pomerium_verify_image     = "pomerium/verify"

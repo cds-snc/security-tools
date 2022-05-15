@@ -35,11 +35,6 @@ variable "ssm_prefix" {
   default     = "cartography"
 }
 
-variable "cartography_repository_url" {
-  description = "(Required) URL to the cartography repository"
-  type        = string
-}
-
 variable "vpc_private_subnet_cidrs" {
   description = "(Required) The private subnet CIDRs for the VPC"
   type        = list(string)

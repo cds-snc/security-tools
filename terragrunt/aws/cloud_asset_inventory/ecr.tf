@@ -1,6 +1,3 @@
-#
-# ECR
-#
 resource "aws_ecr_repository" "cartography" {
   name                 = "${var.product_name}/cloud_asset_inventory/cartography"
   image_tag_mutability = "MUTABLE"
@@ -16,6 +13,6 @@ resource "aws_ecr_repository" "cartography" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }

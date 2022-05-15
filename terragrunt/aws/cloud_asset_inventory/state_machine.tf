@@ -6,7 +6,7 @@ resource "aws_cloudwatch_event_rule" "asset_inventory_cartography" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -40,7 +40,7 @@ resource "aws_sfn_state_machine" "asset_inventory_cartography" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -51,7 +51,7 @@ resource "aws_iam_role" "asset_inventory_cartography_state_machine" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -81,13 +81,18 @@ resource "aws_iam_policy" "asset_inventory_cartography_state_machine" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
 resource "aws_iam_role_policy_attachment" "asset_inventory_cartography_state_machine" {
   role       = aws_iam_role.asset_inventory_cartography_state_machine.name
   policy_arn = aws_iam_policy.asset_inventory_cartography_state_machine.arn
+}
+
+resource "aws_iam_role_policy_attachment" "sfn_cloudwatch_full_access" {
+  role       = aws_iam_role.asset_inventory_cartography_state_machine.name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchEventsFullAccess"
 }
 
 data "aws_iam_policy_document" "asset_inventory_cartography_state_machine" {

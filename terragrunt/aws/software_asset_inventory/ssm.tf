@@ -25,7 +25,7 @@ resource "aws_ssm_parameter" "dependencytrack_db_password" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -37,6 +37,6 @@ resource "aws_ssm_parameter" "dependencytrack_db_user" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }

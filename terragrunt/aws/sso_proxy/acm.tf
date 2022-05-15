@@ -2,13 +2,14 @@ resource "aws_acm_certificate" "internal_domain" {
   domain_name = var.domain_name
   subject_alternative_names = [
     "*.${var.domain_name}",
+    "*.dependencies.${var.domain_name}",
   ]
   validation_method = "DNS"
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 
   lifecycle {
@@ -22,7 +23,7 @@ resource "aws_route53_zone" "internal_domain" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 

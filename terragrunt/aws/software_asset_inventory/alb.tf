@@ -22,13 +22,13 @@ resource "aws_lb" "dependencytrack" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
 resource "aws_lb_target_group" "dependencytrack_api" {
   name                 = "dependencytrack-api"
-  port                 = 8081
+  port                 = 8080
   protocol             = "HTTP"
   target_type          = "ip"
   deregistration_delay = 30
@@ -48,7 +48,7 @@ resource "aws_lb_target_group" "dependencytrack_api" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -74,7 +74,7 @@ resource "aws_lb_target_group" "dependencytrack_frontend" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -94,7 +94,7 @@ resource "aws_lb_listener" "frontend" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -114,6 +114,6 @@ resource "aws_lb_listener" "api" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }

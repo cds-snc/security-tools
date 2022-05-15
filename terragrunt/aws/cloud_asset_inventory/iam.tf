@@ -18,7 +18,7 @@ resource "aws_iam_role" "cartography_task_execution_role" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -87,32 +87,32 @@ resource "aws_iam_policy" "cartography_task_execution_policies" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
 ### WAF IAM role
 
 resource "aws_iam_role" "waf_log_role" {
-  name               = "${var.product_name}-logs"
+  name               = "${var.product_name}-${var.tool_name}-logs"
   assume_role_policy = data.aws_iam_policy_document.firehose_assume_role.json
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
 resource "aws_iam_policy" "write_waf_logs" {
-  name        = "${var.product_name}_WriteLogs"
+  name        = "${var.product_name}-${var.tool_name}_WriteLogs"
   description = "Allow writing WAF logs to S3 + CloudWatch"
   policy      = data.aws_iam_policy_document.write_waf_logs.json
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 

@@ -11,7 +11,7 @@ resource "aws_iam_role" "dependencytrack_frontend_container_execution_role" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 

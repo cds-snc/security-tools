@@ -38,10 +38,34 @@
       {
         "name" : "ALPINE_DATABASE_POOL_MAX_LIFETIME",
         "value" : "600000"
+      },
+      {
+        "name" : "ALPINE_CORS_ENABLED",
+        "value" : "true"
+      },
+      {
+        "name" : "ALPINE_CORS_ALLOW_ORIGIN",
+        "value" : "*"
+      },
+      {
+        "name" : "ALPINE_CORS_ALLOW_METHODS",
+        "value" : "GET, POST, PUT, DELETE, OPTIONS"
+      },
+      {
+        "name" : "ALPINE_CORS_ALLOW_HEADERS",
+        "value" : "Origin, Content-Type, Authorization, X-Requested-With, Content-Length, Accept, Origin, X-Api-Key, X-Total-Count, *"
+      },
+      {
+        "name" : "ALPINE_CORS_ALLOW_CREDENTIALS",
+        "value" : "true"
+      },
+      {
+        "name" : "ALPINE_CORS_MAX_AGE",
+        "value" : "3600"
       }
     ],
     "essential" : true,
-    "image" : "dependencytrack/apiserver:latest",
+    "image" : "${DEPENDENCYTRACK_API_IMAGE}",,
     "mountPoints" : [
       {
         "sourceVolume" : "${DEPENDENCYTRACK_SERVICE_NAME}",
