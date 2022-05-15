@@ -1,6 +1,6 @@
 # Provides an SES email identity resource
 resource "aws_ses_email_identity" "security_tools" {
-  email = "info@security.cdssandbox.xyz"
+  email = "no-reply@security.cdssandbox.xyz"
 }
 
 resource "aws_iam_user" "security_tools" {
