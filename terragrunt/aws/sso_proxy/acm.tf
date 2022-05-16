@@ -109,3 +109,25 @@ resource "aws_route53_record" "security_tools_route_53_dmarc_txt" {
     "v=DMARC1;p=quarantine;pct=75;rua=mailto:security@cds-snc.ca"
   ]
 }
+
+### SES email from
+resource "aws_ses_domain_mail_from" "security_tools" {
+  domain           = aws_ses_domain_identity.security_tools.domain
+  mail_from_domain = "bounce.${aws_ses_domain_identity.security_tools.domain}"
+}
+
+resource "aws_route53_record" "security_tools_ses_domain_mail_from_mx" {
+  zone_id = aws_route53_zone.internal_domain.id
+  name    = aws_ses_domain_mail_from.security_tools.mail_from_domain
+  type    = "MX"
+  ttl     = "600"
+  records = ["10 feedback-smtp.${var.region}.amazonses.com"]
+}
+
+resource "aws_route53_record" "security_tools_ses_domain_mail_from_txt" {
+  zone_id = aws_route53_zone.internal_domain.id
+  name    = aws_ses_domain_mail_from.security_tools.mail_from_domain
+  type    = "TXT"
+  ttl     = "600"
+  records = ["v=spf1 include:amazonses.com -all"]
+}
