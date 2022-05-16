@@ -15,6 +15,9 @@ env:
   TERRAFORM_VERSION: 1.1.9
   TERRAGRUNT_VERSION: 0.36.7
   TF_INPUT: false
+  TF_VAR_customer_id: ${{ secrets.TF_VARS_LOG_ANALYTICS_CUSTOMER_ID }}
+  TF_VAR_shared_key: ${{ secrets.TF_VARS_LOG_ANALYTICS_SHARED_KEY }}
+
 
 permissions:
   id-token: write
