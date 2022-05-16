@@ -3,12 +3,8 @@
 #
 data "archive_file" "neo4j_to_sentinel" {
   type        = "zip"
-  source_dir  = "src/sentinel_ingestor/dist"
+  source_dir  = "${path.module}/src/sentinel_ingestor/dist"
   output_path = "/tmp/neo4j_to_sentinel.py.zip"
-
-  depends_on = [
-    null_resource.lambda_build
-  ]
 }
 
 resource "aws_lambda_function" "neo4j_to_sentinel" {
