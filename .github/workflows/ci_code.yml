@@ -42,26 +42,21 @@ jobs:
           python-version: "3.9"
 
       - name: Install dev dependencies
-        if: ${{ steps.filter.outputs.changes == 'true' }}
         working-directory: ${{ matrix.source }}
         run: make install-dev
 
       - name: Install dependencies
-        if: ${{ steps.filter.outputs.changes == 'true' }}
         working-directory: ${{ matrix.source }}
         run: make install
 
       - name: Lint
-        if: ${{ steps.filter.outputs.changes == 'true' }}
         working-directory: ${{ matrix.source }}
         run: make lint-ci
 
       - name: Format
-        if: ${{ steps.filter.outputs.changes == 'true' }}
         working-directory: ${{ matrix.source }}
         run: make fmt-ci
 
       - name: Test
-        if: ${{ steps.filter.outputs.changes == 'true' }}
         working-directory: ${{ matrix.source }}
         run: make test
