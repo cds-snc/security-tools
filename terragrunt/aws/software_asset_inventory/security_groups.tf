@@ -79,9 +79,17 @@ resource "aws_security_group" "dependencytrack" {
     self        = true
   }
 
+  egress {
+    description = "Outbound access to SMTP"
+    from_port   = 465
+    to_port     = 465
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }

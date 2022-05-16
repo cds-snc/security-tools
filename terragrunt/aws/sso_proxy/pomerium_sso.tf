@@ -24,7 +24,7 @@ resource "aws_ecs_service" "pomerium_sso_proxy" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -72,7 +72,7 @@ resource "aws_ecs_task_definition" "pomerium_sso_proxy" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -83,6 +83,6 @@ resource "aws_cloudwatch_log_group" "pomerium_sso_proxy" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }

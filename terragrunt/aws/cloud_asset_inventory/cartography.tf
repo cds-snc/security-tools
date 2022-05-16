@@ -9,7 +9,7 @@ data "template_file" "cartography_container_definition" {
     AWS_LOGS_GROUP           = aws_cloudwatch_log_group.cartography.name
     AWS_LOGS_REGION          = var.region
     AWS_LOGS_STREAM_PREFIX   = "${local.cartography_service_name}-task"
-    CARTOGRAPHY_IMAGE        = "${var.cartography_repository_url}:latest"
+    CARTOGRAPHY_IMAGE        = "${aws_ecr_repository.cartography.repository_url}:latest"
     CARTOGRAPHY_SERVICE_NAME = local.cartography_service_name
     NEO4J_SECRETS_PASSWORD   = aws_ssm_parameter.neo4j_password.arn
   }
@@ -31,7 +31,7 @@ resource "aws_ecs_task_definition" "cartography" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -42,6 +42,6 @@ resource "aws_cloudwatch_log_group" "cartography" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }

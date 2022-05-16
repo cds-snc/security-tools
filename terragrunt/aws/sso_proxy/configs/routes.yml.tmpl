@@ -33,7 +33,7 @@
                 is: cds-snc.ca
 
 - from: https://dependencies.security.cdssandbox.xyz
-  to: https://${SOFTWARE_ASSET_INVENTORY_LOAD_BALANCER_DNS}:8080
+  to: http://${SOFTWARE_ASSET_INVENTORY_LOAD_BALANCER_DNS}:8080
   preserve_host_header: true
   policy:
       - allow:
@@ -41,10 +41,10 @@
             - domain:
                 is: cds-snc.ca
 
-- from: https://sbom.security.cdssandbox.xyz
-  to: https://${SOFTWARE_ASSET_INVENTORY_LOAD_BALANCER_DNS}:8081
+- from: https://sbom.dependencies.security.cdssandbox.xyz
+  to: http://${SOFTWARE_ASSET_INVENTORY_LOAD_BALANCER_DNS}:8081
   preserve_host_header: true
-  allow_public_unauthenticated_access: true
+  cors_allow_preflight: true
   policy:
       - allow:
           or:
@@ -52,8 +52,11 @@
                 is: POST
 
 - from: https://api.dependencies.security.cdssandbox.xyz
-  to: https://${SOFTWARE_ASSET_INVENTORY_LOAD_BALANCER_DNS}:8081
+  to: http://${SOFTWARE_ASSET_INVENTORY_LOAD_BALANCER_DNS}:8081
   preserve_host_header: true
+  cors_allow_preflight: true
+  set_response_headers:
+    Access-Control-Allow-Origin: https://dependencies.security.cdssandbox.xyz
   policy:
       - allow:
           or:

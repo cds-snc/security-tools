@@ -24,7 +24,7 @@ resource "aws_ecs_service" "dependencytrack_api" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -73,7 +73,7 @@ resource "aws_ecs_task_definition" "dependencytrack_api" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -84,6 +84,6 @@ resource "aws_cloudwatch_log_group" "dependencytrack_api" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }

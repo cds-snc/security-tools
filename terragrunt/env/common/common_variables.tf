@@ -24,6 +24,11 @@ variable "product_name" {
   type        = string
 }
 
+variable "tool_name" {
+  description = "(Required) The name of the tool you are deploying."
+  type        = string
+}
+
 variable "region" {
   description = "Resource region"
   type        = string

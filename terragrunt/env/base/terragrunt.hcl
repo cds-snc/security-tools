@@ -3,6 +3,7 @@ terraform {
 }
 
 inputs = {
+  tool_name = "base"
 }
 
 include {

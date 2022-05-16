@@ -85,9 +85,45 @@ resource "aws_security_group" "pomerium" {
     self        = true
   }
 
+  egress {
+    description = "Outbound access to neo4j http"
+    from_port   = 7474
+    to_port     = 7474
+    protocol    = "tcp"
+    cidr_blocks = var.vpc_private_subnet_cidrs
+    self        = true
+  }
+
+  egress {
+    description = "Outbound access to neo4j bolt"
+    from_port   = 7687
+    to_port     = 7687
+    protocol    = "tcp"
+    cidr_blocks = var.vpc_private_subnet_cidrs
+    self        = true
+  }
+
+  egress {
+    description = "Outbound access to dependency track frontend"
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = var.vpc_private_subnet_cidrs
+    self        = true
+  }
+
+  egress {
+    description = "Outbound access to dependency track api"
+    from_port   = 8081
+    to_port     = 8081
+    protocol    = "tcp"
+    cidr_blocks = var.vpc_private_subnet_cidrs
+    self        = true
+  }
+
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }

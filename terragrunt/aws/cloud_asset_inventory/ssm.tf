@@ -22,7 +22,7 @@ resource "aws_ssm_parameter" "neo4j_password" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -34,7 +34,7 @@ resource "aws_ssm_parameter" "neo4j_auth" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -47,7 +47,7 @@ resource "aws_ssm_parameter" "asset_inventory_account_list" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 

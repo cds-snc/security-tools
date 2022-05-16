@@ -6,7 +6,7 @@ resource "aws_service_discovery_private_dns_namespace" "internal" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }
 
@@ -31,6 +31,6 @@ resource "aws_service_discovery_service" "neo4j" {
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
-    Product               = var.product_name
+    Product               = "${var.product_name}-${var.tool_name}"
   }
 }

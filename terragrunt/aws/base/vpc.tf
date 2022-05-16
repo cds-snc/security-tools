@@ -1,6 +1,6 @@
 module "vpc" {
   source = "github.com/cds-snc/terraform-modules?ref=v2.0.5//vpc"
-  name   = var.product_name
+  name   = "${var.product_name}-${var.tool_name}"
 
   high_availability  = true
   enable_flow_log    = false
@@ -30,4 +30,17 @@ resource "aws_flow_log" "cloud-based-sensor" {
     Terraform             = true
     Product               = var.product_name
   }
+}
+
+### NACL
+
+resource "aws_network_acl_rule" "smtp_egress" {
+  network_acl_id = module.vpc.main_nacl_id
+  rule_number    = 200
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = 465
+  to_port        = 465
 }

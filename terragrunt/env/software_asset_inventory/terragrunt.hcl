@@ -8,15 +8,10 @@ dependencies {
 
 dependency "base" {
   config_path = "../base"
-
-  mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
-  mock_outputs = {
-    cartography_repository_url = "https://12345678910.dkr.ecr.region.amazonaws.com/foo"
-  }
 }
 
 inputs = {
-  product_name                       = "security-tools-software-asset-inventory"
+  tool_name                          = "software-asset-inventory"
   dependencytrack_api_image          = "dependencytrack/apiserver"
   dependencytrack_api_image_tag      = "4.4.2@sha256:584cfd2349ec93cfde2528b8f34bd5d3a9f0a393fa38806128d646743fa649ee"
   dependencytrack_frontend_image     = "dependencytrack/frontend"
