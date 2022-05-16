@@ -31,3 +31,16 @@ resource "aws_flow_log" "cloud-based-sensor" {
     Product               = var.product_name
   }
 }
+
+### NACL
+
+resource "aws_network_acl_rule" "smtp_egress" {
+  network_acl_id = module.vpc.main_nacl_id
+  rule_number    = 200
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = "0.0.0.0/0"
+  from_port      = 465
+  to_port        = 465
+}
