@@ -161,4 +161,14 @@ data "aws_iam_policy_document" "asset_inventory_cartography_state_machine" {
       aws_ssm_parameter.asset_inventory_account_list.arn,
     ]
   }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "lambda:InvokeFunction"
+    ]
+    resources = [
+      aws_lambda_function.neo4j_to_sentinel.arn,
+    ]
+  }
 }
