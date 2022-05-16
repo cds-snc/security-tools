@@ -90,6 +90,26 @@
       "MaxConcurrency": 1,
       "ItemsPath": "$.accounts",
       "ResultPath": null,
+      "Next": "Neo4J Sentinel Forwarder"
+    },
+    "Neo4J Sentinel Forwarder" : {
+      "Type" : "Task",
+      "Resource" : "arn:aws:states:::lambda:invoke",
+      "Parameters" : {
+        "FunctionName" : "${NEO4J_SENTINEL_FORWARDER_LAMBDA}"
+      },
+      "Retry" : [
+        {
+          "ErrorEquals" : [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException"
+          ],
+          "IntervalSeconds" : 2,
+          "MaxAttempts" : 6,
+          "BackoffRate" : 2
+        }
+      ],
       "End": true
     }
   }

@@ -37,7 +37,7 @@ def push_results(results):
     timestamp = datetime.datetime.now().isoformat()
     for query in results:
         logger.debug(f"Processing query: {query['name']}")
-        for row in query["results"]:
+        for row in query["result"]:
             enrich_results(row, query, timestamp)
             connector.handle_log({"application_log": row})
 

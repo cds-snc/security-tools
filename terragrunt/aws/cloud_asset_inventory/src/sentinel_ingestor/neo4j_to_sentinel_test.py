@@ -38,7 +38,7 @@ def test_push_results(mock_connector):
             "name": "test",
             "description": "test",
             "headers": ["foo"],
-            "results": [{"foo": "bar"}],
+            "result": [{"foo": "bar"}],
         }
     ]
     neo4j_to_sentinel.push_results(results)
