@@ -12,7 +12,7 @@ resource "aws_lambda_function" "neo4j_to_sentinel" {
   function_name = "sentinel-neo4j-forwarder"
   handler       = "neo4j_to_sentinel.handler"
   runtime       = "python3.9"
-  timeout       = 300
+  timeout       = 900
   memory_size   = 256
   role          = aws_iam_role.neo4j_to_sentinel_lambda.arn
 
