@@ -27,7 +27,7 @@ data "template_file" "asset_inventory_cartography_state_machine" {
     MIN_ECS_CAPACITY         = var.min_ecs_capacity
     MAX_ECS_CAPACITY         = var.max_ecs_capacity
     SECURITY_GROUPS          = aws_security_group.cartography.id
-    SUBNETS                  = join(", ", [for subnet in var.private_subnet_ids : format("%q", subnet)])
+    SUBNETS                  = join(", ", [for subnet in var.vpc_private_subnet_ids : format("%q", subnet)])
   }
 }
 
