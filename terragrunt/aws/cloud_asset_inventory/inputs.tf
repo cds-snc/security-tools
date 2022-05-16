@@ -9,6 +9,12 @@ variable "cloud_asset_inventory_vpc_peering_connection_id" {
   type        = string
 }
 
+variable "customer_id" {
+  description = "(Required) Azure log workspace customer ID"
+  sensitive   = true
+  type        = string
+}
+
 variable "neo4j_image" {
   description = "(Required) The neo4j image to use"
   type        = string
@@ -26,6 +32,12 @@ variable "password_change_id" {
 
 variable "security_tools_vpc_id" {
   description = "(Required) The VPC ID for the security tools"
+  type        = string
+}
+
+variable "shared_key" {
+  description = "(Required) Azure log workspace shared secret"
+  sensitive   = true
   type        = string
 }
 
