@@ -2,9 +2,8 @@
 # Lambda: zip
 #
 data "archive_file" "neo4j_to_sentinel" {
-  type       = "zip"
-  source_dir = data.null_data_source.wait_for_lambda_exporter.outputs["source_dir"]
-
+  type        = "zip"
+  source_dir  = "${path.module}/src/sentinel_ingestor/dist"
   output_path = "/tmp/neo4j_to_sentinel.py.zip"
 }
 
@@ -59,18 +58,6 @@ resource "null_resource" "lambda_build" {
 
   provisioner "local-exec" {
     command = "${path.module}/src/sentinel_ingestor/build.sh"
-  }
-}
-
-data "null_data_source" "wait_for_lambda_exporter" {
-  inputs = {
-    # This ensures that this data resource will not be evaluated until
-    # after the null_resource has been created.
-    lambda_exporter_id = "${null_resource.lambda_build.id}"
-
-    # This value gives us something to implicitly depend on
-    # in the archive_file.
-    source_dir = "${path.module}/src/sentinel_ingestor/dist"
   }
 }
 
