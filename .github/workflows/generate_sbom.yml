@@ -70,7 +70,7 @@ jobs:
         working-directory: ${{ inputs.working_directory }}
         run: |
           pip install cyclonedx-bom==${{ env.CYCLONEDX_PYTHON }}
-          cyclonedx-bom --requirements --in-file ${{ inupts.in_file }} --format json --output bom.json
+          cyclonedx-bom --requirements --in-file ${{ inputs.in_file }} --format json --output bom.json
 
       - name: Upload SBOM
         uses: DependencyTrack/gh-upload-sbom@801995c917fdcc580f96275837bcbe6b46e5b159 # v1.0.0
