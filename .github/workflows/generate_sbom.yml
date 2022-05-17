@@ -5,6 +5,10 @@ name: "Generate SBOM"
 on:
   workflow_call:
     inputs:
+      docker_image:
+        description: "The Docker image and tag used to generate the SBOM"
+        required: false
+        type: string
       in_file:
         description: "Input file used to generate the Python SBOM"
         required: false
@@ -27,7 +31,14 @@ on:
         required: true
         type: string
     secrets:
+      aws_access_key_id:
+        description: "AWS access key ID used to login to the ECR and pull the Docker image"
+        required: false
+      aws_secret_access_key:
+        description: "AWS secret access key used to login to the ECR and pull the Docker image"
+        required: false
       dependency_track_api_key:
+        description: "API key for Dependency-Track used to upload the SBOM"
         required: true
 
 env:
@@ -35,14 +46,13 @@ env:
   CYCLONEDX_NODE: "3.9.0"
   CYCLONEDX_PHP: "3.10.0"
   CYCLONEDX_PYTHON: "3.2.1"
-  DEPENDENCY_TRACK_API_KEY: ${{ secrets.dependency_track_api_key }}
-  PROJECT_TYPES: '["node", "php", "python"]'
+  PROJECT_TYPES: '["docker", "node", "php", "python"]'
 
 jobs:
   generate-sbom:
     runs-on: ubuntu-latest
     steps:
-      - name: Validate project type input
+      - name: Fail if unsupported project type
         if: contains(fromJson(env.PROJECT_TYPES), inputs.project_type) == false
         run: |
           echo "Invalid project type: ${{ inputs.project_type }}. Valid types: ${{ env.TYPES }}"
@@ -51,12 +61,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Configure AWS credentials
+        if: inputs.project_type == 'docker' && secrets.aws_access_key_id != '' && secrets.aws_secret_access_key != ''
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.aws_access_key_id }}
+          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
+          aws-region: ca-central-1
+
+      - name: Login to Elastic Container Registry
+        if: inputs.project_type == 'docker' && secrets.aws_access_key_id != '' && secrets.aws_secret_access_key != ''
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Generate Docker SBOM
+        if: inputs.project_type == 'docker'
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          docker sbom ${{ inputs.docker_image }} --format cyclonedx-json --output bom.json
+
       - name: Generate Node SBOM
         if: inputs.project_type == 'node'
         working-directory: ${{ inputs.working_directory }}
         run: |
-          npm ci 
-          npm install -g @cyclonedx/bom@${{ env.CYCLONEDX_NODE }}          
+          npm ci
+          npm install -g @cyclonedx/bom@${{ env.CYCLONEDX_NODE }}
           cyclonedx-node --output bom.json
 
       - name: Generate PHP SBOM
