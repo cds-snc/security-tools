@@ -21,13 +21,14 @@ data "template_file" "asset_inventory_cartography_state_machine" {
 
   vars = {
 
-    CARTOGRAPHY_SERVICE_NAME = local.cartography_service_name
-    CARTOGRAPHY_CLUSTER      = aws_ecs_cluster.cloud_asset_discovery.arn
-    CARTOGRAPHY_TASK_DEF     = aws_ecs_task_definition.cartography.arn
-    MIN_ECS_CAPACITY         = var.min_ecs_capacity
-    MAX_ECS_CAPACITY         = var.max_ecs_capacity
-    SECURITY_GROUPS          = aws_security_group.cartography.id
-    SUBNETS                  = join(", ", [for subnet in var.vpc_private_subnet_ids : format("%q", subnet)])
+    CARTOGRAPHY_SERVICE_NAME        = local.cartography_service_name
+    CARTOGRAPHY_CLUSTER             = aws_ecs_cluster.cloud_asset_discovery.arn
+    CARTOGRAPHY_TASK_DEF            = aws_ecs_task_definition.cartography.arn
+    MIN_ECS_CAPACITY                = var.min_ecs_capacity
+    MAX_ECS_CAPACITY                = var.max_ecs_capacity
+    NEO4J_SENTINEL_FORWARDER_LAMBDA = "${aws_lambda_function.neo4j_to_sentinel.arn}:$LATEST"
+    SECURITY_GROUPS                 = aws_security_group.cartography.id
+    SUBNETS                         = join(", ", [for subnet in var.vpc_private_subnet_ids : format("%q", subnet)])
   }
 }
 
