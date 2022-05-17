@@ -5,21 +5,26 @@ name: "Generate SBOM"
 on:
   workflow_call:
     inputs:
+      in_file:
+        description: "Input file used to generate the Python SBOM"
+        required: false
+        type: string
+        default: "requirements.txt"
       project_name:
-        required: true
         description: "Name of the Dependency-Track project"
+        required: true
         type: string
       project_type:
-        required: true
         description: "Type of project that the SBOM is being generated for"
-        type: string        
-      project_version:
         required: true
+        type: string
+      project_version:
         description: "Version of the Dependency-Track project"
+        required: true
         type: string
       working_directory:
-        required: true
         description: "Directory that contains the project dependency manifest"
+        required: true
         type: string
     secrets:
       dependency_track_api_key:
@@ -65,7 +70,7 @@ jobs:
         working-directory: ${{ inputs.working_directory }}
         run: |
           pip install cyclonedx-bom==${{ env.CYCLONEDX_PYTHON }}
-          cyclonedx-bom --requirements --format json --output bom.json
+          cyclonedx-bom --requirements --in-file ${{ inupts.in_file }} --format json --output bom.json
 
       - name: Upload SBOM
         uses: DependencyTrack/gh-upload-sbom@801995c917fdcc580f96275837bcbe6b46e5b159 # v1.0.0
