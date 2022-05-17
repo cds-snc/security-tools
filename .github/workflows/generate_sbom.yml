@@ -55,7 +55,8 @@ jobs:
         if: inputs.project_type == 'node'
         working-directory: ${{ inputs.working_directory }}
         run: |
-          npm install -g @cyclonedx/bom@${{ env.CYCLONEDX_NODE }}
+          npm ci 
+          npm install -g @cyclonedx/bom@${{ env.CYCLONEDX_NODE }}          
           cyclonedx-node --output bom.json
 
       - name: Generate PHP SBOM
