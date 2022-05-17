@@ -24,14 +24,13 @@ on:
     secrets:
       dependency_track_api_key:
         required: true
-      dependency_track_url:
-        required: true
 
 env:
   BOM_REPRODUCIBLE: 1
   CYCLONEDX_NODE: "3.9.0"
   CYCLONEDX_PHP: "3.10.0"
   CYCLONEDX_PYTHON: "3.2.1"
+  DEPENDENCY_TRACK_API_KEY: ${{ secrets.dependency_track_api_key }}
   PROJECT_TYPES: '["node", "php", "python"]'
 
 jobs:
@@ -48,21 +47,21 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Generate Node SBOM
-        if: inputs.project_type == "node"
+        if: inputs.project_type == 'node'
         working-directory: ${{ inputs.working_directory }}
         run: |
           npm install -g @cyclonedx/bom@${{ env.CYCLONEDX_NODE }}
           cyclonedx-node --output bom.json
 
       - name: Generate PHP SBOM
-        if: inputs.project_type == "php"
+        if: inputs.project_type == 'php'
         working-directory: ${{ inputs.working_directory }}
         run: |
           composer require --dev cyclonedx/cyclonedx-php-composer:${{ env.CYCLONEDX_PHP }}
           composer make-bom --output-format=JSON --output-file=bom.json
 
       - name: Generate Python SBOM
-        if: inputs.project_type == "python"
+        if: inputs.project_type == 'python'
         working-directory: ${{ inputs.working_directory }}
         run: |
           pip install cyclonedx-bom==${{ env.CYCLONEDX_PYTHON }}
@@ -71,7 +70,7 @@ jobs:
       - name: Upload SBOM
         uses: DependencyTrack/gh-upload-sbom@801995c917fdcc580f96275837bcbe6b46e5b159 # v1.0.0
         with:
-          serverhostname: ${{ secrets.dependency_track_url }}
+          serverhostname: sbom.dependencies.security.cdssandbox.xyz
           apikey: ${{ secrets.dependency_track_api_key }}
           autocreate: true
           bomfilename: ${{ inputs.working_directory }}/bom.json
