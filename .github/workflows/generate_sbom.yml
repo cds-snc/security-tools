@@ -24,8 +24,6 @@ on:
     secrets:
       dependency_track_api_key:
         required: true
-      dependency_track_url:
-        required: true
 
 env:
   BOM_REPRODUCIBLE: 1
@@ -33,7 +31,6 @@ env:
   CYCLONEDX_PHP: "3.10.0"
   CYCLONEDX_PYTHON: "3.2.1"
   DEPENDENCY_TRACK_API_KEY: ${{ secrets.dependency_track_api_key }}
-  DEPENDENCY_TRACK_URL: ${{ secrets.dependency_track_url }}
   PROJECT_TYPES: '["node", "php", "python"]'
 
 jobs:
@@ -71,11 +68,11 @@ jobs:
           cyclonedx-bom --requirements --format json --output bom.json
 
       - name: Upload SBOM
-        run: |
-          curl -X "POST" "${{ env.DEPENDENCY_TRACK_URL }}/api/v1/bom" \
-            -H "X-Api-Key: ${{ env.DEPENDENCY_TRACK_API_KEY }}" \
-            -H "Content-Type: multipart/form-data" \            
-            -F "autoCreate=true" \
-            -F "projectName=${{ inputs.project_name }}" \
-            -F "projectVersion=${{ inputs.project_version }}" \
-            -F "bom=@${{ inputs.working_directory }}/bom.json"
+        uses: DependencyTrack/gh-upload-sbom@801995c917fdcc580f96275837bcbe6b46e5b159 # v1.0.0
+        with:
+          serverhostname: sbom.dependencies.security.cdssandbox.xyz
+          apikey: ${{ secrets.dependency_track_api_key }}
+          autocreate: true
+          bomfilename: ${{ inputs.working_directory }}/bom.json
+          projectname: ${{ inputs.project_name }}
+          projectversion: ${{ inputs.project_version }}
