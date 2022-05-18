@@ -5,6 +5,10 @@ name: "Generate SBOM"
 on:
   workflow_call:
     inputs:
+      docker_image:
+        description: "The Docker image and tag used to generate the SBOM"
+        required: false
+        type: string
       in_file:
         description: "Input file used to generate the Python SBOM"
         required: false
@@ -26,8 +30,17 @@ on:
         description: "Directory that contains the project dependency manifest"
         required: true
         type: string
+      iam_role_to_assume:
+        description: "IAM role arn needed to login using OIDC"
+        required: false
+        type: string
+      iam_role_session_name:
+        description: "IMA role session name needed by OIDC"
+        required: false
+        type: string
     secrets:
       dependency_track_api_key:
+        description: "API key for Dependency-Track used to upload the SBOM"
         required: true
 
 env:
@@ -35,14 +48,20 @@ env:
   CYCLONEDX_NODE: "3.9.0"
   CYCLONEDX_PHP: "3.10.0"
   CYCLONEDX_PYTHON: "3.2.1"
-  DEPENDENCY_TRACK_API_KEY: ${{ secrets.dependency_track_api_key }}
-  PROJECT_TYPES: '["node", "php", "python"]'
+  PROJECT_TYPES: '["docker", "node", "php", "python"]'
 
 jobs:
   generate-sbom:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+      actions: write
+      checks: write
+      statuses: write
     steps:
-      - name: Validate project type input
+      - name: Fail if unsupported project type
         if: contains(fromJson(env.PROJECT_TYPES), inputs.project_type) == false
         run: |
           echo "Invalid project type: ${{ inputs.project_type }}. Valid types: ${{ env.TYPES }}"
@@ -51,12 +70,30 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: configure aws credentials using OIDC
+        if: inputs.project_type == 'docker' && inputs.iam_role_to_assume != '' && inputs.iam_role_session_name != ''
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ inputs.iam_role_to_assume }}
+          role-session-name: ${{ inputs.iam_role_session_name }}
+          aws-region: "ca-central-1"
+
+      - name: Login to Elastic Container Registry
+        if: inputs.project_type == 'docker' && inputs.iam_role_to_assume != '' && inputs.iam_role_session_name != ''
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Generate Docker SBOM
+        if: inputs.project_type == 'docker'
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          docker sbom ${{ inputs.docker_image }} --format cyclonedx-json --output bom.json
+
       - name: Generate Node SBOM
         if: inputs.project_type == 'node'
         working-directory: ${{ inputs.working_directory }}
         run: |
-          npm ci 
-          npm install -g @cyclonedx/bom@${{ env.CYCLONEDX_NODE }}          
+          npm ci
+          npm install -g @cyclonedx/bom@${{ env.CYCLONEDX_NODE }}
           cyclonedx-node --output bom.json
 
       - name: Generate PHP SBOM
