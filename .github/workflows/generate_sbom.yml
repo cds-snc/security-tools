@@ -30,13 +30,15 @@ on:
         description: "Directory that contains the project dependency manifest"
         required: true
         type: string
+      iam_role_to_assume:
+        description: "IAM role arn needed to login using OIDC"
+        required: false
+        type: string
+      iam_role_session_name:
+        description: "IMA role session name needed by OIDC"
+        required: false
+        type: string
     secrets:
-      aws_access_key_id:
-        description: "AWS access key ID used to login to the ECR and pull the Docker image"
-        required: false
-      aws_secret_access_key:
-        description: "AWS secret access key used to login to the ECR and pull the Docker image"
-        required: false
       dependency_track_api_key:
         description: "API key for Dependency-Track used to upload the SBOM"
         required: true
@@ -51,6 +53,13 @@ env:
 jobs:
   generate-sbom:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: write
+      actions: write
+      checks: write
+      statuses: write
     steps:
       - name: Fail if unsupported project type
         if: contains(fromJson(env.PROJECT_TYPES), inputs.project_type) == false
@@ -61,16 +70,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        if: inputs.project_type == 'docker' && secrets.aws_access_key_id != '' && secrets.aws_secret_access_key != ''
+      - name: configure aws credentials using OIDC
+        if: inputs.project_type ='docker' && inputs.iam_role_to_assume != '' && inputs.iam_role_session_name != ''
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.aws_access_key_id }}
-          aws-secret-access-key: ${{ secrets.aws_secret_access_key }}
-          aws-region: ca-central-1
+          role-to-assume: ${{ inputs.iam_role_to_assume }}
+          role-session-name: ${{ inputs.iam_role_session_name }}
+          aws-region: "ca-central-1"
 
       - name: Login to Elastic Container Registry
-        if: inputs.project_type == 'docker' && secrets.aws_access_key_id != '' && secrets.aws_secret_access_key != ''
+        if: inputs.project_type ='docker' && inputs.iam_role_to_assume != '' && inputs.iam_role_session_name != ''
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Generate Docker SBOM
