@@ -71,7 +71,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: configure aws credentials using OIDC
-        if: inputs.project_type ='docker' && inputs.iam_role_to_assume != '' && inputs.iam_role_session_name != ''
+        if: inputs.project_type == 'docker' && inputs.iam_role_to_assume != '' && inputs.iam_role_session_name != ''
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ inputs.iam_role_to_assume }}
@@ -79,7 +79,7 @@ jobs:
           aws-region: "ca-central-1"
 
       - name: Login to Elastic Container Registry
-        if: inputs.project_type ='docker' && inputs.iam_role_to_assume != '' && inputs.iam_role_session_name != ''
+        if: inputs.project_type == 'docker' && inputs.iam_role_to_assume != '' && inputs.iam_role_session_name != ''
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Generate Docker SBOM
