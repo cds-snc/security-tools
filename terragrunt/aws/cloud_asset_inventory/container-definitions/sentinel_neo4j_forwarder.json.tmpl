@@ -3,6 +3,10 @@
     "name" : "sentinel_neo4j_forwarder",
     "environment" : [
       {
+        "name" : "CUSTOMER_ID",
+        "value" : "${CUSTOMER_ID}"
+      },
+      {
         "name" : "NEO4J_URI",
         "value" : "bolt://neo4j.internal.local:7687"
       },
@@ -13,6 +17,10 @@
       {
         "name" : "LOG_TYPE",
         "value" : "${LOG_TYPE}"
+      },
+      {
+        "name" : "SHARED_KEY",
+        "value" : "${SHARED_KEY}"
       }
     ],
     "essential" : true,
@@ -29,14 +37,6 @@
       {
         "name" : "NEO4J_SECRETS_PASSWORD",
         "valueFrom" : "${NEO4J_SECRETS_PASSWORD}"
-      },
-      {
-        "name" : "CUSTOMER_ID",
-        "value" : "${CUSTOMER_ID}"
-      },
-      {
-        "name" : "SHARED_KEY",
-        "value" : "${SHARED_KEY}"
       }
     ]
   }

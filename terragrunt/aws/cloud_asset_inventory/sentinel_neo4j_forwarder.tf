@@ -38,10 +38,6 @@ resource "aws_ecs_task_definition" "sentinel_neo4j_forwarder" {
     Terraform             = true
     Product               = var.product_name
   }
-
-  volume {
-    name = "elasticsearch-index-volume"
-  }
 }
 
 resource "aws_cloudwatch_log_group" "sentinel_neo4j_forwarder" {
