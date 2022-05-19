@@ -1,0 +1,83 @@
+name: "Generate SBOM"
+description: "Generates a CycloneDX SBOM and uploads it to Dependency-Track"
+
+inputs:
+  dependency_track_api_key:
+    description: "API key for Dependency-Track used to upload the SBOM"
+    required: true
+  dependency_track_url:
+    description: "URL of the Dependency-Track instance used to upload the SBOM"
+    required: true
+  docker_image:
+    description: "The Docker image and tag used to generate the SBOM"
+    required: false
+  in_file:
+    description: "Input file used to generate the Python SBOM"
+    required: false
+    default: "requirements.txt"
+  project_name:
+    description: "Name of the Dependency-Track project"
+    required: true
+  project_type:
+    description: "Type of project that the SBOM is being generated for"
+    required: true
+  project_version:
+    description: "Version of the Dependency-Track project"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Fail if unsupported project type
+      env:
+        PROJECT_TYPES: '["docker", "node", "php", "python"]'    
+      if: contains(fromJson(env.PROJECT_TYPES), inputs.project_type) == false
+      run: |
+        echo "Invalid project type: ${{ inputs.project_type }}. Valid types: ${{ env.TYPES }}"
+        exit 1
+      shell: bash
+
+    - name: Generate Docker SBOM
+      if: inputs.project_type == 'docker'
+      run: |
+        docker sbom ${{ inputs.docker_image }} --format cyclonedx-json --output bom.json
+      shell: bash
+
+    - name: Generate Node SBOM
+      env:
+        BOM_REPRODUCIBLE: "1"
+        CYCLONEDX_NODE: "3.9.0"    
+      if: inputs.project_type == 'node'
+      run: |
+        npm ci
+        npm install -g @cyclonedx/bom@${{ env.CYCLONEDX_NODE }}
+        cyclonedx-node --output bom.json
+      shell: bash
+
+    - name: Generate PHP SBOM
+      env:
+        CYCLONEDX_PHP: "3.10.0"    
+      if: inputs.project_type == 'php'
+      run: |
+        composer require --dev cyclonedx/cyclonedx-php-composer:${{ env.CYCLONEDX_PHP }}
+        composer make-bom --output-format=JSON --output-file=bom.json
+      shell: bash
+
+    - name: Generate Python SBOM
+      env:
+        CYCLONEDX_PYTHON: "3.2.1"    
+      if: inputs.project_type == 'python'
+      run: |
+        pip install cyclonedx-bom==${{ env.CYCLONEDX_PYTHON }}
+        cyclonedx-bom --requirements --in-file ${{ inputs.in_file }} --format json --output bom.json
+      shell: bash
+
+    - name: Upload SBOM
+      uses: DependencyTrack/gh-upload-sbom@801995c917fdcc580f96275837bcbe6b46e5b159 # v1.0.0
+      with:
+        serverhostname: ${{ inputs.dependency_track_url }}
+        apikey: ${{ inputs.dependency_track_api_key }}
+        autocreate: true
+        bomfilename: bom.json
+        projectname: ${{ inputs.project_name }}
+        projectversion: ${{ inputs.project_version }}
