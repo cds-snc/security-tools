@@ -58,12 +58,6 @@ jobs:
 
       - name: Get current date to determine if secrets need to be rotated
         run: echo "TF_VAR_password_change_id=$(date +'%Y-%m')" >> $GITHUB_ENV
-
-      - name: Build Lambda archive
-        if: ${{ steps.filter.outputs.cloud_asset_inventory == 'true' || steps.filter.outputs.common == 'true' }}
-        working-directory: terragrunt/aws/cloud_asset_inventory/src/sentinel_ingestor
-        run: |
-          ./build.sh
                   
       - name: Terragrunt apply cloud asset inventory
         if: ${{ steps.filter.outputs.cloud_asset_inventory == 'true' || steps.filter.outputs.common == 'true' }}
