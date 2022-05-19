@@ -10,12 +10,12 @@ data "template_file" "sentinel_neo4j_forwarder_container_definition" {
     AWS_LOGS_REGION                = var.region
     AWS_LOGS_STREAM_PREFIX         = "${local.sentinel_neo4j_forwarder_service_name}-task"
     SENTINEL_NEO4J_FORWARDER_IMAGE = "${aws_ecr_repository.sentinel_neo4j_forwarder.repository_url}:latest"
-    CUSTOMER_ID                    = var.customer_id
+    CUSTOMER_ID                    = aws_ssm_parameter.customer_id.arn
     LOG_TYPE                       = "CartographyTest"
-    SHARED_KEY                     = var.shared_key
+    SHARED_KEY                     = aws_ssm_parameter.shared_key.arn
     NEO4J_URI                      = "bolt://neo4j.internal.local:7687"
     NEO4J_USER                     = "neo4j"
-    NEO4J_SECRETS_PASSWORD         = aws_ssm_parameter.neo4j_password.value
+    NEO4J_SECRETS_PASSWORD         = aws_ssm_parameter.neo4j_password.arn
   }
 }
 
