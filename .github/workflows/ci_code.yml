@@ -21,7 +21,7 @@ jobs:
         id: filter
         with:
           filters: |
-            cloud_asset_inventory/sentinel_neo4j_forwarder/src: 'cloud_asset_inventory/sentinel_neo4j_forwarder/src/**'
+            images/cloud_asset_inventory/sentinel_neo4j_forwarder/src: 'images/cloud_asset_inventory/sentinel_neo4j_forwarder/src/**'
 
   tests:
     if: needs.changes.outputs.source != '[]'
