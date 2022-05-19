@@ -1,5 +1,4 @@
 locals {
-  elasticsearch_config_file             = "configs/es-index.json"
   sentinel_neo4j_forwarder_service_name = "sentinel_neo4j_forwarder"
 }
 
