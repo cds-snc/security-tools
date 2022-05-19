@@ -1,0 +1,43 @@
+[
+  {
+    "name" : "sentinel_neo4j_forwarder",
+    "environment" : [
+      {
+        "name" : "NEO4J_URI",
+        "value" : "bolt://neo4j.internal.local:7687"
+      },
+      {
+        "name" : "NEO4J_USER",
+        "value" : "neo4j"
+      },
+      {
+        "name" : "LOG_TYPE",
+        "value" : "${LOG_TYPE}"
+      }
+    ],
+    "essential" : true,
+    "image" : "${SENTINEL_NEO4J_FORWARDER_IMAGE}",
+    "logConfiguration" : {
+      "logDriver" : "awslogs",
+      "options" : {
+        "awslogs-group": "${AWS_LOGS_GROUP}",
+        "awslogs-region": "${AWS_LOGS_REGION}",
+        "awslogs-stream-prefix": "${AWS_LOGS_STREAM_PREFIX}"
+      }
+    },
+    "secrets" : [
+      {
+        "name" : "NEO4J_SECRETS_PASSWORD",
+        "valueFrom" : "${NEO4J_SECRETS_PASSWORD}"
+      },
+      {
+        "name" : "CUSTOMER_ID",
+        "value" : "${CUSTOMER_ID}"
+      },
+      {
+        "name" : "SHARED_KEY",
+        "value" : "${SHARED_KEY}"
+      }
+    ]
+  }
+]

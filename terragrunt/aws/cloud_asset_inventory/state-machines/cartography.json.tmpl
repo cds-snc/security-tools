@@ -92,12 +92,27 @@
       "ResultPath": null,
       "Next": "Neo4J Sentinel Forwarder"
     },
-    "Neo4J Sentinel Forwarder" : {
-      "Type" : "Task",
-      "Resource" : "arn:aws:states:::lambda:invoke",
-      "Parameters" : {
-        "FunctionName" : "${NEO4J_SENTINEL_FORWARDER_LAMBDA}"
+    "Neo4J Sentinel Forwarder": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
+      "Parameters": {
+        "LaunchType": "FARGATE",
+        "Cluster" : "${CARTOGRAPHY_CLUSTER}",
+        "TaskDefinition" : "${NEO4J_INGESTOR_TASK_DEF}",
+        "NetworkConfiguration": {
+          "AwsvpcConfiguration": {
+            "SecurityGroups": ["${SECURITY_GROUPS}"],
+            "Subnets":[${SUBNETS}]
+          }
+        }
       },
+      "Retry": [
+        {
+          "ErrorEquals": ["States.TaskFailed"],
+          "IntervalSeconds": 120,
+          "MaxAttempts": 4
+        }
+      ],
       "End": true
     }
   }
