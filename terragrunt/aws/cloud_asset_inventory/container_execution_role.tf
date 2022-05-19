@@ -37,11 +37,6 @@ data "aws_iam_policy_document" "cartography_container_execution_role" {
 
     principals {
       type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-
-    principals {
-      type        = "Service"
       identifiers = ["ecs.amazonaws.com"]
     }
 
