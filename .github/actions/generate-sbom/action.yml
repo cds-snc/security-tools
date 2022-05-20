@@ -44,9 +44,12 @@ runs:
       shell: bash
 
     - name: Generate Docker SBOM
+      env:
+        DOCKER_SBOM: "v0.6.0"
       if: inputs.project_type == 'docker'
       working-directory: ${{ inputs.working_directory }}
       run: |
+        curl -sSfL https://raw.githubusercontent.com/docker/sbom-cli-plugin/${{ env.DOCKER_SBOM }}/install.sh | sh -s -- ${{ env.DOCKER_SBOM }}
         docker sbom ${{ inputs.docker_image }} --format cyclonedx-json --output bom.json
       shell: bash
 
