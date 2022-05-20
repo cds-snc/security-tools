@@ -21,14 +21,14 @@ data "template_file" "asset_inventory_cartography_state_machine" {
 
   vars = {
 
-    CARTOGRAPHY_SERVICE_NAME        = local.cartography_service_name
-    CARTOGRAPHY_CLUSTER             = aws_ecs_cluster.cloud_asset_discovery.arn
-    CARTOGRAPHY_TASK_DEF            = aws_ecs_task_definition.cartography.arn
-    MIN_ECS_CAPACITY                = var.min_ecs_capacity
-    MAX_ECS_CAPACITY                = var.max_ecs_capacity
-    NEO4J_SENTINEL_FORWARDER_LAMBDA = aws_lambda_function.neo4j_to_sentinel.function_name
-    SECURITY_GROUPS                 = aws_security_group.cartography.id
-    SUBNETS                         = join(", ", [for subnet in var.vpc_private_subnet_ids : format("%q", subnet)])
+    CARTOGRAPHY_SERVICE_NAME          = local.cartography_service_name
+    CARTOGRAPHY_CLUSTER               = aws_ecs_cluster.cloud_asset_discovery.arn
+    CARTOGRAPHY_TASK_DEF              = aws_ecs_task_definition.cartography.arn
+    MIN_ECS_CAPACITY                  = var.min_ecs_capacity
+    MAX_ECS_CAPACITY                  = var.max_ecs_capacity
+    SENTINEL_NEO4J_FORWARDER_TASK_DEF = aws_ecs_task_definition.sentinel_neo4j_forwarder.arn
+    SECURITY_GROUPS                   = aws_security_group.cartography.id
+    SUBNETS                           = join(", ", [for subnet in var.vpc_private_subnet_ids : format("%q", subnet)])
   }
 }
 
@@ -75,7 +75,7 @@ data "aws_iam_policy_document" "asset_inventory_cartography_state_machine_servic
 }
 
 resource "aws_iam_policy" "asset_inventory_cartography_state_machine" {
-  name   = "CartographyStateMachineECSLambda"
+  name   = "CartographyStateMachineECS"
   path   = "/"
   policy = data.aws_iam_policy_document.asset_inventory_cartography_state_machine.json
 
@@ -137,6 +137,8 @@ data "aws_iam_policy_document" "asset_inventory_cartography_state_machine" {
     resources = [
       aws_ecs_task_definition.cartography.arn,
       "arn:aws:ecs:${var.region}:${var.account_id}:task-definition/${aws_ecs_task_definition.cartography.family}",
+      aws_ecs_task_definition.sentinel_neo4j_forwarder.arn,
+      "arn:aws:ecs:${var.region}:${var.account_id}:task-definition/${aws_ecs_task_definition.sentinel_neo4j_forwarder.family}",
     ]
   }
 
@@ -160,16 +162,6 @@ data "aws_iam_policy_document" "asset_inventory_cartography_state_machine" {
     ]
     resources = [
       aws_ssm_parameter.asset_inventory_account_list.arn,
-    ]
-  }
-
-  statement {
-    effect = "Allow"
-    actions = [
-      "lambda:InvokeFunction"
-    ]
-    resources = [
-      aws_lambda_function.neo4j_to_sentinel.arn,
     ]
   }
 }

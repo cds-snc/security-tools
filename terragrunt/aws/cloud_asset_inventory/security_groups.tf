@@ -21,7 +21,7 @@ resource "aws_security_group" "cartography" {
   }
 
   egress {
-    description = "Outbound access to internet & elasticsearch"
+    description = "Outbound access to internet"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"

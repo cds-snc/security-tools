@@ -30,7 +30,8 @@ jobs:
         id: filter
         with:
           filters: |
-            cloud_asset_inventory/cartography: 'images/cloud_asset_inventory/cartography/**'
+            images/cloud_asset_inventory/cartography: 'images/cloud_asset_inventory/cartography/**'
+            images/cloud_asset_inventory/sentinel_neo4j_forwarder: 'images/cloud_asset_inventory/sentinel_neo4j_forwarder/**'
             
   build:
     if: needs.changes.outputs.images != '[]'
@@ -56,8 +57,18 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
+      - name: Retrieve Sentinel connector layer
+        if: ${{ matrix.image == 'images/cloud_asset_inventory/sentinel_neo4j_forwarder' }}
+        working-directory: ./${{ matrix.image }}
+        run: |
+          aws lambda get-layer-version-by-arn \
+          --region ca-central-1 \
+          --arn arn:aws:lambda:ca-central-1:283582579564:layer:aws-sentinel-connector-layer:6 \
+          | jq -r '.Content.Location' \
+          | xargs curl -o connector.zip    
+
       - name: Build container
-        working-directory: ./images/${{ matrix.image }}
+        working-directory: ./${{ matrix.image }}
         run: |
           docker build \
           --build-arg git_sha=$GITHUB_SHA \

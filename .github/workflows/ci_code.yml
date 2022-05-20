@@ -21,7 +21,7 @@ jobs:
         id: filter
         with:
           filters: |
-            terragrunt/aws/cloud_asset_inventory/src/sentinel_ingestor: 'terragrunt/aws/cloud_asset_inventory/src/sentinel_ingestor/**'
+            images/cloud_asset_inventory/sentinel_neo4j_forwarder/src: 'images/cloud_asset_inventory/sentinel_neo4j_forwarder/src/**'
 
   tests:
     if: needs.changes.outputs.source != '[]'

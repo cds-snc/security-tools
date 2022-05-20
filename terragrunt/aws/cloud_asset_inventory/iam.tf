@@ -32,11 +32,6 @@ data "aws_iam_policy_document" "cartography_task_execution_role" {
       type        = "Service"
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
-
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
   }
 }
 

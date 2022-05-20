@@ -8,3 +8,5 @@
 # Python
 .pytest_cache
 __pycache__
+
+connector.zip
