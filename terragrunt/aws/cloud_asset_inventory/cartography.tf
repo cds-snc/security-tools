@@ -21,7 +21,7 @@ resource "aws_ecs_task_definition" "cartography" {
   requires_compatibilities = ["FARGATE"]
 
   cpu    = 4096
-  memory = 16384
+  memory = 8192
 
   execution_role_arn = aws_iam_role.cartography_container_execution_role.arn
   task_role_arn      = aws_iam_role.cartography_task_execution_role.arn
