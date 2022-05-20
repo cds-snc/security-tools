@@ -24,10 +24,12 @@ inputs:
     required: true
   project_version:
     description: "Version of the Dependency-Track project"
-    required: true
+    required: false
+    default: "main"
   working_directory:
     description: "Directory that contains the project dependency manifest"
-    required: true    
+    required: false
+    default: "."    
 
 runs:
   using: "composite"
@@ -37,7 +39,7 @@ runs:
         PROJECT_TYPES: '["docker", "node", "php", "python"]'    
       if: contains(fromJson(env.PROJECT_TYPES), inputs.project_type) == false
       run: |
-        echo "Invalid project type: ${{ inputs.project_type }}. Valid types: ${{ env.TYPES }}"
+        echo "Invalid project type: ${{ inputs.project_type }}. Valid types: ${{ env.PROJECT_TYPES }}"
         exit 1
       shell: bash
 
