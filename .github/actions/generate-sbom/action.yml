@@ -71,7 +71,8 @@ runs:
       if: inputs.project_type == 'php'
       working-directory: ${{ inputs.working_directory }}
       run: |
-        composer require --dev cyclonedx/cyclonedx-php-composer:${{ env.CYCLONEDX_PHP }}
+        composer global config allow-plugins.cyclonedx/cyclonedx-php-composer true --no-interaction
+        composer global require --dev cyclonedx/cyclonedx-php-composer:${{ env.CYCLONEDX_PHP }}
         composer make-bom --output-format=JSON --output-file=bom.json
       shell: bash
 
