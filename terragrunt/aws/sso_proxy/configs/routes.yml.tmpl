@@ -47,9 +47,11 @@
   cors_allow_preflight: true
   policy:
       - allow:
-          or:
+          and:
             - http_method:
                 is: PUT
+            - http_path:
+                is: /api/v1/bom
 
 - from: https://api.dependencies.security.cdssandbox.xyz
   to: http://${SOFTWARE_ASSET_INVENTORY_LOAD_BALANCER_DNS}:8081
