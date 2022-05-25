@@ -45,12 +45,12 @@ runs:
 
     - name: Generate Docker SBOM
       env:
-        DOCKER_SBOM: "v0.6.0"
+        SYFT_VERSION: "v0.46.2"
       if: inputs.project_type == 'docker'
       working-directory: ${{ inputs.working_directory }}
       run: |
-        curl -sSfL https://raw.githubusercontent.com/docker/sbom-cli-plugin/${{ env.DOCKER_SBOM }}/install.sh | sh -s -- ${{ env.DOCKER_SBOM }}
-        docker sbom ${{ inputs.docker_image }} --format cyclonedx-json --output bom.json
+        curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin ${{ env.SYFT_VERSION }}
+        syft ${{ inputs.docker_image }} --output cyclonedx-json --file bom.json
       shell: bash
 
     - name: Generate Node SBOM
