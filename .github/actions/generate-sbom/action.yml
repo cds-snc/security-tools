@@ -72,7 +72,7 @@ runs:
       working-directory: ${{ inputs.working_directory }}
       run: |
         composer global config allow-plugins.cyclonedx/cyclonedx-php-composer true --no-interaction
-        composer global require --dev cyclonedx/cyclonedx-php-composer:${{ env.CYCLONEDX_PHP }}
+        composer global require cyclonedx/cyclonedx-php-composer:${{ env.CYCLONEDX_PHP }} --dev --no-update
         composer make-bom --output-format=JSON --output-file=bom.json
       shell: bash
 
