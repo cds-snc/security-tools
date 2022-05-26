@@ -47,9 +47,13 @@
   cors_allow_preflight: true
   policy:
       - allow:
-          and:
+          or:
             - http_method:
                 is: POST
+            - http_path:
+                is: /api/v1/bom
+          or:
+            - http_method:
                 is: PUT
             - http_path:
                 is: /api/v1/bom
