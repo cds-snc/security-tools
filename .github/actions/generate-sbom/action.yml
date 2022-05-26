@@ -94,11 +94,11 @@ runs:
       working-directory: ${{ inputs.working_directory }}
       run: |
         echo "::add-mask::${{ inputs.dependency_track_api_key }}"
-        curl -X "POST" "${{ inputs.dependency_track_url }}/api/v1/bom" \
+        curl -sS -X "POST" "${{ inputs.dependency_track_url }}/api/v1/bom" \
             -H "Content-Type: multipart/form-data" \
             -H "X-Api-Key: ${{ inputs.dependency_track_api_key }}" \
             -F "autoCreate=true" \
             -F "projectName=${{ inputs.project_name }}" \
             -F "projectVersion=${{ inputs.project_version }}" \
-            -F "bom=@bom.json"
+            -F "bom=@bom.json" > /dev/null
       shell: bash
