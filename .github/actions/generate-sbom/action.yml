@@ -8,7 +8,7 @@ inputs:
   dependency_track_url:
     description: "URL of the Dependency-Track instance used to upload the SBOM"
     required: false
-    default: sbom.dependencies.security.cdssandbox.xyz
+    default: https://sbom.dependencies.security.cdssandbox.xyz
   docker_image:
     description: "The Docker image and tag used to generate the SBOM"
     required: false
@@ -91,11 +91,14 @@ runs:
       shell: bash
 
     - name: Upload SBOM
-      uses: DependencyTrack/gh-upload-sbom@801995c917fdcc580f96275837bcbe6b46e5b159 # v1.0.0
-      with:
-        serverhostname: ${{ inputs.dependency_track_url }}
-        apikey: ${{ inputs.dependency_track_api_key }}
-        autocreate: true
-        bomfilename: ${{ inputs.working_directory }}/bom.json
-        projectname: ${{ inputs.project_name }}
-        projectversion: ${{ inputs.project_version }}
+      working-directory: ${{ inputs.working_directory }}
+      run: |
+        echo "::add-mask::${{ inputs.dependency_track_api_key }}"
+        curl -X "POST" "${{ inputs.dependency_track_url }}/api/v1/bom" \
+            -H "Content-Type: multipart/form-data" \
+            -H "X-Api-Key: ${{ inputs.dependency_track_api_key }}" \
+            -F "autoCreate=true" \
+            -F "projectName=${{ inputs.project_name }}" \
+            -F "projectVersion=${{ inputs.project_version }}" \
+            -F "bom=@bom.json"
+      shell: bash
