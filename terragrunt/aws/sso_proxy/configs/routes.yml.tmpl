@@ -50,11 +50,9 @@
           or:
             - http_method:
                 is: POST
-            - http_path:
-                is: /api/v1/bom
-          or:
             - http_method:
                 is: PUT
+          and:
             - http_path:
                 is: /api/v1/bom
 
