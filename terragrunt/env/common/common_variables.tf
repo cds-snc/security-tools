@@ -45,16 +45,6 @@ variable "billing_tag_value" {
   type        = string
 }
 
-variable "min_ecs_capacity" {
-  description = "Minimum number of ECS instances to keep in the cluster"
-  type        = number
-}
-
-variable "max_ecs_capacity" {
-  description = "Maximum number of ECS instances to keep in the cluster"
-  type        = number
-}
-
 ### CIDR ranges for the VPC's in the account
 
 variable "sso_proxy_cidr" {
