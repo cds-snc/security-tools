@@ -31,18 +31,7 @@
             "Resource": "arn:aws:states:::ecs:runTask.sync",
             "Parameters": {
               "Cluster": "${CARTOGRAPHY_CLUSTER}",
-              "CapacityProviderStrategy": [
-                {
-                  "Base": ${MIN_ECS_CAPACITY},
-                  "CapacityProvider": "FARGATE_SPOT",
-                  "Weight": ${MAX_ECS_CAPACITY}
-                },
-                {
-                  "Base": 0,
-                  "CapacityProvider": "FARGATE",
-                  "Weight": ${MIN_ECS_CAPACITY}
-                }
-              ],
+              "LaunchType": "FARGATE",
               "TaskDefinition": "${CARTOGRAPHY_TASK_DEF}",
               "Overrides": {
                 "ContainerOverrides": [
@@ -76,13 +65,6 @@
                 }
               }
             },
-            "Retry": [
-              {
-                "ErrorEquals": ["States.TaskFailed"],
-                "IntervalSeconds": 120,
-                "MaxAttempts": 4
-              }
-            ],
             "End": true
           }
         }
