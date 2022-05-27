@@ -24,8 +24,6 @@ data "template_file" "asset_inventory_cartography_state_machine" {
     CARTOGRAPHY_SERVICE_NAME          = local.cartography_service_name
     CARTOGRAPHY_CLUSTER               = aws_ecs_cluster.cloud_asset_discovery.arn
     CARTOGRAPHY_TASK_DEF              = aws_ecs_task_definition.cartography.arn
-    MIN_ECS_CAPACITY                  = var.min_ecs_capacity
-    MAX_ECS_CAPACITY                  = var.max_ecs_capacity
     SENTINEL_NEO4J_FORWARDER_TASK_DEF = aws_ecs_task_definition.sentinel_neo4j_forwarder.arn
     SECURITY_GROUPS                   = aws_security_group.cartography.id
     SUBNETS                           = join(", ", [for subnet in var.vpc_private_subnet_ids : format("%q", subnet)])
