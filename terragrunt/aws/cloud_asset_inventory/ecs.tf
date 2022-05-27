@@ -1,10 +1,10 @@
 resource "aws_ecs_cluster" "cloud_asset_discovery" {
   name = "cloud_asset_discovery"
 
-  capacity_providers = ["FARGATE", "FARGATE_SPOT"]
+  capacity_providers = ["FARGATE"]
 
   default_capacity_provider_strategy {
-    capacity_provider = "FARGATE_SPOT"
+    capacity_provider = "FARGATE"
   }
 
   setting {
