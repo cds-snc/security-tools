@@ -10,10 +10,10 @@ module "dependencytrack_db" {
   username       = aws_ssm_parameter.dependencytrack_db_user.value
   password       = aws_ssm_parameter.dependencytrack_db_password.value
 
-  prevent_cluster_deletion = false
-  skip_final_snapshot      = true
+  prevent_cluster_deletion = true
+  skip_final_snapshot      = false
 
-  backup_retention_period = 1
+  backup_retention_period = 7
   preferred_backup_window = "01:00-03:00"
 
   vpc_id     = var.security_tools_vpc_id
