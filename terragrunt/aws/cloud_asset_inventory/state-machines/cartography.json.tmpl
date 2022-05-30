@@ -73,6 +73,11 @@
                 "MaxAttempts": 4
               }
             ],
+            "Catch": [{"ErrorEquals": [ "States.ALL" ], "ResultPath": null, "Next": "Handle Failure"}],
+            "End": true
+          },
+          "Handle Failure": {
+            "Type": "Pass",
             "End": true
           }
         }
