@@ -65,6 +65,14 @@
                 }
               }
             },
+            "Retry": [
+              {
+                "ErrorEquals": ["ECS.AmazonECSException"],
+                "IntervalSeconds": 300,
+                "BackoffRate": 2.0,
+                "MaxAttempts": 4
+              }
+            ],
             "End": true
           }
         }
