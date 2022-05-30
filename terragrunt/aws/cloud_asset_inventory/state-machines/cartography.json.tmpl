@@ -65,6 +65,19 @@
                 }
               }
             },
+            "Retry": [
+              {
+                "ErrorEquals": ["ECS.AmazonECSException"],
+                "IntervalSeconds": 300,
+                "BackoffRate": 2.0,
+                "MaxAttempts": 4
+              }
+            ],
+            "Catch": [{"ErrorEquals": [ "States.ALL" ], "ResultPath": null, "Next": "Handle Failure"}],
+            "End": true
+          },
+          "Handle Failure": {
+            "Type": "Pass",
             "End": true
           }
         }
