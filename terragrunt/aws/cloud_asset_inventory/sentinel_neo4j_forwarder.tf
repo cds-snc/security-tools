@@ -11,7 +11,7 @@ data "template_file" "sentinel_neo4j_forwarder_container_definition" {
     AWS_LOGS_STREAM_PREFIX         = "${local.sentinel_neo4j_forwarder_service_name}-task"
     SENTINEL_NEO4J_FORWARDER_IMAGE = "${aws_ecr_repository.sentinel_neo4j_forwarder.repository_url}:latest"
     CUSTOMER_ID                    = aws_ssm_parameter.customer_id.arn
-    LOG_TYPE                       = "CartographyTest"
+    LOG_TYPE                       = "Cartography"
     SHARED_KEY                     = aws_ssm_parameter.shared_key.arn
     NEO4J_URI                      = "bolt://neo4j.internal.local:7687"
     NEO4J_USER                     = "neo4j"
