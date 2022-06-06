@@ -1,23 +1,7 @@
-# All passwords in this file are set to rotate automatically every month.
-# Inspired by https://www.daringway.com/how-to-rotate-random-passwords-in-terraform/
-resource "random_password" "neo4j_password" {
-  for_each         = toset([var.password_change_id])
-  length           = 32
-  lower            = true
-  upper            = true
-  special          = true
-  override_special = "%*()-_{}<>" # Allowed special characters that dont overlap with ip address and http RFC's
-
-  min_lower   = 1
-  min_upper   = 1
-  min_numeric = 1
-  min_special = 1
-}
-
 resource "aws_ssm_parameter" "neo4j_password" {
   name  = "/${var.ssm_prefix}/neo4j_password"
   type  = "SecureString"
-  value = random_password.neo4j_password[var.password_change_id].result
+  value = var.neo4j_password
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
@@ -50,10 +34,13 @@ resource "aws_ssm_parameter" "shared_key" {
   }
 }
 
+# This only sets the initial password. To change the password you need to
+# login to the neo4j console and change the password using the :server change-password command.
+# Ensure you update the Github secret so that other services can connect to the database
 resource "aws_ssm_parameter" "neo4j_auth" {
   name  = "/${var.ssm_prefix}/neo4j_auth"
   type  = "SecureString"
-  value = "neo4j/${random_password.neo4j_password[var.password_change_id].result}"
+  value = "neo4j/${var.neo4j_password}"
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value

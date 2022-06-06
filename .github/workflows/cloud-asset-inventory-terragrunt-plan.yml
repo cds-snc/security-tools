@@ -16,6 +16,7 @@ env:
   TERRAGRUNT_VERSION: 0.36.7
   TF_INPUT: false
   TF_VAR_customer_id: ${{ secrets.TF_VARS_LOG_ANALYTICS_CUSTOMER_ID }}
+  TF_VAR_neo4j_password: ${{ secrets.TF_VARS_NEO4J_SECRETS_PASSWORD }}
   TF_VAR_shared_key: ${{ secrets.TF_VARS_LOG_ANALYTICS_SHARED_KEY }}
 
 
