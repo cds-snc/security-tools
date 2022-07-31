@@ -8,6 +8,11 @@ variable "software_asset_inventory_load_balancer_dns" {
   type        = string
 }
 
+variable "csp_violation_report_service_load_balancer_dns" {
+  description = "DNS name for CSP Report Load Balancer"
+  type        = string
+}
+
 variable "pomerium_client_id" {
   description = "The pomerium client id"
   type        = string

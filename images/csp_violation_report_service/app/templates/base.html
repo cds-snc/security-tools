@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="{{t('language_code')}}">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="{{ csrf_token }}">
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="shortcut icon" href="/favicon.ico">
+  <script src="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone-min.js"></script>
+  <link href="https://unpkg.com/dropzone@6.0.0-beta.1/dist/dropzone.css" rel="stylesheet" type="text/css" />
+  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="/app.css">
+</head>
+
+<body>
+  <nav aria-label="Skip to main content">
+    <div id="skip-link-container"><a href="#content" id="skip-link">Skip to main content</a></div>
+  </nav>
+  <div class="outer-container page-welcome-bienvenue">
+    <header>
+      <div data-testid="PhaseBanner" class="gc-phase-banner">
+        <div class="banner-container">
+          <div><span class="phase-badge">ALPHA</span></div>
+          <div><span class="phase-text">{{t("alpha_banner")}}</span></div>
+        </div>
+      </div>
+      <div data-testid="fip" class="gc-fip">
+        <div class="canada-flag"><a href="http://canada.ca/{{t('language_code')}}.html"
+            aria-label="{{t('gc_home')}}"><img src="/sig-blk-{{t('language_code')}}.svg"
+              alt="Symbol of the Government of Canada"></a>
+        </div>
+        <div class="gc-language-toggle">
+          <label for="lang-switcher-button">
+            Language Selection
+            <!-- -->:
+            <!-- -->{{ t('other_language') }}
+            <!-- -->
+          </label>
+          <a lang="{{ t('other_language_code') }}" id="lang-switcher-button"
+            href="/lang/{{ t('other_language_code') }}">{{ t('other_language') }}</a>
+        </div>
+      </div>
+    </header>
+    <main id="content">
+      <div class="gc-homepage">
+        <h1 class="gc-h1">{% block page_title %}{% endblock %}</h1>
+        <nav class="block text-sm text-left h-12 flex items-center py-4 mb-5">
+          {%block breadcrumbs %}{% endblock %}
+        </nav>
+        {% block content %}{% endblock %}
+      </div>
+    </main>
+    <footer class="gc-footer" data-testid="footer">
+      <div class="gc-footer-container items-start">
+        <div><img alt="Symbol of the Government of Canada" src="/wmms-blk.svg"></div>
+      </div>
+    </footer>
+  </div>
+  {% block js %}
+  <!-- <script src="/assets/js/app.js"></script> -->
+  {% endblock %}
+</body>
+
+</html>

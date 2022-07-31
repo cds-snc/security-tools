@@ -67,3 +67,24 @@
           or:
             - domain:
                 is: cds-snc.ca
+
+- from: https://csp-reports.security.cdssandbox.xyz
+  to: http://${CSP_VIOLATION_REPORT_SERVICE_LOAD_BALANCER_DNS}:8000
+  preserve_host_header: true
+  policy:
+      - allow:
+          or:
+            - domain:
+                is: cds-snc.ca
+
+- from: https://csp-report-to.security.cdssandbox.xyz
+  to: http://${CSP_VIOLATION_REPORT_SERVICE_LOAD_BALANCER_DNS}:8000
+  preserve_host_header: true
+  cors_allow_preflight: true
+  policy:
+      - allow:
+          or:
+            - http_method:
+                is: POST
+            - http_method:
+                is: PUT

@@ -1,0 +1,15 @@
+{
+  "all_domains": "tous les domaines",
+  "alpha_banner": "Ce site évoluera au fur et à mesure que nous testons des idées.",
+  "csp_reports": "rapports sur la content security policy",
+  "domain": "domaine",
+  "document_uri": "URI du document",
+  "filter_reports": "filtrer les rapports",
+  "referrer":"referrer",
+  "violated_directive":"directive violée",
+  "original_policy":"politique initiale",
+  "blocked_uri":"URI bloquée",
+  "language_code": "fr",
+  "other_language": "English",
+  "other_language_code": "en"
+}
