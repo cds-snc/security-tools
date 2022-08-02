@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - terragrunt/aws/cloud_asset_inventory/src/**
+      - images/csp_violation_report_service/app/**
       - .github/workflows/ci_code.yml
 
 jobs:
