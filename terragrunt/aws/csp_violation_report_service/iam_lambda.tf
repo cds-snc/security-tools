@@ -20,18 +20,6 @@ data "aws_iam_policy_document" "purge_csp_reports_lambda_policies" {
     effect = "Allow"
 
     actions = [
-      "lambda:InvokeFunction"
-    ]
-    resources = [
-      module.purge_csp_reports_lambda.function_arn
-    ]
-  }
-
-  statement {
-
-    effect = "Allow"
-
-    actions = [
       "ssm:DescribeParameters",
       "ssm:GetParameters",
     ]
