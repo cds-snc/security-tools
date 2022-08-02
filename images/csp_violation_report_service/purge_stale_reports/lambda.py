@@ -3,17 +3,21 @@ Lambda that will delete old csp-reports
 """
 
 import os
+import boto3
 import psycopg2
 from aws_lambda_powertools import Logger
 
 log = Logger()
 
-hostname = os.environ["DB_HOST"]
-username = os.environ["DB_USERNAME"]
-password = os.environ["DB_PASSWORD"]
-database = os.environ["DB_DATABASE"]
-port = os.getenv("DB_PORT", 5432)
+# Retrieve secrets from SSM on cold start
+session = boto3.Session()
+ssm = session.client("ssm")
+hostname = ssm.get_parameter(Name=os.environ["DB_HOST_PARAM_NAME"], WithDecryption=True)["Parameter"]["Value"]
+username = ssm.get_parameter(Name=os.environ["DB_USERNAME_PARAM_NAME"], WithDecryption=True)["Parameter"]["Value"]
+password = ssm.get_parameter(Name=os.environ["DB_PASSWORD_PARAM_NAME"], WithDecryption=True)["Parameter"]["Value"]
+database = ssm.get_parameter(Name=os.environ["DB_DATABASE_PARAM_NAME"], WithDecryption=True)["Parameter"]["Value"]
 
+port = os.getenv("DB_PORT", 5432)
 max_report_age_days = os.getenv("MAX_REPORT_AGE_DAYS", 90)
 
 

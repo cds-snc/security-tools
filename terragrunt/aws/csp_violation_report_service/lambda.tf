@@ -14,10 +14,10 @@ module "purge_csp_reports_lambda" {
   }
 
   environment_variables = {
-    DB_HOST                 = aws_ssm_parameter.db_host.value
-    DB_USERNAME             = aws_ssm_parameter.db_username.value
-    DB_DATABASE             = aws_ssm_parameter.db_database.value
-    DB_PASSWORD             = aws_ssm_parameter.db_password.value
+    DB_HOST_PARAM_NAME      = aws_ssm_parameter.db_host.name
+    DB_USERNAME_PARAM_NAME  = aws_ssm_parameter.db_username.name
+    DB_DATABASE_PARAM_NAME  = aws_ssm_parameter.db_database.name
+    DB_PASSWORD_PARAM_NAME  = aws_ssm_parameter.db_password.name
     DB_PORT                 = 5432
     POWERTOOLS_SERVICE_NAME = "${var.product_name}"
   }
