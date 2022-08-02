@@ -32,7 +32,7 @@ load_non_existing_envs() {
   done < $TMP_ENV_FILE
 }
 
-if [ ! -f "$ENV_PATH/.env" ]; then # Only setup envs once per lambda lifecycle
+if [ ! -f "$ENV_PATH/.env" ]; then # Only setup envs once per ECS task startup
     echo "Retrieving environment parameters"
     if [ ! -d "$ENV_PATH" ]; then
         mkdir "$ENV_PATH"

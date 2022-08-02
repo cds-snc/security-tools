@@ -15,8 +15,8 @@
 </head>
 
 <body>
-  <nav aria-label="Skip to main content">
-    <div id="skip-link-container"><a href="#content" id="skip-link">Skip to main content</a></div>
+  <nav aria-label="{{ t('skip_to_content') }}">
+    <div id="skip-link-container"><a href="#content" id="skip-link">{{ t('skip_to_content') }}</a></div>
   </nav>
   <div class="outer-container page-welcome-bienvenue">
     <header>
@@ -29,11 +29,11 @@
       <div data-testid="fip" class="gc-fip">
         <div class="canada-flag"><a href="http://canada.ca/{{t('language_code')}}.html"
             aria-label="{{t('gc_home')}}"><img src="/sig-blk-{{t('language_code')}}.svg"
-              alt="Symbol of the Government of Canada"></a>
+              alt="{{ t('gc_fip') }}"></a>
         </div>
         <div class="gc-language-toggle">
           <label for="lang-switcher-button">
-            Language Selection
+            {{ t('language_select') }}
             <!-- -->:
             <!-- -->{{ t('other_language') }}
             <!-- -->
@@ -54,7 +54,7 @@
     </main>
     <footer class="gc-footer" data-testid="footer">
       <div class="gc-footer-container items-start">
-        <div><img alt="Symbol of the Government of Canada" src="/wmms-blk.svg"></div>
+        <div><img alt="{{ t('gc_fip') }}" src="/wmms-blk.svg"></div>
       </div>
     </footer>
   </div>
