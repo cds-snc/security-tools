@@ -21,6 +21,7 @@ data "aws_iam_policy_document" "purge_csp_reports_lambda_policies" {
 
     actions = [
       "ssm:DescribeParameters",
+      "ssm:GetParameter",
       "ssm:GetParameters",
     ]
     resources = [
