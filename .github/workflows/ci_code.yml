@@ -43,6 +43,11 @@ jobs:
         with:
           python-version: "3.9"
 
+      - name: Setup env
+        working-directory: ${{ matrix.source }}
+        run: |
+          cp .env-example .env
+
       - name: Install dev dependencies
         working-directory: ${{ matrix.source }}
         run: make install-dev
