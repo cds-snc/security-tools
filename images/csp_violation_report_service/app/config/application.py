@@ -1,7 +1,7 @@
 from masonite.environment import env
 
 
-KEY = env("APP_KEY", "-RkDOqXojJIlsF_I8wWiUq_KRZ0PtGWTOZ676u5HtLg=")
+KEY = env("APP_KEY", None)
 
 DEBUG = env("APP_DEBUG", True)
 
@@ -12,5 +12,3 @@ HASHING = {
 }
 
 APP_URL = env("APP_URL", "http://localhost:8000/")
-
-MIX_BASE_URL = env("MIX_BASE_URL", None)

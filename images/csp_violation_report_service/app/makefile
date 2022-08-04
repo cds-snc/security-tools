@@ -27,7 +27,7 @@ serve:
 
 test:
 	python craft migrate -c testing &&\
-	APP_ENV=testing coverage run -m pytest -s -vv tests &&\
+	APP_ENV='testing' coverage run -m pytest -s -vv tests &&\
 	coverage report -m
 
 .PHONY: install install-dev lint lint-ci format fmt-ci migrate reset serve test
