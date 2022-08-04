@@ -47,6 +47,8 @@ jobs:
         working-directory: ${{ matrix.source }}
         run: |
           cp .env-example .env
+          printf "APP_ENV=testing\n" >> .env
+
 
       - name: Install dev dependencies
         working-directory: ${{ matrix.source }}
