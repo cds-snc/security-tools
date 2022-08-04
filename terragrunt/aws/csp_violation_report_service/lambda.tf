@@ -1,6 +1,6 @@
 module "purge_csp_reports_lambda" {
   source                 = "github.com/cds-snc/terraform-modules?ref=v3.0.5//lambda"
-  name                   = "purge_csp_reports"
+  name                   = "purge_stale_reports"
   billing_tag_value      = var.billing_tag_value
   ecr_arn                = aws_ecr_repository.purge_csp_reports.arn
   enable_lambda_insights = true

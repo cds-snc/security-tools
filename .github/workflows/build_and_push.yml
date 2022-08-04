@@ -93,3 +93,11 @@ jobs:
 
       - name: Logout of Amazon ECR
         run: docker logout ${{ steps.login-ecr.outputs.registry }}
+
+      - name: Deploy lambda
+        if: matrix.image == 'csp_violation_report_service/purge_stale_reports'
+        run: |
+          FNAME=$(awk -F  "/" '{print $2}' <<< "${{ matrix.image }}")
+          aws lambda update-function-code \
+            --function-name "$FNAME" \
+            --image-uri $REGISTRY/${{ matrix.image }}:latest > /dev/null 2>&1
