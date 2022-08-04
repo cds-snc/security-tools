@@ -1,0 +1,19 @@
+{
+  "all_domains": "tous les domaines",
+  "alpha_banner": "Ce site évoluera au fur et à mesure que nous testons des idées.",
+  "beginning": "Début",
+  "csp_reports": "rapports sur la content security policy",
+  "domain": "domaine",
+  "document_uri": "URI du document",
+  "filter_reports": "filtrer les rapports",
+  "gc_fip": "Symbole du gouvernement du Canada",
+  "language_select": "Sélection de la langue",
+  "referrer":"referrer",
+  "skip_to_content": "Passer au contenu principal",
+  "violated_directive":"directive violée",
+  "original_policy":"politique initiale",
+  "blocked_uri":"URI bloquée",
+  "language_code": "fr",
+  "other_language": "English",
+  "other_language_code": "en"
+}

@@ -1,0 +1,19 @@
+{
+  "all_domains": "all domains",
+  "alpha_banner": "This site will change as we test ideas.",
+  "beginning": "Beginning",
+  "csp_reports": "content security policy reports",
+  "domain": "domain",
+  "document_uri": "document URI",
+  "filter_reports": "filter reports",
+  "gc_fip": "Symbol of the Government of Canada",
+  "language_select": "Language Selection",
+  "referrer":"referrer",
+  "skip_to_content": "Skip to main content",
+  "violated_directive":"violated directive",
+  "original_policy":"original policy",
+  "blocked_uri":"blocked URI",
+  "language_code": "en",
+  "other_language": "Français",
+  "other_language_code": "fr"
+}

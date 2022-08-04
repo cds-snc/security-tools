@@ -82,6 +82,7 @@ resource "aws_security_group" "pomerium" {
     from_port   = 8000
     to_port     = 8000
     protocol    = "TCP"
+    cidr_blocks = var.vpc_private_subnet_cidrs
     self        = true
   }
 

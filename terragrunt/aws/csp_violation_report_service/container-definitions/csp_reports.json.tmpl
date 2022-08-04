@@ -1,0 +1,42 @@
+[
+    {
+      "name" : "${SERVICE_NAME}",
+      "environment" : [],
+      "essential" : true,
+      "image" : "${IMAGE}",
+      "mountPoints" : [],
+      "logConfiguration" : {
+        "logDriver" : "awslogs",
+        "options" : {
+            "awslogs-group": "${AWS_LOGS_GROUP}",
+            "awslogs-region": "${AWS_LOGS_REGION}",
+            "awslogs-stream-prefix": "${AWS_LOGS_STREAM_PREFIX}"
+          }
+      },
+      "portMappings" : [
+        {
+          "hostPort" : 8000,
+          "ContainerPort" : 8000,
+          "Protocol" : "tcp"
+        }
+      ],
+      "secrets" : [
+        {
+          "name" : "DB_HOST",
+          "valueFrom" : "${DB_HOST}"
+        },
+        {
+          "name" : "DB_USERNAME",
+          "valueFrom" : "${DB_USERNAME}"
+        },
+        {
+          "name" : "DB_DATABASE",
+          "valueFrom" : "${DB_DATABASE}"
+        },
+        {
+          "name" : "DB_PASSWORD",
+          "valueFrom" : "${DB_PASSWORD}"
+        }
+      ]
+    }
+]
