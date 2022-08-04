@@ -100,4 +100,4 @@ jobs:
           FNAME=$(awk -F  "/" '{print $2}' <<< "${{ matrix.image }}")
           aws lambda update-function-code \
             --function-name "$FNAME" \
-            --image-uri $REGISTRY/${{ matrix.image }}:latest > /dev/null 2>&1
+            --image-uri $REGISTRY/${{ matrix.image }}:$GITHUB_SHA > /dev/null 2>&1
