@@ -92,7 +92,9 @@ class ReportControllerTest(TestCase):
             request.input.return_value = 1
             mock_domain.all = MagicMock(return_value=["www.example.com"])
             with patch("app.controllers.ReportController.QueryBuilder") as query_builder:
-                query_builder().table().order_by().simple_paginate = MagicMock(return_value=["foo", "bar"])
+                query_builder().table().order_by().simple_paginate = MagicMock(
+                    return_value=["foo", "bar"]
+                )
                 view = MagicMock()
                 controller.show(request, view)
                 view.render.assert_called_once()
@@ -114,7 +116,9 @@ class ReportControllerTest(TestCase):
             request.input.return_value = 1
             mock_domain.all = MagicMock(return_value=["www.example.com"])
             with patch("app.controllers.ReportController.QueryBuilder") as query_builder:
-                query_builder().table().order_by().simple_paginate = MagicMock(return_value=["foo", "bar"])
+                query_builder().table().order_by().simple_paginate = MagicMock(
+                    return_value=["foo", "bar"]
+                )
                 view = MagicMock()
                 controller.show(request, view)
                 view.render.assert_called_once()
