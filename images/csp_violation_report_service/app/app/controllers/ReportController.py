@@ -25,7 +25,7 @@ class ReportController(Controller):
     def show(self, request: Request, view: View):
         page = request.input("page", 1)
         domain_list = Domain.all()
-        builder = QueryBuilder().table("reports")
+        builder = QueryBuilder().table("reports").order_by("created_at", "desc")
 
         if request.session.has("filter_domain"):
             domain_filter = request.session.get("filter_domain")
