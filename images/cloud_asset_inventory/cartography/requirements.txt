@@ -181,7 +181,7 @@ portalocker==1.7.1
     # via
     #   azure-cli-telemetry
     #   msal-extensions
-protobuf==3.17.3
+protobuf==3.18.3
     # via
     #   google-api-core
     #   googleapis-common-protos
@@ -276,7 +276,6 @@ six==1.16.0
     #   oauth2client
     #   okta
     #   paramiko
-    #   protobuf
     #   pynacl
     #   pyopenssl
     #   python-dateutil
