@@ -200,7 +200,7 @@ pycparser==2.20
     # via cffi
 pygments==2.9.0
     # via knack
-pyjwt[crypto]==2.3.0
+pyjwt[crypto]==2.4.0
     # via
     #   adal
     #   azure-cli-core
