@@ -44,6 +44,7 @@ jobs:
           python-version: "3.9"
 
       - name: Setup env
+        if: matrix.source == 'images/csp_violation_report_service/app'
         working-directory: ${{ matrix.source }}
         run: |
           cp .env-example .env
