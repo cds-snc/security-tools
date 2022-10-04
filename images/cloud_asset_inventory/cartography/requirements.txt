@@ -19,7 +19,7 @@ argcomplete==1.12.3
     #   knack
 azure-cli-core==2.40.0
     # via cartography
-azure-cli-telemetry==1.0.6
+azure-cli-telemetry==1.0.8
     # via azure-cli-core
 azure-common==1.1.27
     # via
@@ -112,7 +112,7 @@ httplib2==0.20.4
     #   google-api-python-client
     #   google-auth-httplib2
     #   oauth2client
-humanfriendly==9.2
+humanfriendly==10.0
     # via azure-cli-core
 idna==2.10
     # via
@@ -130,16 +130,16 @@ jsonpickle==2.2.0
     # via python-digitalocean
 knack==0.10.0
     # via azure-cli-core
-kubernetes==18.20.0
+kubernetes==24.2.0
     # via cartography
 marshmallow==3.18.0
     # via cartography
-msal==1.19.0
+msal==1.18.0b1
     # via
     #   azure-cli-core
     #   azure-identity
     #   msal-extensions
-msal-extensions==0.3.0
+msal-extensions==1.0.0
     # via azure-identity
 msrest==0.7.1
     # via
@@ -151,7 +151,7 @@ msrest==0.7.1
     #   msrestazure
 msrestazure==0.6.4
     # via cartography
-neo4j==1.7.6
+neo4j==4.4.8
     # via cartography
 neobolt==1.7.17
     # via
