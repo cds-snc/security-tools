@@ -1,4 +1,4 @@
-FROM python:3.9.7-alpine3.14
+FROM python:3.9.7-alpine3.14@sha256:a31add3a2442bceecb9d4f66e575072c4d4a1c7e561b7fe44cdf0dd277685276
 
 ENV PYTHONPATH "${PYTHONPATH}:/opt/python/lib/python3.9/site-packages"
 # Setup app user
