@@ -8,6 +8,14 @@ resource "aws_efs_file_system" "dependencytrack" {
   }
 }
 
+resource "aws_efs_backup_policy" "dependencytrack" {
+  file_system_id = aws_efs_file_system.dependencytrack.id
+
+  backup_policy {
+    status = "ENABLED"
+  }
+}
+
 resource "aws_efs_mount_target" "dependencytrack" {
   count           = length(var.vpc_private_subnet_ids)
   file_system_id  = aws_efs_file_system.dependencytrack.id
