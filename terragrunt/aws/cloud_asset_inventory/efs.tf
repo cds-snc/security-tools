@@ -15,7 +15,7 @@ resource "aws_efs_mount_target" "neo4j" {
   security_groups = [aws_security_group.cartography.id]
 }
 
-resource "aws_efs_backup_policy" "policy" {
+resource "aws_efs_backup_policy" "neo4j" {
   file_system_id = aws_efs_file_system.neo4j.id
 
   backup_policy {

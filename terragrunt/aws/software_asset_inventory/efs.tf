@@ -8,7 +8,7 @@ resource "aws_efs_file_system" "dependencytrack" {
   }
 }
 
-resource "aws_efs_backup_policy" "policy" {
+resource "aws_efs_backup_policy" "dependencytrack" {
   file_system_id = aws_efs_file_system.dependencytrack.id
 
   backup_policy {
