@@ -4,7 +4,7 @@ resource "random_password" "dependencytrack_db_password" {
   lower            = true
   upper            = true
   special          = true
-  override_special = "%*()-_{}<>" # Allowed special characters that dont overlap with ip address and http RFC's
+  override_special = "%-_" # Allowed special characters that dont overlap with ip address and http RFC's
 
   min_lower   = 1
   min_upper   = 1
