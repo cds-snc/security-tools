@@ -17,9 +17,9 @@ argcomplete==1.12.3
     # via
     #   azure-cli-core
     #   knack
-azure-cli-core==2.29.0
+azure-cli-core==2.40.0
     # via cartography
-azure-cli-telemetry==1.0.6
+azure-cli-telemetry==1.0.8
     # via azure-cli-core
 azure-common==1.1.27
     # via
@@ -28,15 +28,15 @@ azure-common==1.1.27
     #   azure-mgmt-resource
     #   azure-mgmt-sql
     #   azure-mgmt-storage
-azure-core==1.15.0
+azure-core==1.25.1
     # via
     #   azure-identity
     #   azure-mgmt-core
-azure-identity==1.6.0
+azure-identity==1.11.0
     # via cartography
 azure-mgmt-compute==21.0.0
     # via cartography
-azure-mgmt-core==1.2.2
+azure-mgmt-core==1.3.2
     # via
     #   azure-cli-core
     #   azure-mgmt-compute
@@ -46,7 +46,7 @@ azure-mgmt-core==1.2.2
     #   azure-mgmt-storage
 azure-mgmt-cosmosdb==6.4.0
     # via cartography
-azure-mgmt-resource==18.0.0
+azure-mgmt-resource==18.1.0
     # via cartography
 azure-mgmt-sql==1.0.0
     # via cartography
@@ -54,24 +54,24 @@ azure-mgmt-storage==18.0.0
     # via cartography
 bcrypt==3.2.0
     # via paramiko
-boto3==1.17.98
+boto3==1.24.81
     # via cartography
-botocore==1.20.98
+botocore==1.27.81
     # via
     #   boto3
     #   cartography
     #   s3transfer
 cachetools==4.2.2
     # via google-auth
-cartography==0.57.0
+cartography==0.65.0
     # via -r requirements.in
-certifi==2021.5.30
+certifi==2021.10.8
     # via
     #   kubernetes
     #   msrest
     #   requests
     #   urllib3
-cffi==1.14.5
+cffi==1.15.1
     # via
     #   bcrypt
     #   cryptography
@@ -80,7 +80,7 @@ chardet==4.0.0
     # via requests
 colorama==0.4.4
     # via knack
-cryptography==3.3.2
+cryptography==3.4.8
     # via
     #   adal
     #   azure-cli-core
@@ -91,13 +91,13 @@ cryptography==3.3.2
     #   pyjwt
     #   pyopenssl
     #   urllib3
-dnspython==2.1.0
+dnspython==2.2.1
     # via cartography
-google-api-core==1.30.0
+google-api-core==1.33.1
     # via google-api-python-client
-google-api-python-client==2.9.0
+google-api-python-client==2.62.0
     # via cartography
-google-auth==1.32.0
+google-auth==1.35.0
     # via
     #   google-api-core
     #   google-api-python-client
@@ -105,14 +105,14 @@ google-auth==1.32.0
     #   kubernetes
 google-auth-httplib2==0.1.0
     # via google-api-python-client
-googleapis-common-protos==1.53.0
+googleapis-common-protos==1.56.4
     # via google-api-core
-httplib2==0.19.1
+httplib2==0.20.4
     # via
     #   google-api-python-client
     #   google-auth-httplib2
     #   oauth2client
-humanfriendly==9.2
+humanfriendly==10.0
     # via azure-cli-core
 idna==2.10
     # via
@@ -126,22 +126,22 @@ jmespath==0.10.0
     #   boto3
     #   botocore
     #   knack
-jsonpickle==2.0.0
+jsonpickle==2.2.0
     # via python-digitalocean
-knack==0.8.2
+knack==0.10.0
     # via azure-cli-core
-kubernetes==18.20.0
+kubernetes==24.2.0
     # via cartography
-marshmallow==3.12.1
+marshmallow==3.18.0
     # via cartography
-msal==1.12.0
+msal==1.18.0b1
     # via
     #   azure-cli-core
     #   azure-identity
     #   msal-extensions
-msal-extensions==0.3.0
+msal-extensions==1.0.0
     # via azure-identity
-msrest==0.6.21
+msrest==0.7.1
     # via
     #   azure-mgmt-compute
     #   azure-mgmt-cosmosdb
@@ -151,7 +151,7 @@ msrest==0.6.21
     #   msrestazure
 msrestazure==0.6.4
     # via cartography
-neo4j==1.7.6
+neo4j==4.4.8
     # via cartography
 neobolt==1.7.17
     # via
@@ -169,23 +169,23 @@ packaging==20.9
     # via
     #   cartography
     #   google-api-core
-paramiko==2.10.1
+paramiko==2.11.0
     # via azure-cli-core
-pdpyras==4.3.0
+pdpyras==4.5.0
     # via cartography
-pkginfo==1.7.0
+pkginfo==1.8.3
     # via azure-cli-core
-policyuniverse==1.3.7.20210620
+policyuniverse==1.5.0.20220613
     # via cartography
 portalocker==1.7.1
     # via
     #   azure-cli-telemetry
     #   msal-extensions
-protobuf==3.18.3
+protobuf==3.20.2
     # via
     #   google-api-core
     #   googleapis-common-protos
-psutil==5.8.0
+psutil==5.9.2
     # via azure-cli-core
 pyasn1==0.4.8
     # via
@@ -196,16 +196,16 @@ pyasn1-modules==0.2.8
     # via
     #   google-auth
     #   oauth2client
-pycparser==2.20
+pycparser==2.21
     # via cffi
-pygments==2.9.0
+pygments==2.13.0
     # via knack
-pyjwt[crypto]==2.4.0
+pyjwt[crypto]==2.5.0
     # via
     #   adal
     #   azure-cli-core
     #   msal
-pynacl==1.4.0
+pynacl==1.5.0
     # via paramiko
 pyopenssl==20.0.1
     # via
@@ -223,9 +223,9 @@ python-dateutil==2.8.1
     #   botocore
     #   kubernetes
     #   okta
-python-digitalocean==1.16.0
+python-digitalocean==1.17.0
     # via cartography
-pytz==2021.1
+pytz==2021.3
     # via
     #   google-api-core
     #   neotime
@@ -234,7 +234,7 @@ pyyaml==5.4.1
     #   cartography
     #   knack
     #   kubernetes
-requests[socks]==2.25.1
+requests[socks]==2.28.1
     # via
     #   adal
     #   azure-cli-core
@@ -252,11 +252,11 @@ requests-oauthlib==1.3.0
     # via
     #   kubernetes
     #   msrest
-rsa==4.7.2
+rsa==4.9
     # via
     #   google-auth
     #   oauth2client
-s3transfer==0.4.2
+s3transfer==0.6.0
     # via boto3
 six==1.16.0
     # via
@@ -293,7 +293,7 @@ urllib3[secure]==1.26.5
     #   kubernetes
     #   pdpyras
     #   requests
-websocket-client==1.2.1
+websocket-client==1.4.1
     # via kubernetes
 
 # The following packages are considered to be unsafe in a requirements file:
