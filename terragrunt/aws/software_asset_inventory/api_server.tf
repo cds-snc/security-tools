@@ -32,9 +32,7 @@ data "template_file" "dependencytrack_api_container_definition" {
   template = file("container-definitions/dependencytrack_api.json.tmpl")
 
   vars = {
-    ALPINE_DATABASE_URL          = "jdbc:postgresql://${module.dependencytrack_db.proxy_endpoint}:5432/dtrack"
-    ALPINE_DATABASE_USERNAME     = aws_ssm_parameter.dependencytrack_db_user.arn
-    ALPINE_DATABASE_PASSWORD     = aws_ssm_parameter.dependencytrack_db_password.arn
+    ALPINE_DATABASE_URL          = aws_ssm_parameter.dependencytrack_db_url.arn
     AWS_LOGS_GROUP               = aws_cloudwatch_log_group.dependencytrack_api.name
     AWS_LOGS_REGION              = var.region
     AWS_LOGS_STREAM_PREFIX       = "${local.dependencytrack_api_service_name}-task"

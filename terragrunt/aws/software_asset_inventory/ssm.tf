@@ -40,3 +40,15 @@ resource "aws_ssm_parameter" "dependencytrack_db_user" {
     Product               = "${var.product_name}-${var.tool_name}"
   }
 }
+
+resource "aws_ssm_parameter" "dependencytrack_db_url" {
+  name  = "/${var.ssm_prefix}/dependencytrack_db_url"
+  type  = "SecureString"
+  value = "jdbc:${module.dependencytrack_db.proxy_connection_string_value}"
+
+  tags = {
+    (var.billing_tag_key) = var.billing_tag_value
+    Terraform             = true
+    Product               = "${var.product_name}-${var.tool_name}"
+  }
+}
