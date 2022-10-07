@@ -1,6 +1,6 @@
 resource "random_password" "dependencytrack_db_password" {
   for_each = toset([var.password_change_id])
-  length   = 32
+  length   = 30
   special  = false
 
   min_lower   = 1

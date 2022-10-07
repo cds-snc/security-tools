@@ -13,6 +13,7 @@ module "dependencytrack_db" {
   prevent_cluster_deletion = true
   skip_final_snapshot      = false
 
+  upgrade_immediately     = true
   backup_retention_period = 7
   preferred_backup_window = "01:00-03:00"
 
