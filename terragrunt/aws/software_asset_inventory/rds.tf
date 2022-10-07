@@ -1,5 +1,5 @@
 module "dependencytrack_db" {
-  source = "github.com/cds-snc/terraform-modules?ref=v1.0.5//rds"
+  source = "github.com/cds-snc/terraform-modules?ref=v3.0.18//rds"
   name   = "dependency-track"
 
   database_name  = "dtrack"
@@ -13,6 +13,7 @@ module "dependencytrack_db" {
   prevent_cluster_deletion = true
   skip_final_snapshot      = false
 
+  upgrade_immediately     = true
   backup_retention_period = 7
   preferred_backup_window = "01:00-03:00"
 
