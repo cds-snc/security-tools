@@ -1,15 +1,11 @@
 resource "random_password" "dependencytrack_db_password" {
-  for_each         = toset([var.password_change_id])
-  length           = 32
-  lower            = true
-  upper            = true
-  special          = true
-  override_special = "%-_" # Allowed special characters that dont overlap with ip address and http RFC's
+  for_each = toset([var.password_change_id])
+  length   = 32
+  special  = false
 
   min_lower   = 1
   min_upper   = 1
   min_numeric = 1
-  min_special = 1
 }
 
 resource "random_string" "dependencytrack_db_user" {
