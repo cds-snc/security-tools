@@ -44,7 +44,7 @@ resource "aws_ssm_parameter" "dependencytrack_db_user" {
 resource "aws_ssm_parameter" "dependencytrack_db_url" {
   name  = "/${var.ssm_prefix}/dependencytrack_db_url"
   type  = "SecureString"
-  value = "jdbc:${module.dependencytrack_db.proxy_connection_string_value}"
+  value = "jdbc:postgresql://${module.dependencytrack_db.proxy_endpoint}:5432/dtrack?user=${aws_ssm_parameter.dependencytrack_db_user.value}&password=${aws_ssm_parameter.dependencytrack_db_password.value}&ssl=true"
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
