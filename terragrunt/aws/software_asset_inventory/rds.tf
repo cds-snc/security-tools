@@ -1,5 +1,5 @@
 module "dependencytrack_db" {
-  source = "github.com/cds-snc/terraform-modules?ref=v1.0.5//rds"
+  source = "github.com/cds-snc/terraform-modules?ref=v3.0.18//rds"
   name   = "dependency-track"
 
   database_name  = "dtrack"
