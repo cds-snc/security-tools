@@ -72,7 +72,8 @@ data "aws_iam_policy_document" "dependencytrack_api_policies" {
       "ssm:GetParameters",
     ]
     resources = [
-      aws_ssm_parameter.dependencytrack_db_url.arn,
+      aws_ssm_parameter.dependencytrack_db_password.arn,
+      aws_ssm_parameter.dependencytrack_db_user.arn,
     ]
   }
 

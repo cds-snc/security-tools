@@ -8,6 +8,10 @@
         "value" : "external"
       },
       {
+        "name" : "ALPINE_DATABASE_URL,
+        "value" : "${ALPINE_DATABASE_URL}"
+      },
+      {
         "name" : "ALPINE_DATABASE_DRIVER",
         "value" : "org.postgresql.Driver"
       },
@@ -70,8 +74,12 @@
     ],
     "secrets" : [
       {
-        "name" : "ALPINE_DATABASE_URL",
-        "valueFrom" : "${ALPINE_DATABASE_URL}"
+        "name" : "ALPINE_DATABASE_USERNAME",
+        "valueFrom" : "${ALPINE_DATABASE_USERNAME}"
+      },
+      {
+        "name" : "ALPINE_DATABASE_PASSWORD",
+        "valueFrom" : "${ALPINE_DATABASE_PASSWORD}"
       }
     ]
   }
