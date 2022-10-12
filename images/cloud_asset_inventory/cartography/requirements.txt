@@ -95,7 +95,7 @@ dnspython==2.2.1
     # via cartography
 google-api-core==1.33.1
     # via google-api-python-client
-google-api-python-client==2.62.0
+google-api-python-client==2.64.0
     # via cartography
 google-auth==1.35.0
     # via
@@ -134,11 +134,6 @@ kubernetes==24.2.0
     # via cartography
 marshmallow==3.18.0
     # via cartography
-msal==1.18.0b1
-    # via
-    #   azure-cli-core
-    #   azure-identity
-    #   msal-extensions
 msal-extensions==1.0.0
     # via azure-identity
 msrest==0.7.1
