@@ -2,7 +2,7 @@
   "name": "Terraform",
   "build": {
     "dockerfile": "Dockerfile",
-    "context": "..",
+    "context": ".."
   },
   "containerEnv": {
     "SHELL": "/bin/zsh",
@@ -27,13 +27,11 @@
       "version": "2.5.6"
     }
   },
-  // Add the IDs of extensions you want installed when the container is created.
   "extensions": [
     "hashicorp.terraform",
     "redhat.vscode-yaml",
     "sebastianbille.iam-legend",
-    "GitHub.copilot",
+    "GitHub.copilot"
   ],
-  // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
   "remoteUser": "vscode"
 }
