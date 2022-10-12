@@ -134,11 +134,6 @@ kubernetes==24.2.0
     # via cartography
 marshmallow==3.18.0
     # via cartography
-msal==1.19.0
-    # via
-    #   azure-cli-core
-    #   azure-identity
-    #   msal-extensions
 msal-extensions==1.0.0
     # via azure-identity
 msrest==0.7.1
