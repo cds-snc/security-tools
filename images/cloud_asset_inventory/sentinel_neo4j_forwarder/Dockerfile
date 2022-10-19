@@ -16,11 +16,10 @@ WORKDIR /app/
 COPY src/queries.json .
 COPY src/neo4j_connector.py /app/
 COPY src/neo4j_to_sentinel.py /app/
-COPY connector.zip /tmp/
 RUN chmod +x /app/neo4j_connector.py /app/neo4j_to_sentinel.py
 
 # Sentinel connector layer
-RUN unzip /tmp/connector.zip -d /opt && rm /tmp/connector.zip
+COPY --from=public.ecr.aws/cds-snc/aws-sentinel-connector:c1f02b3f747b80fc18ed10ab10b8c69e780b3833 /layer/. /layer
 
 # Entrypoint
 RUN chown -R app:app /app/
