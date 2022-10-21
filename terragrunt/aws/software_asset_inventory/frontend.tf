@@ -35,7 +35,7 @@ data "template_file" "dependencytrack_frontend_container_definition" {
     AWS_LOGS_GROUP                        = aws_cloudwatch_log_group.dependencytrack_frontend.name
     AWS_LOGS_REGION                       = var.region
     AWS_LOGS_STREAM_PREFIX                = "${local.dependencytrack_frontend_service_name}-task"
-    DEPENDENCYTRACK_FRONTEND_IMAGE        = "794722365809.dkr.ecr.ca-central-1.amazonaws.com/security-tools/software_asset_inventory/dependencytrack_frontend:latest"
+    DEPENDENCYTRACK_FRONTEND_IMAGE        = "${var.dependencytrack_frontend_image}:${var.dependencytrack_frontend_image_tag}"
     DEPENDENCYTRACK_FRONTEND_SERVICE_NAME = local.dependencytrack_frontend_service_name
   }
 }
