@@ -54,9 +54,9 @@ azure-mgmt-storage==18.0.0
     # via cartography
 bcrypt==3.2.2
     # via paramiko
-boto3==1.24.91
+boto3==1.24.96
     # via cartography
-botocore==1.27.91
+botocore==1.27.96
     # via
     #   boto3
     #   cartography
@@ -156,7 +156,7 @@ neotime==1.7.4
     # via neo4j
 oauth2client==4.1.3
     # via cartography
-oauthlib==3.2.1
+oauthlib==3.2.2
     # via requests-oauthlib
 okta==0.0.4
     # via cartography
@@ -180,7 +180,7 @@ protobuf==3.20.3
     # via
     #   google-api-core
     #   googleapis-common-protos
-psutil==5.9.2
+psutil==5.9.3
     # via azure-cli-core
 pyasn1==0.4.8
     # via
