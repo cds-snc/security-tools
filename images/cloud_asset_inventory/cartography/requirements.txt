@@ -95,7 +95,7 @@ dnspython==2.2.1
     # via cartography
 google-api-core==1.33.2
     # via google-api-python-client
-google-api-python-client==2.64.0
+google-api-python-client==2.65.0
     # via cartography
 google-auth==1.35.0
     # via
@@ -195,7 +195,7 @@ pycparser==2.21
     # via cffi
 pygments==2.13.0
     # via knack
-pyjwt[crypto]==2.5.0
+pyjwt[crypto]==2.6.0
     # via
     #   adal
     #   azure-cli-core
