@@ -78,7 +78,7 @@ cffi==1.15.1
     #   pynacl
 chardet==4.0.0
     # via requests
-colorama==0.4.5
+colorama==0.4.6
     # via knack
 cryptography==3.4.8
     # via
@@ -146,7 +146,7 @@ msrest==0.7.1
     #   msrestazure
 msrestazure==0.6.4
     # via cartography
-neo4j==4.4.8
+neo4j==4.4.9
     # via cartography
 neobolt==1.7.17
     # via

@@ -4,4 +4,4 @@ masonite-orm==2.18.6
 apig-wsgi==2.15.0
 boto3==1.24.96
 gunicorn==20.1.0
-psycopg2-binary==2.9.4
+psycopg2-binary==2.9.5
