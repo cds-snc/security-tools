@@ -54,9 +54,9 @@ azure-mgmt-storage==18.0.0
     # via cartography
 bcrypt==3.2.2
     # via paramiko
-boto3==1.24.96
+boto3==1.25.4
     # via cartography
-botocore==1.27.96
+botocore==1.28.4
     # via
     #   boto3
     #   cartography
@@ -107,7 +107,7 @@ google-auth-httplib2==0.1.0
     # via google-api-python-client
 googleapis-common-protos==1.56.4
     # via google-api-core
-httplib2==0.20.4
+httplib2==0.21.0
     # via
     #   google-api-python-client
     #   google-auth-httplib2
