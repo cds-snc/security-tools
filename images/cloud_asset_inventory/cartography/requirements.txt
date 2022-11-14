@@ -28,7 +28,7 @@ azure-common==1.1.28
     #   azure-mgmt-resource
     #   azure-mgmt-sql
     #   azure-mgmt-storage
-azure-core==1.26.0
+azure-core==1.26.1
     # via
     #   azure-identity
     #   azure-mgmt-core
@@ -288,7 +288,7 @@ urllib3[secure]==1.26.12
     #   kubernetes
     #   pdpyras
     #   requests
-websocket-client==1.4.1
+websocket-client==1.4.2
     # via kubernetes
 
 # The following packages are considered to be unsafe in a requirements file:
