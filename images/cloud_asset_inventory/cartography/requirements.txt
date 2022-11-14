@@ -17,7 +17,7 @@ argcomplete==1.12.3
     # via
     #   azure-cli-core
     #   knack
-azure-cli-core==2.41.0
+azure-cli-core==2.42.0
     # via cartography
 azure-cli-telemetry==1.0.8
     # via azure-cli-core
@@ -54,9 +54,9 @@ azure-mgmt-storage==18.0.0
     # via cartography
 bcrypt==3.2.2
     # via paramiko
-boto3==1.25.4
+boto3==1.26.3
     # via cartography
-botocore==1.28.4
+botocore==1.29.3
     # via
     #   boto3
     #   cartography
@@ -164,7 +164,7 @@ packaging==20.9
     # via
     #   cartography
     #   google-api-core
-paramiko==2.11.0
+paramiko==2.12.0
     # via azure-cli-core
 pdpyras==4.5.2
     # via cartography
