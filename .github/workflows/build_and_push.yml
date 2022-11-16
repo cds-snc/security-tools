@@ -81,6 +81,11 @@ jobs:
           project_name: security-tools/docker/${{ matrix.image }}
           project_type: docker
 
+      - name: Docker scan and SBOM to GitHub
+        uses: cds-snc/security-tools/.github/actions/docker-scan@v1.1.0
+        with:
+          docker_image: $REGISTRY/${{ matrix.image }}
+
       - name: Logout of Amazon ECR
         run: docker logout ${{ steps.login-ecr.outputs.registry }}
 
