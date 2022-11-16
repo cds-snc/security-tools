@@ -1,0 +1,46 @@
+name: "Docker Scan and SBOM"
+description: "Scan docker containers and generate SBOM"
+
+inputs:
+  docker_image:
+    description: "The docker image and tag to be scanned"
+    required: true
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install Trivy
+      run: |
+        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.34.0
+
+    - name: run trivy docker
+        run: |
+          trivy image \
+          --format github \
+          --vuln-type os,library \
+          --security-checks vuln \
+          --output dependency-results.sbom.json ${{ inputs.docker_image }}
+
+    - name: replace apk with alpine
+      run: |
+        sed -i 's/pkg:apk/pkg:alpine/g' dependency-results.sbom.json
+    
+    - name: upload sbom to github
+      run: |
+        curl -H 'Accept: application/vnd.github+json' \
+        -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        'https://api.github.com/repos/'$GITHUB_REPOSITORY'/dependency-graph/snapshots' \
+        -d @dependency-results.sbom.json
+
+    - name: run docker vulnerability scanner
+      uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5
+      with:
+        image-ref: '${{ inputs.docker_image }}'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: upload trivy scan results to github security tab
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-results.sarif'
