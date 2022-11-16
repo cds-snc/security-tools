@@ -17,10 +17,11 @@ runs:
     - name: run trivy docker
         run: |
           trivy image \
-          --format github \
-          --vuln-type os,library \
-          --security-checks vuln \
-          --output dependency-results.sbom.json ${{ inputs.docker_image }}
+            --format github \
+            --vuln-type os,library \
+            --security-checks vuln \
+            --output dependency-results.sbom.json \
+            ${{ inputs.docker_image }}
 
     - name: replace apk with alpine
       run: |
@@ -28,10 +29,11 @@ runs:
     
     - name: upload sbom to github
       run: |
-        curl -H 'Accept: application/vnd.github+json' \
-        -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-        'https://api.github.com/repos/'$GITHUB_REPOSITORY'/dependency-graph/snapshots' \
-        -d @dependency-results.sbom.json
+        curl \
+          -H 'Accept: application/vnd.github+json' \
+          -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' \
+          'https://api.github.com/repos/'$GITHUB_REPOSITORY'/dependency-graph/snapshots' \
+          -d @dependency-results.sbom.json
 
     - name: run docker vulnerability scanner
       uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5
