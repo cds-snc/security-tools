@@ -5,6 +5,9 @@ inputs:
   docker_image:
     description: "The docker image and tag to be scanned"
     required: true
+  token:
+    description: "Token for allowing the action to post in the security tab"
+    required: true
 
 
 runs:
@@ -34,7 +37,7 @@ runs:
       run: |
         curl \
           -H 'Accept: application/vnd.github+json' \
-          -H 'Authorization: token ${{ secrets.GITHUB_TOKEN }}' \
+          -H 'Authorization: token ${{ inputs.token }}' \
           'https://api.github.com/repos/'$GITHUB_REPOSITORY'/dependency-graph/snapshots' \
           -d @dependency-results.sbom.json
       shell: bash
