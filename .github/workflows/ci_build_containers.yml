@@ -79,7 +79,7 @@ jobs:
       - name: Docker scan and SBOM to GitHub
         uses: cds-snc/security-tools/.github/actions/docker-scan@e8bfe289161e1a923f8bb153c57280abfa33eb22
         with:
-          docker_image: $REGISTRY/${{ matrix.image }} 
+          docker_image: ${{ env.REGISTRY }}/${{ matrix.image }} 
           token: ${{ secrets.GITHUB_TOKEN }}        
 
       - name: Logout of Amazon ECR
