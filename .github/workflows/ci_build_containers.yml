@@ -16,6 +16,8 @@ permissions:
   actions: write
   checks: write
   statuses: write
+  security-events: write
+
 
 jobs:
   changes:
@@ -72,7 +74,12 @@ jobs:
           dependency_track_api_key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
           docker_image: $REGISTRY/${{ matrix.image }}:latest
           project_name: security-tools/docker/${{ matrix.image }}
-          project_type: docker          
+          project_type: docker
+
+      - name: Docker scan and SBOM to GitHub
+        uses: cds-snc/security-tools/.github/actions/docker-scan@02fd37a087e5900f75957a427e9687408a60f1d2
+        with:
+          docker_image: $REGISTRY/${{ matrix.image }}          
 
       - name: Logout of Amazon ECR
         run: docker logout ${{ steps.login-ecr.outputs.registry }}

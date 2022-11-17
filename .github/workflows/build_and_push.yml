@@ -17,6 +17,7 @@ permissions:
   actions: write
   checks: write
   statuses: write
+  security-events: write
 
 jobs:
   changes:
@@ -82,7 +83,7 @@ jobs:
           project_type: docker
 
       - name: Docker scan and SBOM to GitHub
-        uses: cds-snc/security-tools/.github/actions/docker-scan@v1.1.0
+        uses: cds-snc/security-tools/.github/actions/docker-scan@02fd37a087e5900f75957a427e9687408a60f1d2
         with:
           docker_image: $REGISTRY/${{ matrix.image }}
 
