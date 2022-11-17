@@ -9,7 +9,6 @@ inputs:
     description: "Token for allowing the action to post in the security tab"
     required: true
 
-
 runs:
   using: "composite"
   steps:
@@ -31,6 +30,11 @@ runs:
     - name: replace apk with alpine
       run: |
         sed -i 's/pkg:apk/pkg:alpine/g' dependency-results.sbom.json
+      shell: bash
+
+    - name: add mask to token
+      run: |
+        echo "::add-mask::${{ inputs.token }}"
       shell: bash
     
     - name: upload sbom to github
