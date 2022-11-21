@@ -1,7 +1,7 @@
 FROM python:3.10.4-alpine3.15@sha256:11a95bbf024fc1d116e83d13669e0c16686e271c7c78d5b1436db37672167e5f
 
 RUN /usr/sbin/adduser -g python -D python
-RUN apk add jq curl
+RUN apk add jq curl build-base linux-headers libffi-dev gcc
 
 RUN mkdir -p /config
 WORKDIR /config
