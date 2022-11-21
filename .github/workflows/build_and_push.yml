@@ -12,11 +12,12 @@ env:
 
 permissions:
   id-token: write
-  contents: read
+  contents: write
   pull-requests: write
   actions: write
   checks: write
   statuses: write
+  security-events: write
 
 jobs:
   changes:
@@ -82,9 +83,10 @@ jobs:
           project_type: docker
 
       - name: Docker scan and SBOM to GitHub
-        uses: cds-snc/security-tools/.github/actions/docker-scan@v1.1.0
+        uses: cds-snc/security-tools/.github/actions/docker-scan@e8bfe289161e1a923f8bb153c57280abfa33eb22
         with:
           docker_image: $REGISTRY/${{ matrix.image }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Logout of Amazon ECR
         run: docker logout ${{ steps.login-ecr.outputs.registry }}
