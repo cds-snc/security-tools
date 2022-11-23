@@ -37,8 +37,8 @@ runs:
 
     - name: replace correlator
       run: |
-        jq '.job.correlator = "trivy_'${{ inputs.sbom_name }}'"' dependency-results.sbom.json > sbom.tmp \ 
-          && mv sbom.tmp dependency-results.sbom.json
+        cat dependency-results.sbom.json | jq '.job.correlator = "${{ inputs.sbom_name }}"' > sbom.tmp 
+        mv sbom.tmp dependency-results.sbom.json
       shell: bash
 
     - name: add mask to token
