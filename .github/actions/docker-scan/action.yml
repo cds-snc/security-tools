@@ -5,6 +5,9 @@ inputs:
   docker_image:
     description: "The docker image and tag to be scanned"
     required: true
+  sbom_name:
+    description: "SBOM identification"
+    required: true
   token:
     description: "Token for allowing the action to post in the security tab"
     required: true
@@ -30,6 +33,12 @@ runs:
     - name: replace apk with alpine
       run: |
         sed -i 's/pkg:apk/pkg:alpine/g' dependency-results.sbom.json
+      shell: bash
+
+    - name: replace correlator
+      run: |
+        jq '.job.correlator = "trivy_'${{ inputs.sbom_name }}'"' dependency-results.sbom.json > sbom.tmp \ 
+          && mv sbom.tmp dependency-results.sbom.json
       shell: bash
 
     - name: add mask to token
