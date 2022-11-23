@@ -30,8 +30,6 @@ runs:
     - name: replace apk with alpine
       run: |
         sed -i 's/pkg:apk/pkg:alpine/g' dependency-results.sbom.json
-        jq '.job.correlator = "trivy_'${{ inputs.docker_image }}'"' dependency-results.sbom.json > sbom.tmp \ 
-          && mv sbom.tmp dependency-results.sbom.json
       shell: bash
 
     - name: replace correlator
