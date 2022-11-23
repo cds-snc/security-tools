@@ -34,6 +34,12 @@ runs:
           && mv sbom.tmp dependency-results.sbom.json
       shell: bash
 
+    - name: replace correlator
+      run: |
+        jq '.job.correlator = "trivy_'${{ inputs.docker_image }}'"' dependency-results.sbom.json > sbom.tmp \ 
+          && mv sbom.tmp dependency-results.sbom.json
+      shell: bash
+
     - name: add mask to token
       run: |
         echo "::add-mask::${{ inputs.token }}"
