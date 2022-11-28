@@ -39,7 +39,7 @@ jobs:
         uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # tag=v2.5.0
 
       - name: Setup python
-        uses: actions/setup-python@7f80679172b057fc5e90d70d197929d454754a5a # tag=v2.3.2
+        uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
         with:
           python-version: "3.9"
 
