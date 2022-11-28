@@ -95,7 +95,7 @@ dnspython==2.2.1
     # via cartography
 google-api-core==1.33.2
     # via google-api-python-client
-google-api-python-client==2.65.0
+google-api-python-client==2.66.0
     # via cartography
 google-auth==1.35.0
     # via
@@ -105,7 +105,7 @@ google-auth==1.35.0
     #   kubernetes
 google-auth-httplib2==0.1.0
     # via google-api-python-client
-googleapis-common-protos==1.56.4
+googleapis-common-protos==1.57.0
     # via google-api-core
 httplib2==0.21.0
     # via
