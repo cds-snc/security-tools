@@ -17,7 +17,7 @@ runs:
   steps:
     - name: Re-tag docker image
       run: |
-        docker tag ${{ inputs.docker_image }} ${{ sbom_name }}
+        docker tag ${{ inputs.docker_image }} ${{ inputs.sbom_name }}
       shell: bash
       
     - name: Install Trivy
