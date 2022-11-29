@@ -15,6 +15,11 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Re-tag docker image
+      run: |
+        docker tag ${{ inputs.docker_image }} ${{ sbom_name }}
+      shell: bash
+      
     - name: Install Trivy
       run: |
         curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.34.0
@@ -27,7 +32,7 @@ runs:
           --vuln-type os,library \
           --security-checks vuln \
           --output dependency-results.sbom.json \
-          ${{ inputs.docker_image }}
+          ${{ inputs.sbom_name }}
       shell: bash
 
     - name: replace apk with alpine
@@ -39,6 +44,7 @@ runs:
       run: |
         cat dependency-results.sbom.json | jq '.job.correlator = "${{ inputs.sbom_name }}"' > sbom.tmp 
         mv sbom.tmp dependency-results.sbom.json
+        cat dependency-results.sbom.json
       shell: bash
 
     - name: add mask to token
@@ -58,7 +64,7 @@ runs:
     - name: run docker vulnerability scanner
       uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5
       with:
-        image-ref: '${{ inputs.docker_image }}'
+        image-ref: '${{ inputs.sbom_name }}'
         format: 'sarif'
         output: 'trivy-results.sarif'
 
