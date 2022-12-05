@@ -16,9 +16,17 @@ inputs:
     required: false
     default: true
 
+env:
+  upload_sbom: true
+
 runs:
   using: "composite"
-  steps:      
+  steps:
+    - name: Set upload_sbom variable
+      run: |
+        echo "upload_sbom=${{ github.event_name == 'push' && format('refs/heads/{0}', github.event.repository.default_branch) == github.ref }}" >> $GITHUB_ENV
+      shell: bash
+
     - name: Re-tag docker image
       run: |
         docker tag ${{ inputs.docker_image }} ${{ inputs.sbom_name }}
@@ -30,7 +38,7 @@ runs:
       shell: bash
 
     - name: run trivy docker
-      if: github.event_name == 'push' && format('refs/heads/{0}', github.event.repository.default_branch) == github.ref
+      if: env.upload_sbom == 'true'
       run: |
         trivy image \
           --format github \
@@ -41,26 +49,26 @@ runs:
       shell: bash
 
     - name: replace apk with alpine
-      if: github.event_name == 'push' && format('refs/heads/{0}', github.event.repository.default_branch) == github.ref
+      if: env.upload_sbom == 'true'
       run: |
         sed -i 's/pkg:apk/pkg:alpine/g' dependency-results.sbom.json
       shell: bash
 
     - name: replace correlator
-      if: github.event_name == 'push' && format('refs/heads/{0}', github.event.repository.default_branch) == github.ref
+      if: env.upload_sbom == 'true'
       run: |
         cat dependency-results.sbom.json | jq '.job.correlator = "${{ inputs.sbom_name }}"' > sbom.tmp 
         mv sbom.tmp dependency-results.sbom.json
       shell: bash
 
     - name: add mask to token
-      if: github.event_name == 'push' && format('refs/heads/{0}', github.event.repository.default_branch) == github.ref
+      if: env.upload_sbom == 'true'
       run: |
         echo "::add-mask::${{ inputs.token }}"
       shell: bash
     
     - name: upload sbom to github
-      if: github.event_name == 'push' && format('refs/heads/{0}', github.event.repository.default_branch) == github.ref
+      if: env.upload_sbom == 'true'
       run: |
         curl \
           -H 'Accept: application/vnd.github+json' \
