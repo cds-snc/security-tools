@@ -83,7 +83,7 @@ jobs:
           project_type: docker
 
       - name: Docker scan and SBOM to GitHub
-        uses: cds-snc/security-tools/.github/actions/docker-scan@697377d5bfd1245c9281503bc4a56bd313229d69
+        uses: cds-snc/security-tools/.github/actions/docker-scan@5b53bf9b1407999121093a5779eeab79737208a9
         with:
           docker_image: ${{ env.REGISTRY }}/${{ matrix.image }} 
           sbom_name: ${{ matrix.image }}
