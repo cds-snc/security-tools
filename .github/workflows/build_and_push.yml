@@ -75,7 +75,7 @@ jobs:
           docker push $REGISTRY/${{ matrix.image }}:latest
 
       - name: Generate ${{ matrix.image }} docker SBOM
-        uses: cds-snc/security-tools/.github/actions/generate-sbom@e8bfe289161e1a923f8bb153c57280abfa33eb22 # v1.1.2
+        uses: cds-snc/security-tools/.github/actions/generate-sbom@00801dc7049671a1a9bfa25a11ef2c2709ca78ed # v1.1.4
         with:
           dependency_track_api_key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
           docker_image: $REGISTRY/${{ matrix.image }}:$GITHUB_SHA
@@ -83,7 +83,7 @@ jobs:
           project_type: docker
 
       - name: Docker scan and SBOM to GitHub
-        uses: cds-snc/security-tools/.github/actions/docker-scan@697377d5bfd1245c9281503bc4a56bd313229d69
+        uses: cds-snc/security-tools/.github/actions/docker-scan@5b53bf9b1407999121093a5779eeab79737208a9
         with:
           docker_image: ${{ env.REGISTRY }}/${{ matrix.image }} 
           sbom_name: ${{ matrix.image }}
