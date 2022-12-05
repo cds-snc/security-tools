@@ -6,7 +6,7 @@
 #
 certifi==2021.10.8
     # via -r requirements.in
-neo4j==4.4.9
+neo4j==4.4.10
     # via -r requirements.in
 pytz==2022.6
     # via neo4j

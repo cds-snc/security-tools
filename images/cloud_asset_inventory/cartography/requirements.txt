@@ -54,9 +54,9 @@ azure-mgmt-storage==18.0.0
     # via cartography
 bcrypt==3.2.2
     # via paramiko
-boto3==1.26.13
+boto3==1.26.17
     # via cartography
-botocore==1.29.13
+botocore==1.29.17
     # via
     #   boto3
     #   cartography
@@ -146,7 +146,7 @@ msrest==0.7.1
     #   msrestazure
 msrestazure==0.6.4
     # via cartography
-neo4j==4.4.9
+neo4j==4.4.10
     # via cartography
 neobolt==1.7.17
     # via
@@ -281,7 +281,7 @@ tabulate==0.9.0
     # via knack
 uritemplate==3.0.1
     # via google-api-python-client
-urllib3[secure]==1.26.12
+urllib3[secure]==1.26.13
     # via
     #   azure-cli-core
     #   botocore
