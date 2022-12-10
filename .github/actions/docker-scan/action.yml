@@ -5,6 +5,9 @@ inputs:
   docker_image:
     description: "The docker image and tag to be scanned"
     required: true
+  dockerfile_path:
+    description: "The path to the Dockerfile being scanned"
+    required: true
   sbom_name:
     description: "SBOM identification"
     required: true
@@ -14,10 +17,7 @@ inputs:
   upload_docker_vulns:
     description: "Flag to specify vulnerabilities upload"
     required: false
-    default: true
-
-env:
-  upload_sbom: true
+    default: "true"
 
 runs:
   using: "composite"
@@ -54,10 +54,12 @@ runs:
         sed -i 's/pkg:apk/pkg:alpine/g' dependency-results.sbom.json
       shell: bash
 
-    - name: replace correlator
+    - name: update sbom correlator and Dockerfile path
       if: env.upload_sbom == 'true'
       run: |
-        cat dependency-results.sbom.json | jq '.job.correlator = "${{ inputs.sbom_name }}"' > sbom.tmp 
+        cat dependency-results.sbom.json | \
+          jq '.job.correlator = "${{ inputs.sbom_name }}"' | \
+          jq '.manifests[] += {"file":{"source_location": "${{ inputs.dockerfile_path }}"}}' > sbom.tmp
         mv sbom.tmp dependency-results.sbom.json
       shell: bash
 
@@ -66,7 +68,7 @@ runs:
       run: |
         echo "::add-mask::${{ inputs.token }}"
       shell: bash
-    
+
     - name: upload sbom to github
       if: env.upload_sbom == 'true'
       run: |
@@ -81,13 +83,22 @@ runs:
       uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5
       if: inputs.upload_docker_vulns == 'true'
       with:
-        image-ref: '${{ inputs.sbom_name }}'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
+        image-ref: "${{ inputs.sbom_name }}"
+        format: "sarif"
+        output: "trivy-results.sarif"
+
+    - name: update sarif vulnerability locations
+      if: inputs.upload_docker_vulns == 'true'
+      run: |
+        cat trivy-results.sarif | \
+          jq '.runs[].results[].locations[].physicalLocation.artifactLocation += {"uri": "${{ inputs.dockerfile_path }}","uriBaseId": "ROOTPATH"}' | \
+          jq '.runs[].results[].locations[].physicalLocation.region += {"startLine": 1,"startColumn": 1,"endLine": 1,"endColumn": 1}' > sarif.tmp
+        mv sarif.tmp trivy-results.sarif
+      shell: bash
 
     - name: upload trivy scan results to github security tab
       if: inputs.upload_docker_vulns == 'true'
       uses: github/codeql-action/upload-sarif@312e093a1892bd801f026f1090904ee8e460b9b6 # v2.1.34
       with:
-        sarif_file: 'trivy-results.sarif'
+        sarif_file: "trivy-results.sarif"
         token: ${{ inputs.token }}
