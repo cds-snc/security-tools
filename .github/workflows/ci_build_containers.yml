@@ -79,7 +79,7 @@ jobs:
         uses: cds-snc/security-tools/.github/actions/docker-scan@f0d609b2a8f51dbb4b1760b02a35fb1aadbae7f1 # v1.1.6
         with:
           docker_image: ${{ env.REGISTRY }}/${{ matrix.image }}
-          dockerfile_path: ./images/${{ matrix.image }}/Dockerfile
+          dockerfile_path: "images/${{ matrix.image }}/Dockerfile"
           sbom_name: ${{ matrix.image }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
