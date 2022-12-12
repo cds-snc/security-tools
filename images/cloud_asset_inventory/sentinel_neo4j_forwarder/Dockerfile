@@ -24,4 +24,5 @@ COPY --from=public.ecr.aws/cds-snc/aws-sentinel-connector:c1f02b3f747b80fc18ed10
 # Entrypoint
 RUN chown -R app:app /app/
 USER app
+
 CMD ["python3", "/app/neo4j_to_sentinel.py"]
