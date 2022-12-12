@@ -18,7 +18,6 @@ permissions:
   statuses: write
   security-events: write
 
-
 jobs:
   changes:
     runs-on: ubuntu-latest
@@ -36,7 +35,7 @@ jobs:
             images/cloud_asset_inventory/sentinel_neo4j_forwarder: 'images/cloud_asset_inventory/sentinel_neo4j_forwarder/**'
             images/csp_violation_report_service/app: 'images/csp_violation_report_service/app/**'
             images/csp_violation_report_service/purge_stale_reports: 'images/csp_violation_report_service/purge_stale_reports/**'
-            
+
   build:
     if: needs.changes.outputs.images != '[]'
     runs-on: ubuntu-latest
@@ -77,11 +76,12 @@ jobs:
           project_type: docker
 
       - name: Docker scan and SBOM to GitHub
-        uses: cds-snc/security-tools/.github/actions/docker-scan@aa6a6b097e75fd2007aee070b89a8d03c955ac81 # v1.1.5
+        uses: cds-snc/security-tools/.github/actions/docker-scan@f0d609b2a8f51dbb4b1760b02a35fb1aadbae7f1 # v1.1.6
         with:
-          docker_image: ${{ env.REGISTRY }}/${{ matrix.image }} 
+          docker_image: ${{ env.REGISTRY }}/${{ matrix.image }}
+          dockerfile_path: ${{ matrix.image }}/Dockerfile
           sbom_name: ${{ matrix.image }}
-          token: ${{ secrets.GITHUB_TOKEN }}        
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Logout of Amazon ECR
         run: docker logout ${{ steps.login-ecr.outputs.registry }}
