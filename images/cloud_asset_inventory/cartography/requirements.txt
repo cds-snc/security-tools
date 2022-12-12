@@ -93,9 +93,9 @@ cryptography==3.4.8
     #   urllib3
 dnspython==2.2.1
     # via cartography
-google-api-core==1.33.2
+google-api-core==1.34.0
     # via google-api-python-client
-google-api-python-client==2.66.0
+google-api-python-client==2.68.0
     # via cartography
 google-auth==1.35.0
     # via
@@ -168,7 +168,7 @@ paramiko==2.12.0
     # via azure-cli-core
 pdpyras==4.5.2
     # via cartography
-pkginfo==1.8.3
+pkginfo==1.9.2
     # via azure-cli-core
 policyuniverse==1.5.0.20220613
     # via cartography
