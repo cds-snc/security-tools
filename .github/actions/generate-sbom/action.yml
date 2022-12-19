@@ -82,7 +82,7 @@ runs:
 
     - name: Generate Python SBOM
       env:
-        CYCLONEDX_PYTHON: "3.2.1"
+        CYCLONEDX_PYTHON: "3.10.1"
       if: inputs.project_type == 'python'
       working-directory: ${{ inputs.working_directory }}
       run: |
