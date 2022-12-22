@@ -1,5 +1,5 @@
-name: "Docker Scan and SBOM"
-description: "Scan docker containers and generate SBOM"
+name: "Docker vulnerability scan"
+description: "Scan docker containers for vulnerabilities"
 
 inputs:
   docker_image:
@@ -8,87 +8,21 @@ inputs:
   dockerfile_path:
     description: "The path to the Dockerfile being scanned"
     required: true
-  sbom_name:
-    description: "SBOM identification"
-    required: true
   token:
     description: "Token for allowing the action to post in the security tab"
     required: true
-  upload_docker_vulns:
-    description: "Flag to specify vulnerabilities upload"
-    required: false
-    default: "true"
 
 runs:
   using: "composite"
   steps:
-    - name: Set upload_sbom variable
-      run: |
-        echo "upload_sbom=${{ github.event_name == 'push' && format('refs/heads/{0}', github.event.repository.default_branch) == github.ref }}" >> $GITHUB_ENV
-      shell: bash
-
-    - name: Re-tag docker image
-      run: |
-        docker tag ${{ inputs.docker_image }} ${{ inputs.sbom_name }}
-      shell: bash
-
-    - name: Install Trivy
-      run: |
-        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.34.0
-      shell: bash
-
-    - name: run trivy docker
-      if: env.upload_sbom == 'true'
-      run: |
-        trivy image \
-          --format github \
-          --vuln-type os,library \
-          --security-checks vuln \
-          --output dependency-results.sbom.json \
-          ${{ inputs.sbom_name }}
-      shell: bash
-
-    - name: replace apk with alpine
-      if: env.upload_sbom == 'true'
-      run: |
-        sed -i 's/pkg:apk/pkg:alpine/g' dependency-results.sbom.json
-      shell: bash
-
-    - name: update sbom correlator and Dockerfile path
-      if: env.upload_sbom == 'true'
-      run: |
-        cat dependency-results.sbom.json | \
-          jq '.job.correlator = "${{ inputs.sbom_name }}"' | \
-          jq '.manifests[] += {"file":{"source_location": "${{ inputs.dockerfile_path }}"}}' > sbom.tmp
-        mv sbom.tmp dependency-results.sbom.json
-      shell: bash
-
-    - name: add mask to token
-      if: env.upload_sbom == 'true'
-      run: |
-        echo "::add-mask::${{ inputs.token }}"
-      shell: bash
-
-    - name: upload sbom to github
-      if: env.upload_sbom == 'true'
-      run: |
-        curl \
-          -H 'Accept: application/vnd.github+json' \
-          -H 'Authorization: token ${{ inputs.token }}' \
-          'https://api.github.com/repos/'$GITHUB_REPOSITORY'/dependency-graph/snapshots' \
-          -d @dependency-results.sbom.json
-      shell: bash
-
-    - name: run docker vulnerability scanner
+    - name: Run docker vulnerability scanner
       uses: aquasecurity/trivy-action@9ab158e8597f3b310480b9a69402b419bc03dbd5
-      if: inputs.upload_docker_vulns == 'true'
       with:
-        image-ref: "${{ inputs.sbom_name }}"
+        image-ref: "${{ inputs.docker_image }}"
         format: "sarif"
         output: "trivy-results.sarif"
 
-    - name: update sarif vulnerability locations
-      if: inputs.upload_docker_vulns == 'true'
+    - name: Update sarif vulnerability locations
       run: |
         cat trivy-results.sarif | \
           jq '.runs[].results[].locations[].physicalLocation.artifactLocation += {"uri": "${{ inputs.dockerfile_path }}","uriBaseId": "ROOTPATH"}' | \
@@ -96,8 +30,7 @@ runs:
         mv sarif.tmp trivy-results.sarif
       shell: bash
 
-    - name: upload trivy scan results to github security tab
-      if: inputs.upload_docker_vulns == 'true'
+    - name: Upload trivy scan results to github security tab
       uses: github/codeql-action/upload-sarif@a669cc5936cc5e1b6a362ec1ff9e410dc570d190 # v2.1.36
       with:
         sarif_file: "trivy-results.sarif"
