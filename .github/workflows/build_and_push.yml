@@ -26,7 +26,7 @@ jobs:
       images: ${{ steps.filter.outputs.changes }}
     steps:
       - name: Checkout
-        uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # tag=v2.5.0
+        uses: actions/checkout@dc323e67f16fb5f7663d20ff7941f27f5809e9b6 # v2.6.0
 
       - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # tag=v2.11.1
         id: filter
@@ -48,7 +48,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@e2f20e631ae6d7dd3b768f56a5d2af784dd54791 # tag=v2.5.0
+        uses: actions/checkout@dc323e67f16fb5f7663d20ff7941f27f5809e9b6 # v2.6.0
 
       - name: configure aws credentials using OIDC
         uses: aws-actions/configure-aws-credentials@master
@@ -75,7 +75,7 @@ jobs:
           docker push $REGISTRY/${{ matrix.image }}:latest
 
       - name: Generate ${{ matrix.image }} docker SBOM
-        uses: cds-snc/security-tools/.github/actions/generate-sbom@aa6a6b097e75fd2007aee070b89a8d03c955ac81 # v1.1.5
+        uses: cds-snc/security-tools/.github/actions/generate-sbom@4368a5486da1f0bb698ffe717687612d4231c6cd # v1.1.7
         with:
           dependency_track_api_key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
           docker_image: $REGISTRY/${{ matrix.image }}:$GITHUB_SHA
@@ -83,7 +83,7 @@ jobs:
           project_type: docker
 
       - name: Docker scan and SBOM to GitHub
-        uses: cds-snc/security-tools/.github/actions/docker-scan@f0d609b2a8f51dbb4b1760b02a35fb1aadbae7f1 # v1.1.6
+        uses: cds-snc/security-tools/.github/actions/docker-scan@4368a5486da1f0bb698ffe717687612d4231c6cd # v1.1.7
         with:
           docker_image: ${{ env.REGISTRY }}/${{ matrix.image }}
           dockerfile_path: "images/${{ matrix.image }}/Dockerfile"
