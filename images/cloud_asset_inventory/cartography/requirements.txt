@@ -54,9 +54,9 @@ azure-mgmt-storage==18.0.0
     # via cartography
 bcrypt==3.2.2
     # via paramiko
-boto3==1.26.34
+boto3==1.26.37
     # via cartography
-botocore==1.29.34
+botocore==1.29.37
     # via
     #   boto3
     #   cartography
