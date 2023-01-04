@@ -20,10 +20,10 @@ runs:
   steps:
     - name: Install Trivy
       env:
-        TRIVY_VERSION: "v0.34.0"
+        TRIVY_VERSION: "v0.36.0"
       run: |
         curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | \
-          sh -s -- -b /usr/local/bin ${{ env.TRIVY_VERSION }}}
+          sh -s -- -b /usr/local/bin ${{ env.TRIVY_VERSION }}
       shell: bash
 
     - name: Re-tag docker image
