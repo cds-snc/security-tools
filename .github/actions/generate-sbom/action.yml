@@ -37,6 +37,7 @@ runs:
           --format github \
           --vuln-type os,library \
           --security-checks vuln \
+          --timeout 15m \
           --output dependency-results.sbom.json \
           ${{ inputs.sbom_name }}
       shell: bash
