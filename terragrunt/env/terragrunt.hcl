@@ -9,7 +9,6 @@ inputs = {
   region                        = "ca-central-1"
   sso_proxy_cidr                = "10.0.0.0/21"  # Reserve 2,046 IP addresses for VPC
   cloud_asset_inventory_cidr    = "10.0.8.0/22"  # Reserve 1,022 IP addresses for VPC
-  software_asset_inventory_cidr = "10.0.12.0/24" # Reserve 254 IP addresses for VPC
 }
 
 remote_state {
