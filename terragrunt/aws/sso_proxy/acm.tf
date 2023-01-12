@@ -2,7 +2,6 @@ resource "aws_acm_certificate" "internal_domain" {
   domain_name = var.domain_name
   subject_alternative_names = [
     "*.${var.domain_name}",
-    "*.dependencies.${var.domain_name}",
   ]
   validation_method = "DNS"
 
