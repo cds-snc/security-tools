@@ -3,11 +3,6 @@ variable "cloud_asset_inventory_load_balancer_dns" {
   type        = string
 }
 
-variable "software_asset_inventory_load_balancer_dns" {
-  description = "DNS name for Software Asset Inventory Load Balancer"
-  type        = string
-}
-
 variable "csp_violation_report_service_load_balancer_dns" {
   description = "DNS name for CSP Report Load Balancer"
   type        = string

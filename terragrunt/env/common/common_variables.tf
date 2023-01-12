@@ -56,8 +56,3 @@ variable "cloud_asset_inventory_cidr" {
   description = "CIDR range for the Cloud Asset Inventory VPC"
   type        = string
 }
-
-variable "software_asset_inventory_cidr" {
-  description = "CIDR range for the Software Asset Inventory VPC"
-  type        = string
-}

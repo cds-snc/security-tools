@@ -33,7 +33,6 @@ data "template_file" "pomerium_sso_proxy_routes_policy" {
 
   vars = {
     CLOUD_ASSET_INVENTORY_LOAD_BALANCER_DNS        = var.cloud_asset_inventory_load_balancer_dns
-    SOFTWARE_ASSET_INVENTORY_LOAD_BALANCER_DNS     = var.software_asset_inventory_load_balancer_dns
     CSP_VIOLATION_REPORT_SERVICE_LOAD_BALANCER_DNS = var.csp_violation_report_service_load_balancer_dns
   }
 }

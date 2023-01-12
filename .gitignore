@@ -1,4 +1,4 @@
-.terraform*
+**/.terraform/*
 .terragrunt*
 *.tfstate*
 *.env

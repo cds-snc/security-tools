@@ -3,7 +3,7 @@ terraform {
 }
 
 dependencies {
-  paths = ["../base", "../cloud_asset_inventory", "../software_asset_inventory", "../csp_violation_report_service"]
+  paths = ["../base", "../cloud_asset_inventory", "../csp_violation_report_service"]
 }
 
 dependency "base" {
@@ -16,15 +16,6 @@ dependency "cloud_asset_inventory" {
   mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
   mock_outputs = {
     cloud_asset_inventory_load_balancer_dns = "my-loadbalancer-1234567890.ca-central-1.elb.amazonaws.com"
-  }
-}
-
-dependency "software_asset_inventory" {
-  config_path = "../software_asset_inventory"
-
-  mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
-  mock_outputs = {
-    software_asset_inventory_load_balancer_dns = "my-loadbalancer-1234567890.ca-central-1.elb.amazonaws.com"
   }
 }
 
@@ -52,7 +43,6 @@ inputs = {
   vpc_public_subnet_ids     = dependency.base.outputs.vpc_public_subnet_ids
 
   cloud_asset_inventory_load_balancer_dns        = dependency.cloud_asset_inventory.outputs.cloud_asset_inventory_load_balancer_dns
-  software_asset_inventory_load_balancer_dns     = dependency.software_asset_inventory.outputs.software_inventory_load_balancer_dns
   csp_violation_report_service_load_balancer_dns = dependency.csp_violation_report_service.outputs.csp_violation_report_service_load_balancer_dns
 }
 
