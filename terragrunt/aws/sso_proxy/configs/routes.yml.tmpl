@@ -32,42 +32,6 @@
             - domain:
                 is: cds-snc.ca
 
-- from: https://dependencies.security.cdssandbox.xyz
-  to: http://${SOFTWARE_ASSET_INVENTORY_LOAD_BALANCER_DNS}:8080
-  preserve_host_header: true
-  policy:
-      - allow:
-          or:
-            - domain:
-                is: cds-snc.ca
-
-- from: https://sbom.dependencies.security.cdssandbox.xyz
-  to: http://${SOFTWARE_ASSET_INVENTORY_LOAD_BALANCER_DNS}:8081
-  preserve_host_header: true
-  cors_allow_preflight: true
-  policy:
-      - allow:
-          or:
-            - http_method:
-                is: POST
-            - http_method:
-                is: PUT
-          and:
-            - http_path:
-                is: /api/v1/bom
-
-- from: https://api.dependencies.security.cdssandbox.xyz
-  to: http://${SOFTWARE_ASSET_INVENTORY_LOAD_BALANCER_DNS}:8081
-  preserve_host_header: true
-  cors_allow_preflight: true
-  set_response_headers:
-    Access-Control-Allow-Origin: https://dependencies.security.cdssandbox.xyz
-  policy:
-      - allow:
-          or:
-            - domain:
-                is: cds-snc.ca
-
 - from: https://csp-reports.security.cdssandbox.xyz
   to: http://${CSP_VIOLATION_REPORT_SERVICE_LOAD_BALANCER_DNS}:8000
   preserve_host_header: true
