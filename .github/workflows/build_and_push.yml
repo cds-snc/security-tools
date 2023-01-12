@@ -80,6 +80,7 @@ jobs:
           docker_image: ${{ env.REGISTRY }}/${{ matrix.image }}:${{ env.GITHUB_SHA }}
           sbom_name: ${{ matrix.image }}
           dockerfile_path: "${{ matrix.image }}/Dockerfile"
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Logout of Amazon ECR
         run: docker logout ${{ steps.login-ecr.outputs.registry }}
