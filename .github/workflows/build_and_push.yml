@@ -75,19 +75,11 @@ jobs:
           docker push $REGISTRY/${{ matrix.image }}:latest
 
       - name: Generate ${{ matrix.image }} docker SBOM
-        uses: cds-snc/security-tools/.github/actions/generate-sbom@4368a5486da1f0bb698ffe717687612d4231c6cd # v1.1.7
+        uses: cds-snc/security-tools/.github/actions/generate-sbom@a38917b147dfc8f086abcf81529e3c12f26529b8 # v2.1.0
         with:
-          dependency_track_api_key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
-          docker_image: $REGISTRY/${{ matrix.image }}:$GITHUB_SHA
-          project_name: security-tools/docker/${{ matrix.image }}
-          project_type: docker
-
-      - name: Docker scan and SBOM to GitHub
-        uses: cds-snc/security-tools/.github/actions/docker-scan@4368a5486da1f0bb698ffe717687612d4231c6cd # v1.1.7
-        with:
-          docker_image: ${{ env.REGISTRY }}/${{ matrix.image }}
-          dockerfile_path: "images/${{ matrix.image }}/Dockerfile"
+          docker_image: ${{ env.REGISTRY }}/${{ matrix.image }}:${{ env.GITHUB_SHA }}
           sbom_name: ${{ matrix.image }}
+          dockerfile_path: "${{ matrix.image }}/Dockerfile"
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Logout of Amazon ECR
