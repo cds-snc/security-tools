@@ -20,6 +20,8 @@ runs:
       with:
         image-ref: "${{ inputs.docker_image }}"
         format: "sarif"
+        security-checks: "vuln"
+        timeout: "15m"
         output: "trivy-results.sarif"
 
     - name: Update sarif vulnerability locations
