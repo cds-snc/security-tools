@@ -13,7 +13,7 @@ adal==1.2.7
     #   msrestazure
 applicationinsights==0.11.10
     # via azure-cli-telemetry
-argcomplete==1.12.3
+argcomplete==2.0
     # via
     #   azure-cli-core
     #   knack
