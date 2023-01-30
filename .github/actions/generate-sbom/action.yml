@@ -32,6 +32,7 @@ runs:
 
     - name: Re-tag docker image
       run: |
+        docker pull ${{ inputs.docker_image }} --platform ${{ inputs.platform }}
         docker tag ${{ inputs.docker_image }} ${{ inputs.sbom_name }}
       shell: bash
 
