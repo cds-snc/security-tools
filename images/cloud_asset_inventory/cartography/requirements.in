@@ -1,3 +1,3 @@
 --extra-index-url https://alpine-wheels.github.io/index
 
-cartography==0.71.0
+cartography==0.72.1
