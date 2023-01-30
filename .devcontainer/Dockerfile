@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/vscode/devcontainers/python:3.11-buster@sha256:856bfbc964f073e4e354c5eaf7ef2e2d2c8a77a4ecb7979fed726571c5637550
+FROM mcr.microsoft.com/vscode/devcontainers/python:3.11-buster@sha256:12b989539d0ffb7ce4f26d94f05e763635a17d01e277c6db96e0fb3db1a99134
 
 ARG USERNAME=vscode
 
