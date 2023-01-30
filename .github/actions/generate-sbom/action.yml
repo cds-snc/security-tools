@@ -8,6 +8,10 @@ inputs:
   dockerfile_path:
     description: "The path to the Dockerfile being scanned"
     required: true
+  platform:
+    description: "The Docker image platform that's being scanned"
+    required: false
+    default: "linux/amd64"
   sbom_name:
     description: "The name of the SBOM"
     required: true
@@ -35,6 +39,7 @@ runs:
       run: |
         trivy image \
           --format github \
+          --platform ${{ inputs.platform }} \
           --vuln-type os,library \
           --security-checks vuln \
           --timeout 15m \
