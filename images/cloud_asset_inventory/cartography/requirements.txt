@@ -28,7 +28,7 @@ azure-common==1.1.28
     #   azure-mgmt-resource
     #   azure-mgmt-sql
     #   azure-mgmt-storage
-azure-core==1.26.2
+azure-core==1.26.3
     # via
     #   azure-identity
     #   azure-mgmt-core
@@ -54,9 +54,9 @@ azure-mgmt-storage==18.0.0
     # via cartography
 bcrypt==3.2.2
     # via paramiko
-boto3==1.26.59
+boto3==1.26.64
     # via cartography
-botocore==1.29.59
+botocore==1.29.64
     # via
     #   boto3
     #   cartography
@@ -288,7 +288,7 @@ urllib3[secure]==1.26.14
     #   kubernetes
     #   pdpyras
     #   requests
-websocket-client==1.5.0
+websocket-client==1.5.1
     # via kubernetes
 
 # The following packages are considered to be unsafe in a requirements file:
