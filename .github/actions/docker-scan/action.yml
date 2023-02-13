@@ -16,7 +16,7 @@ runs:
   using: "composite"
   steps:
     - name: Run docker vulnerability scanner
-      uses: aquasecurity/trivy-action@cff3e9a7f62c41dd51975266d0ae235709e39c41
+      uses: aquasecurity/trivy-action@8bd2f9fbda2109502356ff8a6a89da55b1ead252
       with:
         image-ref: "${{ inputs.docker_image }}"
         format: "sarif"
