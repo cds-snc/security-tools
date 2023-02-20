@@ -181,6 +181,7 @@ def get_labels(row):
         labels.append("Class: {}".format(row[Header.CONTROL_CLASS.value]))
     if get_suggested_assignment(row):
         labels.append("Suggested Assignment: {}".format(get_suggested_assignment(row)))
+    labels.append("ITSG-33")
     return labels
 
 

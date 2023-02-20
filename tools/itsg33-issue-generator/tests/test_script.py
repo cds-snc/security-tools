@@ -211,6 +211,7 @@ def test_get_labels(mock_get_suggested_assignment):
         "Priority: P1",
         "Class: Operational",
         "Suggested Assignment: IT Security",
+        "ITSG-33"
     ]
 
 
