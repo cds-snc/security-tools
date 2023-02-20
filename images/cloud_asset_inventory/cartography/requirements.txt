@@ -54,16 +54,16 @@ azure-mgmt-storage==18.0.0
     # via cartography
 bcrypt==3.2.2
     # via paramiko
-boto3==1.26.64
+boto3==1.26.69
     # via cartography
-botocore==1.29.64
+botocore==1.29.69
     # via
     #   boto3
     #   cartography
     #   s3transfer
 cachetools==4.2.4
     # via google-auth
-cartography==0.73.0
+cartography==0.73.1
     # via -r requirements.in
 certifi==2022.12.7
     # via
