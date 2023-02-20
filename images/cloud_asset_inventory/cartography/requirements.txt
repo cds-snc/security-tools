@@ -17,7 +17,7 @@ argcomplete==2.0
     # via
     #   azure-cli-core
     #   knack
-azure-cli-core==2.44.1
+azure-cli-core==2.45.0
     # via cartography
 azure-cli-telemetry==1.0.8
     # via azure-cli-core
@@ -95,7 +95,7 @@ dnspython==2.3.0
     # via cartography
 google-api-core==1.34.0
     # via google-api-python-client
-google-api-python-client==2.76.0
+google-api-python-client==2.77.0
     # via cartography
 google-auth==1.35.0
     # via
