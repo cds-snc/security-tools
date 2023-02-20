@@ -17,12 +17,12 @@ env vars:
 REPO = owner/repo
 GITHUB_TOKEN = github token to create issues
 CSV_FILE = path to csv file
-DEBUG = True/False to print debug info
+LOG_LEVEL = If exists, set logging level to this. Otherwise, set to INFO
 """
 REPO = os.getenv("REPO")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 CSV_FILE = "controls.csv"
-
+LOG_LEVEL = os.getenv("LOG_LEVEL") if os.getenv("LOG_LEVEL") else logging.INFO
 
 class Header(Enum):
     FAMILY = 0
@@ -49,13 +49,16 @@ class Header(Enum):
 Set logging level
 """
 logging.basicConfig(
-    level=logging.ERROR,
+    level=LOG_LEVEL,
     format="%(asctime)s :%(levelname)s:%(funcName)s:%(lineno)d %(message)s",
     datefmt="%d-%b-%y %H:%M:%S",
 )
 
 
 def main():
+    """
+    Program entrypoint to creat issues in github for each control of the ITSG-33 controls spreadsheet.
+    """
     for row in get_controls():
         issues_url = get_issues_url()
         headers = get_header()
