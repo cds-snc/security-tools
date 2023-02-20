@@ -23,6 +23,7 @@ REPO = os.getenv("REPO")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 CSV_FILE = "controls.csv"
 
+
 class Header(Enum):
     FAMILY = 0
     CONTROL_ID = 1
@@ -47,20 +48,21 @@ class Header(Enum):
 """
 Set logging level
 """
-logging.basicConfig(level=logging.ERROR, format='%(asctime)s :%(levelname)s:%(funcName)s:%(lineno)d %(message)s', datefmt='%d-%b-%y %H:%M:%S')
+logging.basicConfig(
+    level=logging.ERROR,
+    format="%(asctime)s :%(levelname)s:%(funcName)s:%(lineno)d %(message)s",
+    datefmt="%d-%b-%y %H:%M:%S",
+)
 
 
 def main():
-    
     for row in get_controls():
-
         issues_url = get_issues_url()
         headers = get_header()
         issues_json = get_issues_json(row)
-        
+
         response = post_request(issues_url, headers, issues_json)
 
-        
         logging.debug("Issues URL: {}".format(issues_url))
         logging.debug("Issues JSON: {}".format(issues_json))
         logging.debug("Response: {}".format(response.text))
@@ -69,14 +71,16 @@ def main():
 
 def post_request(issues_url, headers, issues_json):
     """
-    Post request to github api to create issue. If successful, print the control title. 
+    Post request to github api to create issue. If successful, print the control title.
     If not, print the control title and the response. Return the response.
     """
     response = requests.post(issues_url, headers=headers, json=issues_json)
     if response.status_code == 201:
         logging.info("Created issue for control: {}".format(issues_json["title"]))
     else:
-        logging.error("Failed to create issue for control: {}".format(issues_json["title"]))
+        logging.error(
+            "Failed to create issue for control: {}".format(issues_json["title"])
+        )
         logging.error("Response: {}".format(response.text))
     return response
 
@@ -89,8 +93,8 @@ def get_github_token():
         return GITHUB_TOKEN
     else:
         raise Exception("GITHUB_TOKEN env var not set")
-    
-    
+
+
 def get_repo():
     """
     Get repo from env var
@@ -99,7 +103,7 @@ def get_repo():
         return REPO
     else:
         raise Exception("REPO env var not set")
-    
+
 
 def get_issues_url():
     """
@@ -115,7 +119,7 @@ def get_header():
     header = {
         "Accept": "application/vnd.github+json",
         "Authorization": "Bearer {}".format(get_github_token()),
-        "X-GitHub-Api-Version": "2022-11-28"
+        "X-GitHub-Api-Version": "2022-11-28",
     }
     return header
 
@@ -138,15 +142,21 @@ def get_body(row):
     if row[Header.CONTROL_CLASS.value]:
         body += "#Class\n{}\n\n".format(row[Header.CONTROL_CLASS.value])
     if row[Header.SUPPLEMENTAL_GUIDANCE.value]:
-        body += "#Supplemental Guidance\n{}\n\n".format(row[Header.SUPPLEMENTAL_GUIDANCE.value])
+        body += "#Supplemental Guidance\n{}\n\n".format(
+            row[Header.SUPPLEMENTAL_GUIDANCE.value]
+        )
     if row[Header.REFERENCES.value]:
         body += "#References\n{}\n\n".format(row[Header.REFERENCES.value])
     if row[Header.GENERAL_GUIDE.value]:
         body += "#General Guide\n{}\n\n".format(row[Header.GENERAL_GUIDE.value])
     if row[Header.SUGGESTED_PLACEHOLDER_VALUES.value]:
-        body += "#Suggested Placeholder Values\n{}\n\n".format(row[Header.SUGGESTED_PLACEHOLDER_VALUES.value])
+        body += "#Suggested Placeholder Values\n{}\n\n".format(
+            row[Header.SUGGESTED_PLACEHOLDER_VALUES.value]
+        )
     if row[Header.PROFILE_SPECIFIC_NOTES.value]:
-        body += "#Profile Specific Notes\n{}\n\n".format(row[Header.PROFILE_SPECIFIC_NOTES.value])
+        body += "#Profile Specific Notes\n{}\n\n".format(
+            row[Header.PROFILE_SPECIFIC_NOTES.value]
+        )
     if get_suggested_assignment(row):
         body += "#Suggested Assignment\n{}\n\n".format(get_suggested_assignment(row))
     if get_support_teams(row):
@@ -159,11 +169,13 @@ def get_labels(row):
     Get labels for issue to help future retrieval
     """
     labels = []
-    labels.append("Control: {}-{}".format(row[Header.FAMILY.value], row[Header.CONTROL_ID.value]))
+    labels.append(
+        "Control: {}-{}".format(row[Header.FAMILY.value], row[Header.CONTROL_ID.value])
+    )
     if row[Header.SUGGESTED_PRIORITY.value]:
         labels.append("Priority: {}".format(row[Header.SUGGESTED_PRIORITY.value]))
     if row[Header.CONTROL_CLASS.value]:
-        labels.append("Class: {}".format(row[Header.CONTROL_CLASS.value]))    
+        labels.append("Class: {}".format(row[Header.CONTROL_CLASS.value]))
     if get_suggested_assignment(row):
         labels.append("Suggested Assignment: {}".format(get_suggested_assignment(row)))
     return labels
@@ -197,7 +209,7 @@ def get_enum_string(index):
     if "It " == temp[0:3]:
         temp = temp.replace("It ", "IT ", 1)
     return temp
-    
+
 
 def get_title(row):
     """
@@ -206,27 +218,35 @@ def get_title(row):
     """
     title = ""
     if row[Header.ENHANCEMENT.value]:
-        title = "{}-{}({}): {}".format(row[Header.FAMILY.value], row[Header.CONTROL_ID.value], 
-                                       row[Header.ENHANCEMENT.value], string.capwords(row[Header.CONTROL_NAME.value]))
+        title = "{}-{}({}): {}".format(
+            row[Header.FAMILY.value],
+            row[Header.CONTROL_ID.value],
+            row[Header.ENHANCEMENT.value],
+            string.capwords(row[Header.CONTROL_NAME.value]),
+        )
     else:
-        title = "{}-{}: {}".format(row[Header.FAMILY.value], row[Header.CONTROL_ID.value], string.capwords(row[Header.CONTROL_NAME.value]))
+        title = "{}-{}: {}".format(
+            row[Header.FAMILY.value],
+            row[Header.CONTROL_ID.value],
+            string.capwords(row[Header.CONTROL_NAME.value]),
+        )
     return title
-    
+
 
 def get_controls():
     """
     Get controls from csv file and jumps the header.
     """
     rows = []
-    with open(CSV_FILE, 'r') as file:
+    with open(CSV_FILE, "r") as file:
         reader = csv.reader(file)
-        
+
         if next(reader)[0] != "Family":
             raise ValueError("Headers different than expected")
-        
+
         for row in reader:
             rows.append(row)
-        
+
         if len(rows) < 1:
             raise ValueError("No controls found in csv file")
     return rows

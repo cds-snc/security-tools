@@ -1,3 +1,2 @@
-requests
-pytest
-unittest
+pytest==7.2.1
+requests==2.28.1
