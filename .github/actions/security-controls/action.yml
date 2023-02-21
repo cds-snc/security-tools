@@ -11,8 +11,9 @@ runs:
   steps:
     - name: Checkout Code
       uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
-      repository: cds-snc/security-tools
-      path: tools/itsg33-issue-generator
+      with:
+        repository: cds-snc/security-tools
+        path: tools/itsg33-issue-generator
       
     - name: Run python script to create gh issues
       working-directory: ./tools/itsg33-issue-generator
