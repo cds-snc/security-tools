@@ -6,7 +6,6 @@ The script will create the issue title, body, and labels. The body will have the
 
 import csv
 import requests
-import json
 import os
 import string
 import logging
@@ -22,7 +21,7 @@ LOG_LEVEL = If exists, set logging level to this. Otherwise, set to INFO
 REPO = os.getenv("REPO")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 CSV_FILE = "controls.csv"
-LOG_LEVEL = os.getenv("LOG_LEVEL") if os.getenv("LOG_LEVEL") else logging.INFO
+LOG_LEVEL = os.getenv("LOG_LEVEL", logging.INFO)
 
 class Header(Enum):
     FAMILY = 0
