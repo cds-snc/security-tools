@@ -40,8 +40,8 @@ class Header(Enum):
     LEARNING_CENTER = 13
     GENERAL_GUIDE = 14
     SUGGESTED_PRIORITY = 15
-    SUGGESTED_PLACEHOLDER_VALUES = 16
-    PROFILE_SPECIFIC_NOTES = 17
+    SUGGESTED_PLACEHOLDER_VALUES = 17
+    PROFILE_SPECIFIC_NOTES = 18
 
 
 """
@@ -140,29 +140,29 @@ def get_body(row):
     """
     Get body for issue. Has at least the control definition.
     """
-    body = "#Control Definition\n{}\n\n".format(row[Header.CONTROL_DEFINITION.value])
+    body = "# Control Definition\n{}\n\n".format(row[Header.CONTROL_DEFINITION.value])
     if row[Header.CONTROL_CLASS.value]:
-        body += "#Class\n{}\n\n".format(row[Header.CONTROL_CLASS.value])
+        body += "# Class\n{}\n\n".format(row[Header.CONTROL_CLASS.value])
     if row[Header.SUPPLEMENTAL_GUIDANCE.value]:
-        body += "#Supplemental Guidance\n{}\n\n".format(
+        body += "# Supplemental Guidance\n{}\n\n".format(
             row[Header.SUPPLEMENTAL_GUIDANCE.value]
         )
     if row[Header.REFERENCES.value]:
-        body += "#References\n{}\n\n".format(row[Header.REFERENCES.value])
+        body += "# References\n{}\n\n".format(row[Header.REFERENCES.value])
     if row[Header.GENERAL_GUIDE.value]:
-        body += "#General Guide\n{}\n\n".format(row[Header.GENERAL_GUIDE.value])
+        body += "# General Guide\n{}\n\n".format(row[Header.GENERAL_GUIDE.value])
     if row[Header.SUGGESTED_PLACEHOLDER_VALUES.value]:
-        body += "#Suggested Placeholder Values\n{}\n\n".format(
+        body += "# Suggested Placeholder Values\n{}\n\n".format(
             row[Header.SUGGESTED_PLACEHOLDER_VALUES.value]
         )
     if row[Header.PROFILE_SPECIFIC_NOTES.value]:
-        body += "#Profile Specific Notes\n{}\n\n".format(
+        body += "# Profile Specific Notes\n{}\n\n".format(
             row[Header.PROFILE_SPECIFIC_NOTES.value]
         )
     if get_suggested_assignment(row):
-        body += "#Suggested Assignment\n{}\n\n".format(get_suggested_assignment(row))
+        body += "# Suggested Assignment\n{}\n\n".format(get_suggested_assignment(row))
     if get_support_teams(row):
-        body += "#Support Teams\n{}\n\n".format(get_support_teams(row))
+        body += "# Support Teams\n{}\n\n".format(get_support_teams(row))
     return body
 
 

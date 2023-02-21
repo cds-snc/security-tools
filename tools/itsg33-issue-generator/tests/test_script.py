@@ -178,7 +178,7 @@ def test_get_body(mock_get_support_teams, mock_get_suggested_assignment):
     body = script.get_body(row)
     assert (
         body
-        == "#Control Definition\nThe org requires an infosec to be a member of the comitee\n\n#Class\nOperational\n\n#Supplemental Guidance\nSupplemental Guidance text\n\n#References\nReference text\n\n#General Guide\ntext\n\n#Suggested Assignment\nIT Security\n\n#Support Teams\nIT Operation Group\n\n"
+        == "# Control Definition\nThe org requires an infosec to be a member of the comitee\n\n# Class\nOperational\n\n# Supplemental Guidance\nSupplemental Guidance text\n\n# References\nReference text\n\n# General Guide\ntext\n\n# Suggested Assignment\nIT Security\n\n# Support Teams\nIT Operation Group\n\n"
     )
 
 
