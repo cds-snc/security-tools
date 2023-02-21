@@ -1,0 +1,23 @@
+name: "Generate github issues"
+description: "Create github issues for each controls provided in the csv file"
+
+inputs:
+  token:
+    description: "Token for allowing the action to create issues"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout Code
+      uses: actions/checkout@ac593985615ec2ede58e132d2e21d2b1cbd6127c # v3.3.0
+      
+    - name: Run python script to create gh issues
+      working-directory: ./tools/itsg33-issue-generator
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+        REPO: ${{ github.repository }}
+      run: |
+        make install
+        make
+      shell: bash
