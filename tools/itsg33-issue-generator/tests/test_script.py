@@ -329,6 +329,30 @@ def test_get_title_with_enhancement():
     ]
     assert script.get_title(row) == "CM-11-2: User-installed Software | Prohibit Installation Without Privileged Status"
 
+def test_get_title_with_enhancement_100():
+    row = [
+        "CM",
+        "11",
+        "-100",
+        "USER INSTALLED SOFTWARE",
+        "Operational",
+        "USER-INSTALLED SOFTWARE | PROHIBIT INSTALLATION WITHOUT PRIVILEGED STATUS\nThe information system prohibits user installation of software without explicit privileged status.",
+        "Supplemental Guidance text",
+        "Reference text",
+        "R",
+        "S",
+        "",
+        "",
+        "",
+        "",
+        "text",
+        "P1",
+        "",
+        "",
+        "",
+    ]
+    assert script.get_title(row) == "CM-11-100: User Installed Software"
+
 
 def test_get_title_without_enhancement():
     row = [
