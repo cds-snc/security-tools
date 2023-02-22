@@ -221,12 +221,20 @@ def get_title(row):
     """
     title = ""
     if row[Header.ENHANCEMENT.value]:
-        title = "{}-{}{}: {}".format(
-            row[Header.FAMILY.value],
-            row[Header.CONTROL_ID.value],
-            row[Header.ENHANCEMENT.value].strip(),
-            string.capwords(row[Header.CONTROL_DEFINITION.value].split("\n")[0]),
-        )
+        if "100" in row[Header.ENHANCEMENT.value]:
+            title = "{}-{}{}: {}".format(
+                row[Header.FAMILY.value],
+                row[Header.CONTROL_ID.value],
+                row[Header.ENHANCEMENT.value].strip(),
+                string.capwords(row[Header.CONTROL_NAME.value]),
+            )
+        else:
+            title = "{}-{}{}: {}".format(
+                row[Header.FAMILY.value],
+                row[Header.CONTROL_ID.value],
+                row[Header.ENHANCEMENT.value].strip(),
+                string.capwords(row[Header.CONTROL_DEFINITION.value].split("\n")[0]),
+            )
     else:
         title = "{}-{}: {}".format(
             row[Header.FAMILY.value],
