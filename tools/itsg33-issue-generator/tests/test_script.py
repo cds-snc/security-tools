@@ -308,11 +308,11 @@ def test_get_enum_string_has_it_in_the_middle():
 def test_get_title_with_enhancement():
     row = [
         "CM",
-        "3",
-        "-3",
-        "CONFIGURATION CHANGE CONTROL",
+        "11",
+        "-2",
+        "USER INSTALLED SOFTWARE",
         "Operational",
-        "The org requires an infosec to be a member of the comitee",
+        "USER-INSTALLED SOFTWARE | PROHIBIT INSTALLATION WITHOUT PRIVILEGED STATUS\nThe information system prohibits user installation of software without explicit privileged status.",
         "Supplemental Guidance text",
         "Reference text",
         "R",
@@ -327,7 +327,7 @@ def test_get_title_with_enhancement():
         "",
         "",
     ]
-    assert script.get_title(row) == "CM-3(-3): Configuration Change Control"
+    assert script.get_title(row) == "CM-11-2: User-installed Software | Prohibit Installation Without Privileged Status"
 
 
 def test_get_title_without_enhancement():

@@ -221,11 +221,11 @@ def get_title(row):
     """
     title = ""
     if row[Header.ENHANCEMENT.value]:
-        title = "{}-{}({}): {}".format(
+        title = "{}-{}{}: {}".format(
             row[Header.FAMILY.value],
             row[Header.CONTROL_ID.value],
-            row[Header.ENHANCEMENT.value],
-            string.capwords(row[Header.CONTROL_NAME.value]),
+            row[Header.ENHANCEMENT.value].strip(),
+            string.capwords(row[Header.CONTROL_DEFINITION.value].split("\n")[0]),
         )
     else:
         title = "{}-{}: {}".format(
