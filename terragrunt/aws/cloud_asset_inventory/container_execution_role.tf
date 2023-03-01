@@ -68,6 +68,17 @@ data "aws_iam_policy_document" "cartography_policies" {
   }
 
   statement {
+    effect = "Allow"
+
+    actions = [
+      "ec2:DescribeRegions",
+    ]
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
 
     effect = "Allow"
 
