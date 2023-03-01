@@ -1,11 +1,11 @@
 resource "aws_ecs_cluster" "cloud_asset_discovery" {
   name = "cloud_asset_discovery"
 
-  capacity_providers = ["FARGATE"]
+  # capacity_providers = ["FARGATE"]
 
-  default_capacity_provider_strategy {
-    capacity_provider = "FARGATE"
-  }
+  # default_capacity_provider_strategy {
+  #   capacity_provider = "FARGATE"
+  # }
 
   setting {
     name  = "containerInsights"
@@ -17,4 +17,19 @@ resource "aws_ecs_cluster" "cloud_asset_discovery" {
     Terraform             = true
     Product               = "${var.product_name}-${var.tool_name}"
   }
+}
+
+resource "aws_ecs_cluster_capacity_providers" "cloud_asset_discovery" {
+  cluster_name = aws_ecs_cluster.cloud_asset_discovery.name
+
+  capacity_providers = [
+    "FARGATE"
+  ]
+
+  default_capacity_provider_strategy {
+    capacity_provider = "FARGATE"
+    weight            = 1
+    base              = 0
+  }
+
 }
