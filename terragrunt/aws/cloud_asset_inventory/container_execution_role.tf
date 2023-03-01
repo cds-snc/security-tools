@@ -71,7 +71,7 @@ data "aws_iam_policy_document" "cartography_policies" {
     effect = "Allow"
 
     actions = [
-      "ec2:DescribeRegions",
+      "ec2:Describe*",
     ]
     resources = [
       "*"
