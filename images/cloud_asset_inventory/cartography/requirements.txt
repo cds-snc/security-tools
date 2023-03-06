@@ -80,7 +80,7 @@ chardet==4.0.0
     # via requests
 colorama==0.4.6
     # via knack
-cryptography==3.4.8
+cryptography==39.0.1
     # via
     #   adal
     #   azure-cli-core
