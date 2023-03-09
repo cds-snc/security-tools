@@ -36,3 +36,6 @@ run-cartography:
 		--env AWS_ACCOUNT=034163289675 \
 		--env AWS_CONFIG_FILE=/config/role_config \
 		cartography
+
+view-neo4j:
+	${BROWSER} http://localhost:7474
