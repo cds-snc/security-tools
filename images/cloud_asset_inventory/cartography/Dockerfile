@@ -6,8 +6,7 @@ RUN apk add jq curl build-base linux-headers libffi-dev gcc
 RUN mkdir -p /config
 WORKDIR /config
 
-COPY --chown=python:python docker-entrypoint.sh /
-RUN chmod +x /docker-entrypoint.sh
+
 RUN chown -R python:python /config
 
 USER python
@@ -17,5 +16,8 @@ ENV PATH="/home/python/venv/bin:${PATH}" \
 
 COPY --chown=python:python requirements.txt /home/python/cartography/requirements.txt
 RUN /home/python/venv/bin/pip install --no-cache-dir --requirement /home/python/cartography/requirements.txt
+
+COPY --chown=python:python docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
 
 ENTRYPOINT ["/docker-entrypoint.sh"]

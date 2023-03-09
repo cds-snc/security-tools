@@ -1,0 +1,10 @@
+build-essential
+ca-certificates
+curl
+gnupg2
+jq
+libffi-dev
+make
+openssh-client
+vim
+zsh
