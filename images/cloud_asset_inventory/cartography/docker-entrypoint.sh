@@ -38,13 +38,10 @@ else
 source_profile = default
 region = ca-central-1
 output = json
-
-[default]
-region = ca-central-1
-output=json
 aws_access_key_id=$AWS_ACCESS_KEY_ID
 aws_secret_access_key=$AWS_SECRET_ACCESS_KEY
 aws_session_token=$AWS_SESSION_TOKEN
+
 EOF
 
 fi
@@ -54,6 +51,7 @@ echo "AWS configuration complete, launching cartography"
 cartography --neo4j-uri "$NEO4J_URI" \
   --neo4j-user "$NEO4J_USER" \
   --neo4j-password-env-var NEO4J_SECRETS_PASSWORD \
-  --aws-sync-all-profiles
+  --aws-sync-all-profiles \
+  --aws-best-effort-mode
 
 exit 0
