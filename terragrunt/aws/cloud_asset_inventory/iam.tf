@@ -150,8 +150,8 @@ data "aws_iam_policy_document" "write_waf_logs" {
 
 ### Org Acccount List Org ID
 
-resource "aws_iam_role" "list_accounts_in_org" { 
-  name  = "ListAccountsInOrg"
+resource "aws_iam_role" "list_accounts_in_org" {
+  name = "ListAccountsInOrg"
 
   assume_role_policy = data.aws_iam_policy_document.list_accounts_in_org.json
 }
