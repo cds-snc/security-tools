@@ -146,3 +146,32 @@ data "aws_iam_policy_document" "write_waf_logs" {
     ]
   }
 }
+
+
+### Org Acccount List Org ID
+
+resource "aws_iam_role" "list_accounts_in_org" {
+  name = "ListAccountsInOrg"
+
+  assume_role_policy = data.aws_iam_policy_document.list_accounts_in_org.json
+}
+
+data "aws_iam_policy_document" "list_accounts_in_org" {
+  statement {
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["states.amazonaws.com"]
+    }
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+data "aws_iam_policy" "AWSLambdaRole" {
+  arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaRole"
+}
+
+resource "aws_iam_role_policy_attachment" "list_accounts_in_org" {
+  role       = aws_iam_role.list_accounts_in_org.name
+  policy_arn = data.aws_iam_policy.AWSLambdaRole.arn
+}

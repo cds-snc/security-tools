@@ -1,0 +1,30 @@
+version: '3.8'
+networks:
+  neo4j:
+
+services:
+  app:
+
+    networks:
+      - neo4j
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    
+    volumes:
+      - ..:/workspace:cached
+
+    command: sleep infinity
+
+  neo4j:
+    image: neo4j:4.4.10
+
+    networks:
+      - neo4j
+    environment: 
+      NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
+      NEO4J_AUTH: neo4j/localpassword
+    ports:
+      - 7473:7473
+      - 7474:7474
+      - 7687:7687
