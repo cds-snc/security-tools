@@ -13,7 +13,7 @@ adal==1.2.7
     #   msrestazure
 applicationinsights==0.11.10
     # via azure-cli-telemetry
-argcomplete==2.0
+argcomplete==2.0.6
     # via
     #   azure-cli-core
     #   knack
@@ -54,9 +54,9 @@ azure-mgmt-storage==18.0.0
     # via cartography
 bcrypt==3.2.2
     # via paramiko
-boto3==1.26.79
+boto3==1.26.84
     # via cartography
-botocore==1.29.79
+botocore==1.29.84
     # via
     #   boto3
     #   cartography
