@@ -1,0 +1,48 @@
+kind: source
+spec:
+  # Source spec section
+  name: aws
+  path: cloudquery/aws
+  version: "v15.4.0"
+  tables: ["*"]
+  destinations: ["postgresql"]
+  spec: 
+  #   # AWS Spec section described below
+    regions: 
+      - ca-central-1
+      - us-east-1
+      - us-west-2
+    # accounts: # use accounts to fetch specific accounts
+    #   - id: cds-guillaume-charest-test-132761243856
+    #     role_arn: arn:aws:iam::274536870005:role/secopsAssetInventorySecurityAuditRole
+    org: # use org to fetch all accounts in the organization
+      member_role_name: secopsAssetInventorySecurityAuditRole
+      organization_units:
+      - ou-5gsq-qhvjdryl
+      # admin_account:
+        # local_profile: ${AWS_PROFILE}
+        # role_arn: arn:aws:iam::794722365809:role/secopsAssetInventorySecurityAuditRole
+  #   aws_debug: false
+---
+kind: destination
+spec:
+  name: "neo4j"
+  registry: "github"
+  path: "cloudquery/neo4j"
+  version: "v1.1.2"
+  # batch_size: 10000 # optional
+  # batch_size_bytes: 5242880 # optional
+  spec:
+    # connection_string: "bolt://localhost:7687" # used for local neo4j, not in devcontainer
+    connection_string: "bolt://host.docker.internal:7687" # used for local neo4j, in devcontainer
+    username: "neo4j"
+    password: "localpassword"
+---
+kind: destination
+spec:
+  name: "postgresql"
+  registry: "github"
+  path: "cloudquery/postgresql"
+  version: "v3.0.0"
+  spec:
+    connection_string: "postgres://postgres:password@host.docker.internal:5432/postgres?sslmode=disable"
