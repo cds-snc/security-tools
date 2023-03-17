@@ -16,26 +16,11 @@ services:
 
     command: sleep infinity
 
-  neo4j:
-    image: neo4j:4.4.10
-
-    networks:
-      - neo4j
-    environment: 
-      NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
-      NEO4J_AUTH: neo4j/localpassword
-    ports:
-      - 7473:7473
-      - 7474:7474
-      - 7687:7687
-
   postgres:
     image: postgres:latest@sha256:fbcec7ba704eb8c846b2a265953fa8faaa562fb172e6670018e35da77ef06057
     restart: unless-stopped
     networks:
       - neo4j
-    # volumes:
-    #   - postgres:/var/lib/postgresql/data
     environment: 
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
