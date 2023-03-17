@@ -12,13 +12,12 @@ spec:
       - ca-central-1
       - us-east-1
       - us-west-2
-    # accounts: # use accounts to fetch specific accounts
-    #   - id: cds-guillaume-charest-test-132761243856
-    #     role_arn: arn:aws:iam::274536870005:role/secopsAssetInventorySecurityAuditRole
     org: # use org to fetch all accounts in the organization
       member_role_name: secopsAssetInventorySecurityAuditRole
       organization_units:
       - ou-5gsq-qhvjdryl
+      admin_account:
+        role_arn: arn:aws:iam::794722365809:role/ListAccountsInOrg
 ---
 kind: destination
 spec:
@@ -27,4 +26,4 @@ spec:
   path: "cloudquery/postgresql"
   version: "v3.0.0"
   spec:
-    connection_string: "postgres://postgres:password@host.docker.internal:5432/postgres?sslmode=disable"
+    connection_string: "postgres://postgres:password@postgres:5432/postgres?sslmode=disable"

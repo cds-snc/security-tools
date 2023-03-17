@@ -1,12 +1,8 @@
 version: '3.8'
-networks:
-  neo4j:
 
 services:
   app:
 
-    networks:
-      - neo4j
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
@@ -19,8 +15,6 @@ services:
   postgres:
     image: postgres:latest@sha256:fbcec7ba704eb8c846b2a265953fa8faaa562fb172e6670018e35da77ef06057
     restart: unless-stopped
-    networks:
-      - neo4j
     environment: 
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
