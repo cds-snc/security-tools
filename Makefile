@@ -1,4 +1,4 @@
-.PHONY: fmt fmt-ci install install-dev lint lint-ci test
+.PHONY: fmt fmt-ci install install-dev lint lint-ci test build run-cartography run-cloud-query view-neo4j
 
 fmt:
 	black .
@@ -23,6 +23,9 @@ test:
 build:
 	docker build -f images/cloud_asset_inventory/cartography/Dockerfile -t cartography images/cloud_asset_inventory/cartography
 
+build-cq: 
+	docker build -f images/cloud_asset_inventory/cloudquery/Dockerfile -t cq images/cloud_asset_inventory/cloudquery
+
 run-cartography:
 	docker run \
 		--env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
@@ -36,6 +39,15 @@ run-cartography:
 		--env AWS_ACCOUNT=034163289675 \
 		--env AWS_CONFIG_FILE=/config/role_config \
 		cartography
+
+run-cloud-query:
+	docker run \
+		-e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+		-e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+		-e AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN} \
+		-e AWS_DEFAULT_REGION="ca-central-1" \
+		cq
+		sync --log-console --log-level debug /config.yml
 
 view-neo4j:
 	${BROWSER} http://localhost:7474
