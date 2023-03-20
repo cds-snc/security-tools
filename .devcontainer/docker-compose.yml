@@ -17,7 +17,7 @@ services:
     command: sleep infinity
 
   neo4j:
-    image: neo4j:4.4.10
+    image: neo4j:4.4.18@sha256:f4cedc2ec96c92efaf9c20724077b3c3f4c90a1c7f7b5c0859e2dc9e6b6a339f
 
     networks:
       - neo4j
