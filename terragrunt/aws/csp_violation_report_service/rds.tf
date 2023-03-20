@@ -4,7 +4,7 @@ module "csp_reports_db" {
 
   database_name  = aws_ssm_parameter.db_database.value
   engine         = "aurora-postgresql"
-  engine_version = "13.6"
+  engine_version = "13.9"
   instances      = 2
   instance_class = "db.t3.medium"
   username       = aws_ssm_parameter.db_username.value
