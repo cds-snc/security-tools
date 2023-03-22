@@ -72,6 +72,18 @@ data "aws_iam_policy_document" "cartography_task_execution_policies" {
     ]
     resources = local.trusted_role_arns
   }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "organizations:ListAccounts",
+      "organizations:ListAccountsForParent",
+      "organizations:ListChildren"
+    ]
+
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_policy" "cartography_task_execution_policies" {
