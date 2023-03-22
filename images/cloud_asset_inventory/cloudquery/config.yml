@@ -1,29 +1,32 @@
 kind: source
 spec:
-  # Source spec section
   name: aws
   path: cloudquery/aws
   version: "v15.4.0"
-  tables: ["*"]
-  destinations: ["postgresql"]
+  tables: ["aws_s3*"]
+  # tables: ["*"]
+  destinations: ["s3"]
   spec: 
-  #   # AWS Spec section described below
     regions: 
       - ca-central-1
       - us-east-1
       - us-west-2
-    org: # use org to fetch all accounts in the organization
+    org:
       member_role_name: secopsAssetInventorySecurityAuditRole
-      organization_units:
-      - ou-5gsq-qhvjdryl
       admin_account:
-        role_arn: arn:aws:iam::794722365809:role/ListAccountsInOrg
+        role_arn: arn:aws:iam::794722365809:role/secopsAssetInventoryCartographyRole
 ---
 kind: destination
 spec:
-  name: "postgresql"
-  registry: "github"
-  path: "cloudquery/postgresql"
-  version: "v3.0.0"
+  name: "s3"
+  path: "cloudquery/s3"
+  version: "v3.1.0"
+  write_mode: "append" # s3 only supports 'append' mode
+  # batch_size: 10000 # optional
+  # batch_size_bytes: 5242880 # optional
   spec:
-    connection_string: "postgres://postgres:password@postgres:5432/postgres?sslmode=disable"
+    bucket: ${CQ_S3_BUCKET}
+    region: "ca-central-1"
+    path: "cloudquery/{{TABLE}}/dt={{YEAR}}-{{MONTH}}-{{DAY}}-{{HOUR}}/{{UUID}}.parquet"
+    format: "parquet"
+    athena: true # <- set this to true for Athena compatibility
