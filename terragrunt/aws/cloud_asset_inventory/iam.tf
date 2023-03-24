@@ -84,6 +84,26 @@ data "aws_iam_policy_document" "cartography_task_execution_policies" {
 
     resources = ["*"]
   }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:DeleteObject",
+      "s3:ListBucket",
+      "s3:ListBucketMultipartUploads",
+      "s3:ListMultipartUploadParts",
+      "s3:AbortMultipartUpload"
+    ]
+
+    resources = [
+      "arn:aws:s3:::${module.cloudquery_s3_bucket.s3_bucket_id}",
+      "arn:aws:s3:::${module.cloudquery_s3_bucket.s3_bucket_id}/*"
+    ]
+
+  }
 }
 
 resource "aws_iam_policy" "cartography_task_execution_policies" {
