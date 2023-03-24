@@ -47,19 +47,16 @@
       "Catch": [
         {
           "ErrorEquals": [
-            "States.TaskFailed"
+            "States.ALL"
           ],
-          "Next": "SQS SendMessage"
+          "ResultPath": null,
+          "Next": "Handle Failure"
         }
       ],
       "End": true
     },
-    "SQS SendMessage": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::sqs:sendMessage",
-      "Parameters": {
-        "MessageBody.$": "$"
-      },
+    "Handle Failure": {
+      "Type": "Pass",
       "End": true
     }
   }
