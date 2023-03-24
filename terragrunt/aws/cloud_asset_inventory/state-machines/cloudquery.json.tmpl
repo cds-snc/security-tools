@@ -7,31 +7,38 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::ecs:runTask",
       "Parameters": {
-        "LaunchType": "FARGATE",
         "Cluster": "${CLOUDQUERY_CLUSTER}",
         "LaunchType": "FARGATE",
         "TaskDefinition": "${CLOUDQUERY_TASK_DEF}",
         "Overrides": {
-            "ContainerOverrides": [
-                "Name": "${CLOUDQUERY_SERVICE_NAME}",
-                "Environment": [
-                    {
-                        "Name": "CQ_S3_BUCKET",
-                        "Value": "${CLOUDQUERY_S3_BUCKET}"
-                    }
-                ]
-            ]
+          "ContainerOverrides": [
+            {
+              "Name": "${CLOUDQUERY_SERVICE_NAME}",
+              "Environment": [
+                {
+                  "Name": "CQ_S3_BUCKET",
+                  "Value": "${CLOUDQUERY_S3_BUCKET}"
+                }
+              ]
+            }
+          ]
         },
         "NetworkConfiguration": {
-            "AwsvpcConfiguration": {
-                "SecurityGroups": ["${SECURITY_GROUPS}"],
-                "Subnets": ["${SUBNETS}"]
-            }
+          "AwsvpcConfiguration": {
+            "SecurityGroups": [
+              "${SECURITY_GROUPS}"
+            ],
+            "Subnets": [
+              "${SUBNETS}"
+            ]
+          }
         }
       },
       "Retry": [
         {
-          "ErrorEquals": ["ECS.AmazonECSException"],
+          "ErrorEquals": [
+            "ECS.AmazonECSException"
+          ],
           "IntervalSeconds": 300,
           "MaxAttempts": 4,
           "BackoffRate": 2
