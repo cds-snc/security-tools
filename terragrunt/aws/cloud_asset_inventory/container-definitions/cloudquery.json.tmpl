@@ -1,0 +1,23 @@
+[
+  {
+    "name" : "${CLOUDQUERY_SERVICE_NAME}",
+    "environment" : [
+      {
+        "name" : "CQ_S3_BUCKET",
+        "value" : "${CQ_S3_BUCKET}"
+      }
+    ],
+    "essential" : true,
+    "image" : "${CLOUDQUERY_IMAGE}",
+    "logConfiguration" : {
+    "logDriver" : "awslogs",
+    "options" : {
+        "awslogs-group": "${AWS_LOGS_GROUP}",
+        "awslogs-region": "${AWS_LOGS_REGION}",
+        "awslogs-stream-prefix": "${AWS_LOGS_STREAM_PREFIX}"
+      }
+    },
+    "portMappings" : [],
+    "secrets" : []
+  }
+]
