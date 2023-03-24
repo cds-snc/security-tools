@@ -29,6 +29,7 @@ run-cloud-query:
 		-e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
 		-e AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN} \
 		-e AWS_DEFAULT_REGION="ca-central-1" \
+		-e CQ_S3_BUCKET=${CQ_S3_BUCKET} \
 		--network=security-tools_devcontainer_default \
 		cq
 		sync --log-console --log-level debug /config.yml
