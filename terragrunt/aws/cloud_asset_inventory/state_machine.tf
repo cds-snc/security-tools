@@ -182,7 +182,7 @@ resource "aws_cloudwatch_event_rule" "asset_inventory_cloudquery" {
 resource "aws_cloudwatch_event_target" "sfn_events_cloudquery" {
   rule     = aws_cloudwatch_event_rule.asset_inventory_cloudquery.name
   arn      = aws_sfn_state_machine.asset_inventory_cloudquery.arn
-  role_arn = aws_iam_role.asset_inventory_cloudquery_state_machine.arn
+  role_arn = aws_iam_role.asset_inventory_cartography_state_machine.arn
 }
 
 data "template_file" "asset_inventory_cloudquery_state_machine" {
