@@ -99,8 +99,8 @@ data "aws_iam_policy_document" "cartography_task_execution_policies" {
     ]
 
     resources = [
-      "arn:aws:s3:::${module.cloudquery_s3_bucket.s3_bucket_id}",
-      "arn:aws:s3:::${module.cloudquery_s3_bucket.s3_bucket_id}/*"
+      "${cloudquery_s3_bucket.s3_bucket_arn}",
+      "${cloudquery_s3_bucket.s3_bucket_arn}/*"
     ]
 
   }

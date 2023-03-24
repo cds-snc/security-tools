@@ -193,7 +193,7 @@ data "template_file" "asset_inventory_cloudquery_state_machine" {
     CLOUDQUERY_SERVICE_NAME = local.cloudquery_service_name
     CLOUDQUERY_CLUSTER      = aws_ecs_cluster.cloud_asset_discovery.arn
     CLOUDQUERY_TASK_DEF     = aws_ecs_task_definition.cloudquery.arn
-    CLOUDQUERY_S3_BUCKET    = module.cloudquery_s3_bucket.bucket_id
+    CLOUDQUERY_S3_BUCKET    = cloudquery_s3_bucket.bucket_id
     SECURITY_GROUPS         = aws_security_group.cartography.id
     SUBNETS                 = join(", ", [for subnet in var.vpc_private_subnet_ids : format("%q", subnet)])
   }
