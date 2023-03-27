@@ -1,0 +1,32 @@
+kind: source
+spec:
+  name: aws
+  path: cloudquery/aws
+  version: "v15.4.0"
+  tables: ["aws_s3*"]
+  # tables: ["*"]
+  destinations: ["s3"]
+  spec: 
+    regions: 
+      - ca-central-1
+      - us-east-1
+      - us-west-2
+    org:
+      member_role_name: secopsAssetInventorySecurityAuditRole
+      admin_account:
+        role_arn: arn:aws:iam::794722365809:role/secopsAssetInventoryCartographyRole
+---
+kind: destination
+spec:
+  name: "s3"
+  path: "cloudquery/s3"
+  version: "v3.1.0"
+  write_mode: "append" # s3 only supports 'append' mode
+  # batch_size: 10000 # optional
+  # batch_size_bytes: 5242880 # optional
+  spec:
+    bucket: ${CQ_S3_BUCKET}
+    region: "ca-central-1"
+    path: "cloudquery/{{TABLE}}/dt={{YEAR}}-{{MONTH}}-{{DAY}}-{{HOUR}}/{{UUID}}.parquet"
+    format: "parquet"
+    athena: true # <- set this to true for Athena compatibility

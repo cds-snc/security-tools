@@ -24,15 +24,30 @@
   "customizations": {
     "vscode": {
       "extensions": [
-		"hashicorp.terraform",
-		"redhat.vscode-yaml",
-		"sebastianbille.iam-legend",
-		"GitHub.copilot",
-		"oderwat.indent-rainbow",
-		"timonwong.shellcheck",
-		"ms-azuretools.vscode-docker"
-	],
+        "hashicorp.terraform",
+        "redhat.vscode-yaml",
+        "sebastianbille.iam-legend",
+        "GitHub.copilot",
+        "oderwat.indent-rainbow",
+        "timonwong.shellcheck",
+        "ms-azuretools.vscode-docker",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg",
+				"ms-vsliveshare.vsliveshare"
+      ],
       "settings": {
+        "sqltools.connections": [
+          {
+            "name": "Postgres",
+            "driver": "PostgreSQL",
+            "server": "host.docker.internal",
+            "port": 5432,
+            "database": "postgres",
+            "user": "postgres",
+            "password": "password",
+            "ssl": false
+          }
+        ],
         "[terraform]": {
           "editor.formatOnSave": true
         }

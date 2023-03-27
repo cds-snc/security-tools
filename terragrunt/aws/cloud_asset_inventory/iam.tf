@@ -72,6 +72,38 @@ data "aws_iam_policy_document" "cartography_task_execution_policies" {
     ]
     resources = local.trusted_role_arns
   }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "organizations:ListAccounts",
+      "organizations:ListAccountsForParent",
+      "organizations:ListChildren"
+    ]
+
+    resources = ["*"]
+  }
+
+  statement {
+    effect = "Allow"
+
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:DeleteObject",
+      "s3:ListBucket",
+      "s3:ListBucketMultipartUploads",
+      "s3:ListMultipartUploadParts",
+      "s3:AbortMultipartUpload"
+    ]
+
+    resources = [
+      "${module.cloudquery_s3_bucket.s3_bucket_arn}",
+      "${module.cloudquery_s3_bucket.s3_bucket_arn}/*"
+    ]
+
+  }
 }
 
 resource "aws_iam_policy" "cartography_task_execution_policies" {

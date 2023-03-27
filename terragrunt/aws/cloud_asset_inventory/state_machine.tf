@@ -163,3 +163,51 @@ data "aws_iam_policy_document" "asset_inventory_cartography_state_machine" {
     ]
   }
 }
+
+# --- Cloudquery Resources---
+
+resource "aws_cloudwatch_event_rule" "asset_inventory_cloudquery" {
+  name                = "cloudquery"
+  schedule_expression = "cron(0 21 * * ? *)"
+  is_enabled          = true
+
+  tags = {
+    (var.billing_tag_key) = var.billing_tag_value
+    Terraform             = true
+    Product               = "${var.product_name}-${var.tool_name}"
+  }
+
+}
+
+resource "aws_cloudwatch_event_target" "sfn_events_cloudquery" {
+  rule     = aws_cloudwatch_event_rule.asset_inventory_cloudquery.name
+  arn      = aws_sfn_state_machine.asset_inventory_cloudquery.arn
+  role_arn = aws_iam_role.asset_inventory_cartography_state_machine.arn
+}
+
+data "template_file" "asset_inventory_cloudquery_state_machine" {
+  template = file("state-machines/cloudquery.json.tmpl")
+
+  vars = {
+
+    CLOUDQUERY_SERVICE_NAME = local.cloudquery_service_name
+    CLOUDQUERY_CLUSTER      = aws_ecs_cluster.cloud_asset_discovery.arn
+    CLOUDQUERY_TASK_DEF     = aws_ecs_task_definition.cloudquery.arn
+    CLOUDQUERY_S3_BUCKET    = module.cloudquery_s3_bucket.s3_bucket_id
+    SECURITY_GROUPS         = aws_security_group.cartography.id
+    SUBNETS                 = join(", ", [for subnet in var.vpc_private_subnet_ids : format("%q", subnet)])
+  }
+}
+
+resource "aws_sfn_state_machine" "asset_inventory_cloudquery" {
+  name     = "asset-inventory-cloudquery"
+  role_arn = aws_iam_role.asset_inventory_cartography_state_machine.arn
+
+  definition = data.template_file.asset_inventory_cloudquery_state_machine.rendered
+
+  tags = {
+    (var.billing_tag_key) = var.billing_tag_value
+    Terraform             = true
+    Product               = "${var.product_name}-${var.tool_name}"
+  }
+}

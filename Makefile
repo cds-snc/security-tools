@@ -1,4 +1,4 @@
-.PHONY: fmt fmt-ci install install-dev lint lint-ci test
+.PHONY: fmt fmt-ci install install-dev lint lint-ci test build-cq run-cloud-query
 
 fmt:
 	black .
@@ -20,22 +20,16 @@ lint-ci: lint
 test:
 	pytest -s -vv .
 
-build:
-	docker build -f images/cloud_asset_inventory/cartography/Dockerfile -t cartography images/cloud_asset_inventory/cartography
+build-cq: 
+	docker build -f images/cloud_asset_inventory/cloudquery/Dockerfile -t cq images/cloud_asset_inventory/cloudquery
 
-run-cartography:
+run-cloud-query:
 	docker run \
-		--env AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-		--env AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-		--env AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN} \
-		--env AWS_DEFAULT_REGION="ca-central-1" \
-		--env NEO4J_URI=bolt://host.docker.internal:7687 \
-		--env NEO4J_USER=neo4j \
-		--env NEO4J_SECRETS_PASSWORD=localpassword \
-		--env LOCAL=true \
-		--env AWS_ACCOUNT=034163289675 \
-		--env AWS_CONFIG_FILE=/config/role_config \
-		cartography
-
-view-neo4j:
-	${BROWSER} http://localhost:7474
+		-e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+		-e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+		-e AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN} \
+		-e AWS_DEFAULT_REGION="ca-central-1" \
+		-e CQ_S3_BUCKET=${CQ_S3_BUCKET} \
+		--network=security-tools_devcontainer_default \
+		cq
+		sync --log-console --log-level debug /config.yml
