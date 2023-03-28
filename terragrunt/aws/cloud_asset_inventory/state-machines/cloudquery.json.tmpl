@@ -5,7 +5,7 @@
   "States": {
     "CloudQuery": {
       "Type": "Task",
-      "Resource": "arn:aws:states:::ecs:runTask",
+      "Resource": "arn:aws:states:::ecs:runTask.sync",
       "Parameters": {
         "Cluster": "${CLOUDQUERY_CLUSTER}",
         "LaunchType": "FARGATE",
