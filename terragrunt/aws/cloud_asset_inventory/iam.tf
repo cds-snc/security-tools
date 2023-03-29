@@ -4,16 +4,16 @@
 ###
 
 locals {
-  asset_inventory_admin_role       = "secopsAssetInventoryCartographyRole"
+  asset_inventory_admin_role       = "secopsAssetInventoryCloudqueryRole"
   asset_inventory_managed_accounts = var.asset_inventory_managed_accounts
   trusted_role_arns = [
     for account in local.asset_inventory_managed_accounts : "arn:aws:iam::${account}:role/secopsAssetInventorySecurityAuditRole"
   ]
 }
 
-resource "aws_iam_role" "cartography_task_execution_role" {
+resource "aws_iam_role" "cloudquery_task_execution_role" {
   name               = local.asset_inventory_admin_role
-  assume_role_policy = data.aws_iam_policy_document.cartography_task_execution_role.json
+  assume_role_policy = data.aws_iam_policy_document.cloudquery_task_execution_role.json
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
@@ -22,7 +22,7 @@ resource "aws_iam_role" "cartography_task_execution_role" {
   }
 }
 
-data "aws_iam_policy_document" "cartography_task_execution_role" {
+data "aws_iam_policy_document" "cloudquery_task_execution_role" {
   statement {
     effect = "Allow"
 
@@ -36,33 +36,33 @@ data "aws_iam_policy_document" "cartography_task_execution_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
-  role       = aws_iam_role.cartography_task_execution_role.name
+  role       = aws_iam_role.cloudquery_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatch_policies" {
-  role       = aws_iam_role.cartography_task_execution_role.name
+  role       = aws_iam_role.cloudquery_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
 }
 
 resource "aws_iam_role_policy_attachment" "ec2_container_registery_policies" {
-  role       = aws_iam_role.cartography_task_execution_role.name
+  role       = aws_iam_role.cloudquery_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_container_registery_policies" {
-  role       = aws_iam_role.cartography_task_execution_role.name
+  role       = aws_iam_role.cloudquery_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 ### Task execution role policy
 
-resource "aws_iam_role_policy_attachment" "cartography_task_execution_policies" {
-  role       = aws_iam_role.cartography_task_execution_role.name
-  policy_arn = aws_iam_policy.cartography_task_execution_policies.arn
+resource "aws_iam_role_policy_attachment" "cloudquery_task_execution_policies" {
+  role       = aws_iam_role.cloudquery_task_execution_role.name
+  policy_arn = aws_iam_policy.cloudquery_task_execution_policies.arn
 }
 
-data "aws_iam_policy_document" "cartography_task_execution_policies" {
+data "aws_iam_policy_document" "cloudquery_task_execution_policies" {
   statement {
 
     effect = "Allow"
@@ -106,10 +106,10 @@ data "aws_iam_policy_document" "cartography_task_execution_policies" {
   }
 }
 
-resource "aws_iam_policy" "cartography_task_execution_policies" {
-  name   = "CartographyTaskExecutionPolicies"
+resource "aws_iam_policy" "cloudquery_task_execution_policies" {
+  name   = "CloudqueryTaskExecutionPolicies"
   path   = "/"
-  policy = data.aws_iam_policy_document.cartography_task_execution_policies.json
+  policy = data.aws_iam_policy_document.cloudquery_task_execution_policies.json
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value

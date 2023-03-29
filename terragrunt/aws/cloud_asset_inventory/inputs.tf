@@ -50,7 +50,7 @@ variable "shared_key" {
 variable "ssm_prefix" {
   description = "(Required) Prefix to apply to all key names"
   type        = string
-  default     = "cartography"
+  default     = "cloudquery"
 }
 
 variable "vpc_private_subnet_cidrs" {

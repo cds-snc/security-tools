@@ -11,7 +11,6 @@ data "template_file" "cloudquery_container_definition" {
     AWS_LOGS_STREAM_PREFIX  = "${local.cloudquery_service_name}-task"
     CLOUDQUERY_IMAGE        = "${aws_ecr_repository.cloudquery.repository_url}:latest"
     CLOUDQUERY_SERVICE_NAME = local.cloudquery_service_name
-    NEO4J_SECRETS_PASSWORD  = aws_ssm_parameter.neo4j_password.arn
     CQ_S3_BUCKET            = "${module.cloudquery_s3_bucket.s3_bucket_id}"
   }
 }
@@ -24,8 +23,8 @@ resource "aws_ecs_task_definition" "cloudquery" {
   cpu    = 4096
   memory = 8192
 
-  execution_role_arn = aws_iam_role.cartography_container_execution_role.arn
-  task_role_arn      = aws_iam_role.cartography_task_execution_role.arn
+  execution_role_arn = aws_iam_role.cloudquery_container_execution_role.arn
+  task_role_arn      = aws_iam_role.cloudquery_task_execution_role.arn
 
   container_definitions = data.template_file.cloudquery_container_definition.rendered
 
