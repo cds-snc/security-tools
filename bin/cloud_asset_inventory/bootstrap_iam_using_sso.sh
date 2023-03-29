@@ -20,7 +20,7 @@ aws-sso-util configure populate --region ca-central-1
 
 ACCOUNT_LIST="$(aws configure list-profiles)"
 SECURITY_AUDIT_ROLE_NAME="secopsAssetInventorySecurityAuditRole"
-ASSET_INVENTORY_ROLE_NAME="secopsAssetInventoryCartographyRole"
+ASSET_INVENTORY_ROLE_NAME="secopsAssetInventoryCloudqueryRole"
 SECURITY_ACCOUNT_ID="794722365809"
 
 ASSUME_ROLE_POLICY_DOCUMENT=$(cat <<EOF
