@@ -4,12 +4,9 @@
 ###
 
 locals {
-  asset_inventory_admin_role       = "secopsAssetInventoryCloudqueryRole"
-  asset_inventory_managed_accounts = var.asset_inventory_managed_accounts
-  trusted_role_arns = [
-    for account in local.asset_inventory_managed_accounts : "arn:aws:iam::${account}:role/secopsAssetInventorySecurityAuditRole"
-  ]
+  asset_inventory_admin_role = "secopsAssetInventoryCloudqueryRole"
 }
+
 
 resource "aws_iam_role" "cloudquery_task_execution_role" {
   name               = local.asset_inventory_admin_role
@@ -70,7 +67,7 @@ data "aws_iam_policy_document" "cloudquery_task_execution_policies" {
     actions = [
       "sts:AssumeRole",
     ]
-    resources = local.trusted_role_arns
+    resources = ["arn:aws:iam::*:role/secopsAssetInventorySecurityAuditRole"]
   }
 
   statement {

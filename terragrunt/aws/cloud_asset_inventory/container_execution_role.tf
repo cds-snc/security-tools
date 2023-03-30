@@ -64,7 +64,9 @@ data "aws_iam_policy_document" "cloudquery_policies" {
     actions = [
       "sts:AssumeRole",
     ]
-    resources = local.trusted_role_arns
+    resources = [
+      "arn:aws:iam::*:role/secopsAssetInventorySecurityAuditRole"
+    ]
   }
 
   statement {
@@ -93,20 +95,6 @@ data "aws_iam_policy_document" "cloudquery_policies" {
     ]
   }
 
-  statement {
-
-    effect = "Allow"
-
-    actions = [
-      "ssm:DescribeParameters",
-      "ssm:GetParameters",
-    ]
-    resources = [
-      aws_ssm_parameter.asset_inventory_account_list.arn,
-      aws_ssm_parameter.customer_id.arn,
-      aws_ssm_parameter.shared_key.arn,
-    ]
-  }
 }
 
 resource "aws_iam_policy" "cloudquery_policies" {

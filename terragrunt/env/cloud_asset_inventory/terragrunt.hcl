@@ -12,7 +12,6 @@ dependency "base" {
 
 inputs = {
   tool_name                                       = "cloud-asset-inventory"
-  asset_inventory_managed_accounts                = split("\n", chomp(replace(file("configs/accounts.txt"), "\"", "")))
   cloud_asset_inventory_vpc_peering_connection_id = "pcx-0771c54d393000439"
   security_tools_vpc_id                           = dependency.base.outputs.security_tools_vpc_id
   vpc_private_subnet_cidrs                        = dependency.base.outputs.vpc_private_subnet_cidrs

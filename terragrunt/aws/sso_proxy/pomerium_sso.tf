@@ -32,7 +32,6 @@ data "template_file" "pomerium_sso_proxy_routes_policy" {
   template = file("configs/routes.yml.tmpl")
 
   vars = {
-    CLOUD_ASSET_INVENTORY_LOAD_BALANCER_DNS        = var.cloud_asset_inventory_load_balancer_dns
     CSP_VIOLATION_REPORT_SERVICE_LOAD_BALANCER_DNS = var.csp_violation_report_service_load_balancer_dns
   }
 }
