@@ -76,7 +76,7 @@ def post_request(issues_url, headers, issues_json):
     Post request to github api to create issue. If successful, print the control title.
     If not, print the control title and the response. Return the response.
     """
-    response = requests.post(issues_url, headers=headers, json=issues_json)
+    response = requests.post(issues_url, headers=headers, json=issues_json, timeout=5)
     if response.status_code == 201:
         logging.info("Created issue for control: {}".format(issues_json["title"]))
     else:
