@@ -30,14 +30,6 @@ resource "aws_security_group" "pomerium" {
   vpc_id      = var.security_tools_vpc_id
 
   egress {
-    description = "Access Cartography cidr"
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "tcp"
-    cidr_blocks = [var.cloud_asset_inventory_cidr]
-  }
-
-  egress {
     description = "Access to the internet"
     from_port   = 443
     to_port     = 443
@@ -86,24 +78,7 @@ resource "aws_security_group" "pomerium" {
     self        = true
   }
 
-  egress {
-    description = "Outbound access to neo4j http"
-    from_port   = 7474
-    to_port     = 7474
-    protocol    = "tcp"
-    cidr_blocks = var.vpc_private_subnet_cidrs
-    self        = true
-  }
-
-  egress {
-    description = "Outbound access to neo4j bolt"
-    from_port   = 7687
-    to_port     = 7687
-    protocol    = "tcp"
-    cidr_blocks = var.vpc_private_subnet_cidrs
-    self        = true
-  }
-
+  # TODO REVIEW IF WE STILL NEED THESE
   egress {
     description = "Outbound access to dependency track frontend"
     from_port   = 8080

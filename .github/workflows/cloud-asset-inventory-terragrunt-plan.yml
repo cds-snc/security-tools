@@ -15,10 +15,6 @@ env:
   TERRAFORM_VERSION: 1.1.9
   TERRAGRUNT_VERSION: 0.36.7
   TF_INPUT: false
-  TF_VAR_customer_id: ${{ secrets.TF_VARS_LOG_ANALYTICS_CUSTOMER_ID }}
-  TF_VAR_neo4j_password: ${{ secrets.TF_VARS_NEO4J_SECRETS_PASSWORD }}
-  TF_VAR_shared_key: ${{ secrets.TF_VARS_LOG_ANALYTICS_SHARED_KEY }}
-
 
 permissions:
   id-token: write
@@ -56,7 +52,7 @@ jobs:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/gh_plan_role
           role-session-name: TFPlan
           aws-region: ${{ env.AWS_REGION }}
-          
+
       - name: Get current date to determine if secrets need to be rotated
         run: echo "TF_VAR_password_change_id=$(date +'%Y-%m')" >> $GITHUB_ENV
 

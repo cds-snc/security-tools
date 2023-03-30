@@ -32,9 +32,7 @@ jobs:
         id: filter
         with:
           filters: |
-            cloud_asset_inventory/cartography: 'images/cloud_asset_inventory/cartography/**'
             cloud_asset_inventory/cloudquery: 'images/cloud_asset_inventory/cloudquery/**'
-            cloud_asset_inventory/sentinel_neo4j_forwarder: 'images/cloud_asset_inventory/sentinel_neo4j_forwarder/**'
             csp_violation_report_service/app: 'images/csp_violation_report_service/app/**'
             csp_violation_report_service/purge_stale_reports: 'images/csp_violation_report_service/purge_stale_reports/**'
 

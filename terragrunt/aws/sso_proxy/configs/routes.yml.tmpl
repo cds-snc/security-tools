@@ -8,30 +8,6 @@
   cors_allow_preflight: true
   timeout: 30s
 
-- from: https://neo4j.security.cdssandbox.xyz
-  to: http://${CLOUD_ASSET_INVENTORY_LOAD_BALANCER_DNS}:7474
-  allow_websockets: true
-  preserve_host_header: true
-  cors_allow_preflight: true
-  policy:
-      - allow:
-          or:
-            - domain:
-                is: cds-snc.ca
-
-- from: https://bolt.security.cdssandbox.xyz
-  to: http://${CLOUD_ASSET_INVENTORY_LOAD_BALANCER_DNS}:7687
-  allow_websockets: true
-  preserve_host_header: true
-  cors_allow_preflight: true
-  set_response_headers:
-    Access-Control-Allow-Origin: https://neo4j.security.cdssandbox.xyz
-  policy:
-      - allow:
-          or:
-            - domain:
-                is: cds-snc.ca
-
 - from: https://csp-reports.security.cdssandbox.xyz
   to: http://${CSP_VIOLATION_REPORT_SERVICE_LOAD_BALANCER_DNS}:8000
   preserve_host_header: true
