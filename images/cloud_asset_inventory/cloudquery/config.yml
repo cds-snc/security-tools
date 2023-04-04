@@ -13,8 +13,6 @@ spec:
       - us-west-2
     org:
       member_role_name: secopsAssetInventorySecurityAuditRole
-      admin_account:
-        role_arn: arn:aws:iam::794722365809:role/secopsAssetInventoryCloudqueryRole
 ---
 kind: destination
 spec:
