@@ -45,6 +45,6 @@ spec:
   spec:
     bucket: ${CQ_S3_BUCKET}
     region: "ca-central-1"
-    path: "cloudquery/{{TABLE}}/dt={{YEAR}}-{{MONTH}}-{{DAY}}-{{HOUR}}/{{UUID}}.parquet"
+    path: "cloudquery/{{TABLE}}/dt={{YEAR}}-{{MONTH}}-{{DAY}}-{{HOUR}}-{{MINUTE}}/{{UUID}}.parquet"
     format: "parquet"
     athena: true # <- set this to true for Athena compatibility
