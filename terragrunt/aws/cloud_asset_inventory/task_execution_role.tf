@@ -18,6 +18,19 @@ resource "aws_iam_role" "cloudquery_task_execution_role" {
   }
 }
 
+data "aws_iam_policy_document" "cloudquery_task_execution_role" {
+  statement {
+    effect = "Allow"
+
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+  }
+}
+
 ### Task execution role policy
 
 resource "aws_iam_role_policy_attachment" "cloudquery_task_execution_policies" {
