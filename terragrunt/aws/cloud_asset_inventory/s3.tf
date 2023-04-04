@@ -11,4 +11,8 @@ module "cloudquery_s3_bucket" {
   billing_tag_value = var.billing_tag_value
   # critical_tag_key   = var.critical_tag_key
   # critical_tag_value = var.critical_tag_value
+
+  versioning = {
+    enabled = true
+  }
 }
