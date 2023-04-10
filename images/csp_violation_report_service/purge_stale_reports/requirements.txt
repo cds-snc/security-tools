@@ -1,2 +1,2 @@
-psycopg2-binary==2.9.5
+psycopg2-binary==2.9.6
 aws-lambda-powertools==1.31.1
