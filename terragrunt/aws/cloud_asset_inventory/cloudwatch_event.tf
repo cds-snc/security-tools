@@ -17,8 +17,9 @@ resource "aws_cloudwatch_event_target" "cloudquery" {
     task_definition_arn = aws_ecs_task_definition.cloudquery.arn
     launch_type         = "FARGATE"
     network_configuration {
-      subnets         = var.vpc_private_subnet_ids
-      security_groups = [aws_security_group.cloudquery.id]
+      subnets          = var.vpc_private_subnet_ids
+      security_groups  = [aws_security_group.cloudquery.id]
+      assign_public_ip = true
     }
   }
 }
