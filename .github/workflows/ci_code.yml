@@ -15,7 +15,7 @@ jobs:
       source: ${{ steps.filter.outputs.changes }}
     steps:
       - name: Checkout
-        uses: actions/checkout@dc323e67f16fb5f7663d20ff7941f27f5809e9b6 # v2.6.0
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
 
       - name: Check for changes
         uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # v2.11.1
@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@dc323e67f16fb5f7663d20ff7941f27f5809e9b6 # v2.6.0
+        uses: actions/checkout@ee0669bd1cc54295c223e0bb666b733df41de1c5 # v2.7.0
 
       - name: Setup python
         uses: actions/setup-python@75f3110429a8c05be0e1bf360334e4cced2b63fa # v2.3.3
