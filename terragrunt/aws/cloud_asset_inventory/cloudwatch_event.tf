@@ -16,7 +16,7 @@ resource "aws_cloudwatch_event_target" "cloudquery" {
     task_count          = 1
     task_definition_arn = aws_ecs_task_definition.cloudquery.arn
     network_configuration {
-      subnets          = var.vpc_private_subnet_ids
+      subnets          = concat(var.vpc_private_subnet_ids, var.vpc_public_subnet_ids)
       security_groups  = [aws_security_group.cloudquery.id]
       assign_public_ip = true
     }
