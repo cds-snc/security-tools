@@ -10,10 +10,10 @@ module "sentinel_forwarder" {
   # s3_sources takes a list of S3 buckets to forward to Sentinel under the format list(object({bucket_name = string, bucket_id = string, filter_prefix = string, kms_key_arn = string})})}))
   s3_sources = [
     {
-      bucket_arn   = module.cloudquery_s3_bucket.s3_bucket_arn
+      bucket_arn    = module.cloudquery_s3_bucket.s3_bucket_arn
       bucket_id     = module.cloudquery_s3_bucket.s3_bucket_id
       filter_prefix = "cloudquery"
-      kms_key_arn  = data.aws_kms_key.s3_bucket_kms_key.arn
+      kms_key_arn   = data.aws_kms_key.s3_bucket_kms_key.arn
     }
   ]
 
