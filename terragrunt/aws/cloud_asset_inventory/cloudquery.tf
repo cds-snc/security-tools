@@ -1,7 +1,3 @@
-locals {
-  cloudquery_service_name = "cloudquery"
-}
-
 data "template_file" "cloudquery_container_definition" {
   template = file("container-definitions/cloudquery.json.tmpl")
 
