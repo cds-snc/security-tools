@@ -2,10 +2,6 @@
 # This role is used by the service running in the container to make API calls to AWS.
 ###
 
-locals {
-  asset_inventory_admin_role = "secopsAssetInventoryCloudqueryRole"
-}
-
 
 resource "aws_iam_role" "cloudquery_task_execution_role" {
   name               = local.asset_inventory_admin_role

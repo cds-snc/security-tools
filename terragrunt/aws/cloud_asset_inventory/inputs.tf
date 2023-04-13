@@ -14,6 +14,18 @@ variable "ssm_prefix" {
   default     = "cloudquery"
 }
 
+variable "customer_id" {
+  description = "(Required) Azure log workspace customer ID"
+  sensitive   = true
+  type        = string
+}
+
+variable "shared_key" {
+  description = "(Required) Azure log workspace shared key"
+  sensitive   = true
+  type        = string
+}
+
 variable "vpc_private_subnet_cidrs" {
   description = "(Required) The private subnet CIDRs for the VPC"
   type        = list(string)
