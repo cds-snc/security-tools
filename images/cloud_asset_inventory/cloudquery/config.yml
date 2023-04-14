@@ -42,5 +42,5 @@ spec:
   spec:
     bucket: ${CQ_S3_BUCKET}
     region: "ca-central-1"
-    path: "cloudquery/{{TABLE}}/{{YEAR}}-{{MONTH}}-{{DAY}}-{{HOUR}}-{{MINUTE}}/{{UUID}}.parquet"
+    path: "cloudquery/{{TABLE}}/{{YEAR}}-{{MONTH}}-{{DAY}}-{{HOUR}}-{{MINUTE}}/{{UUID}}.json"
     format: "json"
