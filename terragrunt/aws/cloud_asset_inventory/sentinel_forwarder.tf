@@ -7,6 +7,8 @@ module "sentinel_forwarder" {
 
   log_type = local.cloudquery_service_name
 
+  layer_arn = "arn:aws:lambda:ca-central-1:283582579564:layer:aws-sentinel-connector-layer:47"
+
   s3_sources = [
     {
       bucket_arn    = module.cloudquery_s3_bucket.s3_bucket_arn
