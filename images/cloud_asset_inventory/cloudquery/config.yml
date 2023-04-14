@@ -3,7 +3,6 @@ spec:
   name: aws
   path: cloudquery/aws
   version: "v15.4.0"
-  # tables: ["aws_s3*"]
   tables: ["*"]
   skip_tables:
   - aws_ec2_vpc_endpoint_services # this resource includes services that are available from AWS as well as other AWS Accounts
@@ -40,11 +39,8 @@ spec:
   path: "cloudquery/s3"
   version: "v3.1.0"
   write_mode: "append" # s3 only supports 'append' mode
-  # batch_size: 10000 # optional
-  # batch_size_bytes: 5242880 # optional
   spec:
     bucket: ${CQ_S3_BUCKET}
     region: "ca-central-1"
-    path: "cloudquery/{{TABLE}}/dt={{YEAR}}-{{MONTH}}-{{DAY}}-{{HOUR}}-{{MINUTE}}/{{UUID}}.parquet"
-    format: "parquet"
-    athena: true # <- set this to true for Athena compatibility
+    path: "cloudquery/{{TABLE}}/{{YEAR}}-{{MONTH}}-{{DAY}}-{{HOUR}}-{{MINUTE}}/{{UUID}}.parquet"
+    format: "json"
