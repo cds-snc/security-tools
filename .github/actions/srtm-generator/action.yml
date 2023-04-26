@@ -1,0 +1,27 @@
+name: "Generate SRTM from GitHub issues"
+description: "Create SRTM csv from GitHub issues"
+
+inputs:
+  token:
+    description: "Token for allowing read issues action"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout Code
+      uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      with:
+        repository: cds-snc/security-tools
+        path: ./.github/tmp/security-tools
+      
+    - name: Run python script to create gh issues
+      working-directory: ./.github/tmp/security-tools/tools/itsg33-issue-generator
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+        REPO: ${{ github.repository }}
+        LABEL: "iATO"
+      run: |
+        make install
+        make
+      shell: bash
