@@ -62,7 +62,7 @@ jobs:
 
       - name: Terragrunt plan sso_proxy
         if: ${{ steps.filter.outputs.sso_proxy == 'true' || steps.filter.outputs.common == 'true' }}
-        uses: cds-snc/terraform-plan@8be66db9c815352044405fd33120b91918bf1f2e # tag=v2.3.1
+        uses: cds-snc/terraform-plan@ac0a542b33131e422d08653af6271d29f95ef9ab # v3.0.4
         with:
           directory: "terragrunt/env/sso_proxy"
           comment-delete: "true"
