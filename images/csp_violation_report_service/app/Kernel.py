@@ -18,7 +18,6 @@ from app.middlewares import VerifyCsrfToken, TranslateMiddleware
 
 
 class Kernel:
-
     http_middleware = [MaintenanceModeMiddleware, EncryptCookies]
 
     route_middleware = {

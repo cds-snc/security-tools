@@ -6,7 +6,6 @@ from uuid import uuid4
 
 
 class ReportTest(TestCase, DatabaseTransactions):
-
     connection = "testing"
 
     def test_create_report(self):
