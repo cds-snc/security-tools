@@ -2,7 +2,7 @@ kind: source
 spec:
   name: aws
   path: cloudquery/aws
-  version: "v15.4.0"
+  version: "v17.2.0"
   tables: ["*"]
   skip_tables:
   - aws_ec2_vpc_endpoint_services # this resource includes services that are available from AWS as well as other AWS Accounts
