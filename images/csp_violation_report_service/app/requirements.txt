@@ -1,7 +1,7 @@
 aws-lambda-powertools==1.31.1
 masonite==4.17.4
 masonite-orm==2.19.1
-apig-wsgi==2.15.0
+apig-wsgi==2.16.0
 boto3==1.26.134
 gunicorn==20.1.0
 psycopg2-binary==2.9.6
