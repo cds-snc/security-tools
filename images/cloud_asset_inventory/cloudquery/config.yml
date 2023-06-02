@@ -2,7 +2,7 @@ kind: source
 spec:
   name: aws
   path: cloudquery/aws
-  version: "v17.2.0"
+  version: "v17.4.0"
   tables: ["*"]
   skip_tables:
   - aws_ec2_vpc_endpoint_services # this resource includes services that are available from AWS as well as other AWS Accounts
@@ -25,6 +25,7 @@ spec:
   - aws_rds_engine_versions
   - aws_servicequotas_services
   destinations: ["s3"]
+  concurrency: 2000
   spec:
     regions:
       - ca-central-1
@@ -37,7 +38,7 @@ kind: destination
 spec:
   name: "s3"
   path: "cloudquery/s3"
-  version: "v3.1.0"
+  version: "v4.4.0"
   write_mode: "append" # s3 only supports 'append' mode
   spec:
     bucket: ${CQ_S3_BUCKET}
