@@ -1,6 +1,6 @@
 attrs==23.1.0
 black==23.3.0
-coverage==7.2.6
+coverage==7.2.7
 flake8==6.0.0
 pytest==7.3.1
 pytest-asyncio==0.21.0
