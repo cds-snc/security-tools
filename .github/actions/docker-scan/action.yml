@@ -16,7 +16,7 @@ runs:
   using: "composite"
   steps:
     - name: Run docker vulnerability scanner
-      uses: aquasecurity/trivy-action@82ec0dd604dba823f8d78b0ae2655450d8fe3a55
+      uses: aquasecurity/trivy-action@41f05d9ecffa2ed3f1580af306000f734b733e54
       with:
         image-ref: "${{ inputs.docker_image }}"
         format: "sarif"
@@ -33,7 +33,7 @@ runs:
       shell: bash
 
     - name: Upload trivy scan results to github security tab
-      uses: github/codeql-action/upload-sarif@0225834cc549ee0ca93cb085b92954821a145866 # v2.3.5
+      uses: github/codeql-action/upload-sarif@83f0fe6c4988d98a455712a27f0255212bba9bd4 # v2.3.6
       with:
         sarif_file: "trivy-results.sarif"
         token: ${{ inputs.token }}
