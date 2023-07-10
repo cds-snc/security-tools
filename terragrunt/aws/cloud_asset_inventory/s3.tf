@@ -1,5 +1,5 @@
 module "cloudquery_s3_bucket" {
-  source      = "github.com/cds-snc/terraform-modules?ref=v5.1.4//S3"
+  source      = "github.com/cds-snc/terraform-modules//S3?ref=v6.1.1"
   bucket_name = local.cloudquery_name
 
   billing_tag_key   = var.billing_tag_key

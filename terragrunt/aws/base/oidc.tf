@@ -5,7 +5,7 @@ locals {
 
 
 module "oidc" {
-  source            = "github.com/cds-snc/terraform-modules?ref=v2.0.1//gh_oidc_role"
+  source            = "github.com/cds-snc/terraform-modules//gh_oidc_role?ref=v6.1.1"
   billing_tag_key   = var.billing_tag_key
   billing_tag_value = var.billing_tag_value
   oidc_exists       = true
@@ -38,7 +38,7 @@ resource "aws_iam_role_policy_attachment" "readonly" {
 ## Gives the plan role access to all secrets in the repo this is needed since ReadOnly doesn't provide that access
 ## This also gives the plan role the ability to the state bucket and the dynamodb lock table.
 module "attach_tf_plan_policy" {
-  source     = "github.com/cds-snc/terraform-modules?ref=v2.0.1//attach_tf_plan_policy"
+  source     = "github.com/cds-snc/terraform-modules//attach_tf_plan_policy?ref=v6.1.1"
   account_id = var.account_id
   role_name  = local.plan_name
   # This needs to match the data in the root terragrunt.hcl
