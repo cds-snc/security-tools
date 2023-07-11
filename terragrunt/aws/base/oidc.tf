@@ -5,7 +5,7 @@ locals {
 
 
 module "oidc" {
-  source            = "github.com/cds-snc/terraform-modules//gh_oidc_role?ref=v6.1.1"
+  source            = "github.com/cds-snc/terraform-modules//gh_oidc_role?ref=v2.0.1"
   billing_tag_key   = var.billing_tag_key
   billing_tag_value = var.billing_tag_value
   oidc_exists       = true
