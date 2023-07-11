@@ -50,11 +50,11 @@ jobs:
       - name: configure aws credentials using OIDC
         uses: aws-actions/configure-aws-credentials@master
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/gh_admin_role
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/security-tools-apply
           role-session-name: TFApply
           aws-region: ${{ env.AWS_REGION }}
-        
+
       - name: Terragrunt apply csp reports
         if: ${{ steps.filter.outputs.csp_violation_report_service == 'true' || steps.filter.outputs.common == 'true' }}
         working-directory: "terragrunt/env/csp_violation_report_service"
-        run: terragrunt apply --terragrunt-non-interactive -auto-approve          
+        run: terragrunt apply --terragrunt-non-interactive -auto-approve

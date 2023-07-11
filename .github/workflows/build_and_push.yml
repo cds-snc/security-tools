@@ -52,7 +52,7 @@ jobs:
       - name: configure aws credentials using OIDC
         uses: aws-actions/configure-aws-credentials@master
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/gh_admin_role
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/security-tools-apply
           role-session-name: ECRPush
           aws-region: ${{ env.AWS_REGION }}
 

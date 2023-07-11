@@ -19,7 +19,6 @@ env:
   TF_VAR_customer_id: ${{ secrets.TF_VARS_LOG_ANALYTICS_CUSTOMER_ID }}
   TF_VAR_shared_key: ${{ secrets.TF_VARS_LOG_ANALYTICS_SHARED_KEY }}
 
-
 permissions:
   id-token: write
   contents: read
@@ -53,7 +52,7 @@ jobs:
       - name: configure aws credentials using OIDC
         uses: aws-actions/configure-aws-credentials@master
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/gh_admin_role
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/security-tools-apply
           role-session-name: TFApply
           aws-region: ${{ env.AWS_REGION }}
 
