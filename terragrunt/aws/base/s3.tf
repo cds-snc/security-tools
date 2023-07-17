@@ -10,7 +10,7 @@ module "log_bucket" {
 }
 
 module "athena" {
-  source      = "github.com/cds-snc/terraform-modules?ref=v0.0.47//S3"
+  source      = "github.com/cds-snc/terraform-modules//S3?ref=v0.0.49"
   bucket_name = local.athena_name
   lifecycle_rule = [{
     id      = "expire"
