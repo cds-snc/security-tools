@@ -1,5 +1,5 @@
 module "csp_reports_db" {
-  source = "github.com/cds-snc/terraform-modules//rds?ref=v6.1.1"
+  source = "github.com/cds-snc/terraform-modules//rds?ref=v6.1.5"
   name   = "csp-reports"
 
   database_name  = aws_ssm_parameter.db_database.value
