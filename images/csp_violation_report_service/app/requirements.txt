@@ -1,4 +1,4 @@
-aws-lambda-powertools==2.20.0
+aws-lambda-powertools==2.21.0
 masonite==4.17.4
 masonite-orm==2.19.1
 apig-wsgi==2.18.0
