@@ -13,7 +13,7 @@ services:
     command: sleep infinity
 
   postgres:
-    image: postgres:latest@sha256:ad126c2b7482bf0ea4f90c2cbb9ab1dfec41ab58d8bef773273a3a1733ad6af0
+    image: postgres:latest@sha256:5eea7fae473638d38f2bd40a80b60baeb90d133a3bfb2a0315e9d1ff2e1e2218
     restart: unless-stopped
     environment: 
       POSTGRES_DB: postgres
