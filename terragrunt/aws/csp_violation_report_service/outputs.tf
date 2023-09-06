@@ -1,4 +1,4 @@
-output "csp_violation_report_service_load_balancer_dns" {
-  description = "The DNS name of the CSP Violation Report Service load balancer"
-  value       = aws_lb.csp_reports.dns_name
+output "csp_reports_function_url" {
+  description = "The URL of the CSP report Lambda function"
+  value       = aws_lambda_function_url.csp_reports.function_url
 }

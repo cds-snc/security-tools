@@ -16,6 +16,8 @@ env:
   TERRAFORM_VERSION: 1.1.9
   TERRAGRUNT_VERSION: 0.36.7
   TF_INPUT: false
+  TF_VAR_log_analytics_workspace_id: ${{ secrets.LOG_ANALYTICS_WORKSPACE_ID }}
+  TF_VAR_log_analytics_workspace_key: ${{ secrets.LOG_ANALYTICS_WORKSPACE_KEY }}
 
 permissions:
   id-token: write
