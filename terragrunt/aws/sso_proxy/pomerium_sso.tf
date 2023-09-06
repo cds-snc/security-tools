@@ -32,7 +32,7 @@ data "template_file" "pomerium_sso_proxy_routes_policy" {
   template = file("configs/routes.yml.tmpl")
 
   vars = {
-    CSP_VIOLATION_REPORT_SERVICE_LOAD_BALANCER_DNS = var.csp_violation_report_service_load_balancer_dns
+    CSP_VIOLATION_REPORT_SERVICE_FUNCTION_URL = var.csp_reports_function_url
   }
 }
 

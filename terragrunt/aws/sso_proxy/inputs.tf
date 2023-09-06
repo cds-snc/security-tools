@@ -1,5 +1,5 @@
-variable "csp_violation_report_service_load_balancer_dns" {
-  description = "DNS name for CSP Report Load Balancer"
+variable "csp_reports_function_url" {
+  description = "DNS name for CSP Report Lambda function"
   type        = string
 }
 
