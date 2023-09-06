@@ -5,8 +5,8 @@ locals {
 
 module "sentinel_forwarder" {
   source            = "github.com/cds-snc/terraform-modules//sentinel_forwarder?ref=v7.0.1"
-  function_name     = "${var.tool_name}-sentinel"
-  billing_tag_value = var.billing_code
+  function_name     = "${var.tool_name}_sentinel"
+  billing_tag_value = var.tool_name
 
   layer_arn = "arn:aws:lambda:ca-central-1:283582579564:layer:aws-sentinel-connector-layer:87"
 
@@ -18,7 +18,7 @@ module "sentinel_forwarder" {
   ]
 }
 
-resource "aws_cloudwatch_log_subscription_filter" "all_logs" {
+resource "aws_cloudwatch_log_subscription_filter" "csp_report" {
   name            = "CSP report"
   log_group_name  = local.csp_reports_log_group_name
   filter_pattern  = "csp-report"
