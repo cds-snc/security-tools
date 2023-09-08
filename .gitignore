@@ -8,6 +8,7 @@
 # Python
 .pytest_cache
 __pycache__
+.coverage
 
 connector.zip
 

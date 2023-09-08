@@ -1,0 +1,47 @@
+name: CI tools
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      images: ${{ steps.filter.outputs.changes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - uses: dorny/paths-filter@4512585405083f25c027a35db413c2b3b9006d50 # tag=v2.11.1
+        id: filter
+        with:
+          filters: |
+            images/csp_violation_report_service: 'images/csp_violation_report_service/**'
+
+  ci:
+    if: needs.changes.outputs.images != '[]'
+    runs-on: ubuntu-latest
+    needs: changes
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ${{ fromJSON(needs.changes.outputs.images) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.image }}
+        run: |
+          make install
+          make install-dev
+
+      - name: Lint, format and test
+        working-directory: ${{ matrix.image }}
+        run: |
+          make lint-ci
+          make fmt-ci
+          make test
