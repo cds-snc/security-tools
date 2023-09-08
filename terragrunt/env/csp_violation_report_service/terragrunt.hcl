@@ -1,3 +1,7 @@
+locals {
+  parent_vars = read_terragrunt_config("../terragrunt.hcl")
+}
+
 terraform {
   source = "../../aws//csp_violation_report_service"
 }
@@ -18,7 +22,7 @@ dependency "base" {
 inputs = {
   hosted_zone_id   = dependency.base.outputs.hosted_zone_id
   tool_name        = "csp_violation_report_service"
-  tool_domain_name = "csp-report-to.${local.vars.inputs.domain_name}"
+  tool_domain_name = "csp-report-to.${local.parent_vars.inputs.domain_name}"
 }
 
 include {
