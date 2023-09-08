@@ -7,9 +7,8 @@ This repository will contain various tools used by CDS to ensure the confidentia
 
 ## Services
 
-- SSO Proxy : AWS, ECS, Google SSO, [Pomerium](https://github.com/pomerium/pomerium)
 - Cloud Asset Inventory: AWS, ECS, [CloudQuery](https://www.cloudquery.io/docs)
-- [Content Security Policy (CSP) violation reporting](https://csp-reports.security.cdssandbox.xyz/): AWS, ECS, RDS
+- Content Security Policy (CSP) violation reporting: AWS, Lambda
    - Onboard by adding the `report-uri https://csp-report-to.security.cdssandbox.xyz/report;` directive to your apps existing CSP
 
 ## License
