@@ -20,14 +20,14 @@ resource "aws_cloudfront_distribution" "csp_reports" {
     allowed_methods = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
     cached_methods  = ["GET", "HEAD"]
 
-    target_origin_id           = aws_lambda_function_url.csp_reports.function_name
-    viewer_protocol_policy     = "redirect-to-https"
+    target_origin_id       = aws_lambda_function_url.csp_reports.function_name
+    viewer_protocol_policy = "redirect-to-https"
 
     response_headers_policy_id = "67f7725c-6f97-4210-82d7-5512b31e9d03" # SecurityHeadersPolicy https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-response-headers-policies.html
     cache_policy_id            = "4135ea2d-6df8-44a3-9df3-4b5a84be39ad" # CachingDisabled https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html
     origin_request_policy_id   = "b689b0a8-53d0-40ab-baf2-68738e2966ac" # AllViewerExceptHostHeader https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-origin-request-policies.html
 
-    compress    = true
+    compress = true
   }
 
   restrictions {
