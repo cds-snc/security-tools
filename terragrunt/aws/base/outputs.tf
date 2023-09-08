@@ -1,3 +1,8 @@
+output "hosted_zone_id" {
+  description = "Route53 hosted zone ID that will hold all DNS records"
+  value       = aws_route53_zone.base_hosted_zone.zone_id
+}
+
 output "security_tools_vpc_id" {
   description = "The VPC ID for the security tools"
   value       = module.vpc.vpc_id
