@@ -3,8 +3,10 @@ from unittest.mock import patch
 import main
 
 
-def test_handler_empty():
+@patch("builtins.print")
+def test_handler_empty(mock_print):
     assert main.handler({}, {}) == {"status": "ok"}
+    mock_print.assert_not_called()
 
 
 @patch("builtins.print")
