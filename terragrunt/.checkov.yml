@@ -1,6 +1,9 @@
 skip-check:
   - CKV_AWS_51  # ECR: mutable images is acceptable since the latest tag will be used
+  - CKV_AWS_68  # Cloudfront: deploying without WAF is acceptable risk
+  - CKV_AWS_86  # Cloudfront: deploying without logging is acceptable risk
   - CKV_AWS_158 # CloudWatch: default AWS Managed encryption key is acceptable
   - CKV_AWS_184 # EFS: default AWS Managed encryption key is acceptable
   - CKV_AWS_231 # port 3389 blocked by the vpc terraform module using the block_rdp flag
   - CKV_AWS_241 # Kinesis firehose: default AWS Managed encryption key is acceptable
+  - CKV2_AWS_32 # Cloudfront: false-positive; a strict header security policy is attached
