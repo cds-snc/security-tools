@@ -4,9 +4,10 @@ module "csp_reports" {
   ecr_arn   = aws_ecr_repository.csp_reports.arn
   image_uri = "${aws_ecr_repository.csp_reports.repository_url}:latest"
 
-  memory                 = 1024
-  timeout                = 120
-  enable_lambda_insights = true
+  memory                         = 256
+  timeout                        = 15
+  enable_lambda_insights         = true
+  reserved_concurrent_executions = 10
 
   billing_tag_value = var.tool_name
 }
