@@ -7,8 +7,11 @@ import logging
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
+
 def handler(event, context):
-    logger.debug(f"Received request: {event}")
+    "Handle the CSP report POST requests"
+
+    logger.debug("Received request: %s", event)
     event_body = event.get("body")
 
     if event_body:
@@ -18,6 +21,7 @@ def handler(event, context):
 
         # Log the csp-report
         if "csp-report" in event_body:
-            print(event_body) # print is used so as to only print the raw JSON to CloudWatch logs
+            # print is used so as to only print the raw JSON to CloudWatch logs
+            print(event_body)
 
     return {"status": "ok"}
