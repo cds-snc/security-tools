@@ -4,11 +4,8 @@ inputs = {
   billing_tag_value          = "security-tools-${get_aws_account_id()}"
   cbs_satellite_bucket_name  = "cbs-satellite-${get_aws_account_id()}"
   domain_name                = "security.cdssandbox.xyz"
-  internal_domain_name       = "${get_aws_account_id()}.local"
   product_name               = "security-tools"
   region                     = "ca-central-1"
-  sso_proxy_cidr             = "10.0.0.0/21" # Reserve 2,046 IP addresses for VPC
-  cloud_asset_inventory_cidr = "10.0.8.0/22" # Reserve 1,022 IP addresses for VPC
 }
 
 remote_state {
