@@ -21,7 +21,7 @@ module "sentinel_forwarder" {
 resource "aws_cloudwatch_log_subscription_filter" "csp_report" {
   name            = "CSP report"
   log_group_name  = local.csp_reports_log_group_name
-  filter_pattern  = "csp-report"
+  filter_pattern  = "[w1=\"*csp-report*\"]"
   destination_arn = module.sentinel_forwarder.lambda_arn
   distribution    = "Random"
 }
