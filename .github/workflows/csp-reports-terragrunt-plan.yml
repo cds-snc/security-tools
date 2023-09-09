@@ -57,7 +57,7 @@ jobs:
 
       - name: Terragrunt plan csp_violation_report_service
         if: ${{ steps.filter.outputs.csp_violation_report_service == 'true' || steps.filter.outputs.common == 'true' }}
-        uses: cds-snc/terraform-plan@7f4ce4a4bdffaba639d32a45272804e37a569408 # v3.0.6
+        uses: cds-snc/terraform-plan@28d2efe5155573489fa5b5816fad20d44d1f274b # v3.0.7
         with:
           directory: "terragrunt/env/csp_violation_report_service"
           comment-delete: "true"
