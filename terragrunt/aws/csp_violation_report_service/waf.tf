@@ -28,7 +28,8 @@ resource "aws_wafv2_web_acl" "csp_report" {
           and_statement {
             statement {
               byte_match_statement {
-                search_string = "post"
+                search_string         = "post"
+                positional_constraint = "EXACTLY"
                 field_to_match {
                   method {}
                 }
@@ -43,8 +44,9 @@ resource "aws_wafv2_web_acl" "csp_report" {
               }
             }
             statement {
-              regex_pattern_set_reference_statement {
-                arn = aws_wafv2_regex_pattern_set.valid_uri_paths.arn
+              byte_match_statement {
+                search_string         = "/report"
+                positional_constraint = "EXACTLY"
                 field_to_match {
                   uri_path {}
                 }
@@ -140,21 +142,5 @@ resource "aws_wafv2_web_acl" "csp_report" {
     cloudwatch_metrics_enabled = true
     metric_name                = "csp_report"
     sampled_requests_enabled   = false
-  }
-}
-
-resource "aws_wafv2_regex_pattern_set" "valid_uri_paths" {
-  provider    = aws.us-east-1
-  name        = "ValidURIPaths"
-  description = "Regex to match the CSP report valid URI paths"
-  scope       = "CLOUDFRONT"
-
-  regular_expression {
-    regex_string = "^/report$"
-  }
-
-  tags = {
-    CostCentre = var.billing_tag_value
-    Terraform  = true
   }
 }
