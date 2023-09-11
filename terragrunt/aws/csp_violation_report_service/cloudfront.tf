@@ -2,6 +2,7 @@ resource "aws_cloudfront_distribution" "csp_reports" {
   enabled     = true
   aliases     = [var.tool_domain_name]
   price_class = "PriceClass_100"
+  web_acl_id  = aws_wafv2_web_acl.csp_report.arn
 
   origin {
     domain_name = split("/", aws_lambda_function_url.csp_reports.function_url)[2]

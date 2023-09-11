@@ -1,8 +1,3 @@
-locals {
-  csp_reports_log_group_name = "/aws/lambda/${module.csp_reports.function_name}"
-  csp_reports_log_group_arn  = "arn:aws:logs:${var.region}:${var.account_id}:log-group:${local.csp_reports_log_group_name}"
-}
-
 module "sentinel_forwarder" {
   source            = "github.com/cds-snc/terraform-modules//sentinel_forwarder?ref=v7.0.1"
   function_name     = "${var.tool_name}_sentinel"
