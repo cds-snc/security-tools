@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: security-tools
+  description: >-
+    This repository will contain various tools used by CDS to ensure the
+    confidentiality, integrity and availability of CDS applications and services
+  labels:
+    license: MIT
+spec:
+  type: website
+  lifecycle: experimental
+  owner: platform-sre-team
