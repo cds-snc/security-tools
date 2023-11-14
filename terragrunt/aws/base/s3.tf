@@ -4,7 +4,7 @@ locals {
 }
 
 module "log_bucket" {
-  source            = "github.com/cds-snc/terraform-modules//S3_log_bucket?ref=v7.2.11"
+  source            = "github.com/cds-snc/terraform-modules//S3_log_bucket?ref=v7.3.2"
   bucket_name       = "${local.name_prefix}-logs"
   billing_tag_value = var.billing_tag_value
 }
