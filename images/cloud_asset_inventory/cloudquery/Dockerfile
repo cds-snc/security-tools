@@ -1,4 +1,4 @@
-FROM ghcr.io/cloudquery/cloudquery:3.27@sha256:08473ee0b5e840a02babe1e75c203294624e31c0fef7fcdce753c9d14097cfe9
+FROM ghcr.io/cloudquery/cloudquery:3.28@sha256:7e090fbfe313dd81350f727b6e428b05a1a2a836982ba572027383b6f848d9f5
 
 COPY config.yml /app
 
