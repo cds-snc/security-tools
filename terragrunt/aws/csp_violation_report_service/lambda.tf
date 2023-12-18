@@ -1,5 +1,5 @@
 module "csp_reports" {
-  source    = "github.com/cds-snc/terraform-modules//lambda?ref=v7.4.3"
+  source    = "github.com/cds-snc/terraform-modules//lambda?ref=v8.0.0"
   name      = var.tool_name
   ecr_arn   = aws_ecr_repository.csp_reports.arn
   image_uri = "${aws_ecr_repository.csp_reports.repository_url}:latest"
