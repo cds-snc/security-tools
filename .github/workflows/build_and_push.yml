@@ -73,7 +73,7 @@ jobs:
           docker push $REGISTRY/${{ matrix.image }}:latest
 
       - name: Generate ${{ matrix.image }} docker SBOM
-        uses: cds-snc/security-tools/.github/actions/generate-sbom@eecd7a02a0294b379411c126b61e5c29e253676a # v2.1.4
+        uses: cds-snc/security-tools/.github/actions/generate-sbom@d6bb182e15f0cad80e7625887ae88e5830728aab # v3.0.0
         with:
           docker_image: ${{ env.REGISTRY }}/${{ matrix.image }}:${{ env.GITHUB_SHA }}
           sbom_name: ${{ matrix.image }}
