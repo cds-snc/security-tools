@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "github.com/cds-snc/terraform-modules//vpc?ref=v6.1.5"
+  source = "github.com/cds-snc/terraform-modules//vpc?ref=v8.0.0"
   name   = "${var.product_name}-${var.tool_name}"
 
   high_availability  = true
