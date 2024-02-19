@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_log_metric_filter" "csp_report_error" {
   name           = "CSPReportError"
-  pattern        = "?ERROR ?Error"
+  pattern        = "?ERROR ?Traceback"
   log_group_name = local.csp_reports_log_group_name
 
   metric_transformation {
