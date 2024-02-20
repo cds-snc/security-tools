@@ -26,3 +26,19 @@ resource "aws_cloudwatch_metric_alarm" "csp_report_error" {
   alarm_actions = [local.sns_alarm_topic_arn]
   ok_actions    = [local.sns_alarm_topic_arn]
 }
+
+
+resource "aws_cloudwatch_query_definition" "scp_report_error_query" {
+  name = "SCP Report Errors"
+
+  log_group_names = [
+    local.csp_reports_log_group_name
+  ]
+
+  query_string = <<-QUERY
+    fields @timestamp, @message, @logStream
+    | filter @message like /(?i)ERROR/
+    | sort @timestamp desc
+    | limit 20
+  QUERY
+}
