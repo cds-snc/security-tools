@@ -1,0 +1,15 @@
+services:
+  app:
+    image: cq-dev
+    volumes:
+      - data_volume:/workspace
+    entrypoint: ["tail", "-f", "/dev/null"]
+    environment:
+      DATABASE_URL: sqlite:////workspace/db.sqlite3
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN}
+      AWS_DEFAULT_REGION: "ca-central-1"
+
+volumes:
+  data_volume:

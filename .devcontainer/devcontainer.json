@@ -1,5 +1,5 @@
 {
-  "name": "Terraform",
+  "name": "Security Tools Dev Container",
   "image": "mcr.microsoft.com/vscode/devcontainers/python:0-3.11",
   "remoteEnv": {
     "PATH": "/home/vscode/.local/bin:${containerEnv:PATH}"
@@ -31,7 +31,10 @@
         "oderwat.indent-rainbow",
         "timonwong.shellcheck",
         "ms-azuretools.vscode-docker",
-        "ms-vsliveshare.vsliveshare"
+        "ms-vsliveshare.vsliveshare",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg",
+        "GitHub.copilot-chat"
       ],
       "settings": {
         "python.pythonPath": "/usr/local/bin/python",
