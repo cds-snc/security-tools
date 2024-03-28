@@ -21,15 +21,13 @@ test:
 	pytest -s -vv .
 
 build-cq: 
-	docker build -f images/cloud_asset_inventory/cloudquery/Dockerfile -t cq images/cloud_asset_inventory/cloudquery
+	docker build --build-arg CONFIG_FILE=config.yml -f images/cloud_asset_inventory/cloudquery/Dockerfile -t cq images/cloud_asset_inventory/cloudquery
 
-run-cloud-query:
-	docker run \
-		-e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
-		-e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
-		-e AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN} \
-		-e AWS_DEFAULT_REGION="ca-central-1" \
-		-e CQ_S3_BUCKET=${CQ_S3_BUCKET} \
-		--network=security-tools_devcontainer_default \
-		cq
-		sync --log-console --log-level debug /config.yml
+build-dev-cq:
+	docker build --build-arg CONFIG_FILE=config.yml -f images/cloud_asset_inventory/cloudquery/dev/Dockerfile -t cq-dev images/cloud_asset_inventory/cloudquery/dev
+
+run-dev-cloud-query:
+	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml up -d app
+
+stop-dev-cloud-query:
+	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml down
