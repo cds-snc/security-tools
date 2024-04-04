@@ -13,3 +13,5 @@ __pycache__
 connector.zip
 
 .cq
+
+/tools/logs-analyzer/connection_logs.txt

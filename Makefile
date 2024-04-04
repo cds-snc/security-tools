@@ -35,5 +35,8 @@ attach:
 stop:
 	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml down
 
+copy-logs:
+	docker cp $(shell docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml ps -q app):/var/log/connection_logs.txt ./tools/logs-analyzer/connection_logs.txt
+
 delete-logs:
 	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml exec app rm /var/log/connection_logs.txt
