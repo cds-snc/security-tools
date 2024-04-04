@@ -7,6 +7,7 @@ services:
         CLOUDQUERY_API_KEY: ${CLOUDQUERY_API_KEY}
     volumes:
       - ../..:/workspaces:cached
+      - logs:/var/log
     command: sleep infinity
     environment:
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
@@ -30,3 +31,4 @@ services:
       - "5432:5432"
 volumes:
   postgres-data:
+  logs:
