@@ -1,4 +1,4 @@
-.PHONY: fmt fmt-ci install install-dev lint lint-ci test build-cq run-cloud-query
+.PHONY: fmt fmt-ci install install-dev lint lint-ci test build up shell down
 
 fmt:
 	black .
@@ -30,11 +30,7 @@ up:
 	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml up -d
 
 shell:
-	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml exec app /bin/bash
+	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml exec app bash -c "nohup /usr/local/bin/log_connections.sh > /app/outbound.log 2>&1 & /bin/bash"
 
 down:
 	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml down
-
-.PHONY: build up shell down
-
-images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml
