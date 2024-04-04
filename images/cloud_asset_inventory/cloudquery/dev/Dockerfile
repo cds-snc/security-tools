@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/go:1-1.22-bookworm
+FROM mcr.microsoft.com/devcontainers/base:bullseye
 
 # Set the working directory
 WORKDIR /app
@@ -9,12 +9,20 @@ COPY ./dependencies.txt .
 # Install dependencies
 RUN apt-get update && \
   xargs -a ./dependencies.txt apt-get install -y && \
-  rm -rf /var/lib/apt/lists/*
+  rm -rf /var/lib/apt/lists/* && \
+  apt-get clean && \
+  rm dependencies.txt
 
-# Download and install CloudQuery
-RUN curl -L https://github.com/cloudquery/cloudquery/releases/download/cli-v5.13.0/cloudquery_linux_amd64 -o cloudquery
-RUN chmod a+x cloudquery
-RUN mv cloudquery /usr/local/bin/
+# Set the version
+ARG TOOL=cli-v5.13.1
+ARG DISTRIBUTION=cloudquery_linux_amd64
+
+# Download the CloudQuery CLI
+COPY ./get_cloudquery.sh .
+RUN ./get_cloudquery.sh ${TOOL} ${DISTRIBUTION} && \
+  mv cloudquery /usr/local/bin/cloudquery && \
+  chmod +x /usr/local/bin/cloudquery && \
+  rm get_cloudquery.sh
 
 # Accept the API key as a build argument
 ARG CLOUDQUERY_API_KEY
