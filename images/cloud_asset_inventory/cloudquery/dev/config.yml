@@ -5,28 +5,28 @@ spec:
   version: "v25.5.0"
   tables: ["*"]
   skip_tables:
-  - aws_ec2_vpc_endpoint_services # this resource includes services that are available from AWS as well as other AWS Accounts
-  - aws_cloudtrail_events
-  - aws_docdb_cluster_parameter_groups
-  - aws_docdb_engine_versions
-  - aws_ec2_instance_types
-  - aws_elasticache_engine_versions
-  - aws_elasticache_parameter_groups
-  - aws_elasticache_reserved_cache_nodes_offerings
-  - aws_elasticache_service_updates
-  - aws_iam_group_last_accessed_details
-  - aws_iam_policy_last_accessed_details
-  - aws_iam_role_last_accessed_details
-  - aws_iam_user_last_accessed_details
-  - aws_lambda_functions
-  - aws_neptune_cluster_parameter_groups
-  - aws_neptune_db_parameter_groups
-  - aws_rds_cluster_parameter_groups
-  - aws_rds_db_parameter_groups
-  - aws_rds_engine_versions
-  - aws_servicequotas_services
+    - aws_ec2_vpc_endpoint_services # this resource includes services that are available from AWS as well as other AWS Accounts
+    - aws_cloudtrail_events
+    - aws_docdb_cluster_parameter_groups
+    - aws_docdb_engine_versions
+    - aws_ec2_instance_types
+    - aws_elasticache_engine_versions
+    - aws_elasticache_parameter_groups
+    - aws_elasticache_reserved_cache_nodes_offerings
+    - aws_elasticache_service_updates
+    - aws_iam_group_last_accessed_details
+    - aws_iam_policy_last_accessed_details
+    - aws_iam_role_last_accessed_details
+    - aws_iam_user_last_accessed_details
+    - aws_lambda_functions
+    - aws_neptune_cluster_parameter_groups
+    - aws_neptune_db_parameter_groups
+    - aws_rds_cluster_parameter_groups
+    - aws_rds_db_parameter_groups
+    - aws_rds_engine_versions
+    - aws_servicequotas_services
   destinations:
-  - postgresql
+    - local
   spec:
     regions:
       - ca-central-1
@@ -39,9 +39,11 @@ spec:
 ---
 kind: destination
 spec:
-  name: "postgresql"
-  path: "cloudquery/postgresql"
+  name: "local"
+  path: "cloudquery/file"
   registry: "cloudquery"
-  version: "v8.0.1"
+  version: "v4.0.6"
+  write_mode: "append"
   spec:
-    connection_string: "postgresql://postgres:postgres@db:5432/postgres"
+    path: "cloudquery/data/{{TABLE}}/{{UUID}}.{{FORMAT}}"
+    format: "parquet"
