@@ -21,18 +21,20 @@ test:
 	pytest -s -vv .
 
 build:
-	docker-compose -f images/cloudquery/dev/docker-compose.yml build
+	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml build
 
 up:
 	export AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID); \
 	export AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY); \
 	export AWS_SESSION_TOKEN=$(AWS_SESSION_TOKEN); \
-	docker-compose -f images/cloudquery/dev/docker-compose.yml up -d
+	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml up -d
 
 shell:
-	docker-compose -f images/cloudquery/dev/docker-compose.yml exec app /bin/bash
+	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml exec app /bin/bash
 
 down:
-	docker-compose -f images/cloudquery/dev/docker-compose.yml down
+	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml down
 
 .PHONY: build up shell down
+
+images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml
