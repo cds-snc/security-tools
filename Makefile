@@ -23,14 +23,17 @@ test:
 build:
 	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml build
 
-up:
+start:
 	export AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID); \
 	export AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY); \
 	export AWS_SESSION_TOKEN=$(AWS_SESSION_TOKEN); \
 	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml up -d
 
-shell:
-	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml exec app bash -c "nohup /usr/local/bin/log_connections.sh > /app/outbound.log 2>&1 & /bin/bash"
+attach:
+	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml exec app bash -c "/usr/local/bin/log_connections.sh & /bin/bash"
 
-down:
+stop:
 	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml down
+
+delete-logs:
+	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml exec app rm /var/log/connection_logs.txt
