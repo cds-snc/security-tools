@@ -7,7 +7,7 @@ WORKDIR /app
 COPY ./dependencies.txt .
 
 # Install dependencies
-RUN apt-get update && \
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
   xargs -a ./dependencies.txt apt-get install -y && \
   rm -rf /var/lib/apt/lists/* && \
   apt-get clean && \
