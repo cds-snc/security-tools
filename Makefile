@@ -20,14 +20,19 @@ lint-ci: lint
 test:
 	pytest -s -vv .
 
-build-cq: 
-	docker build --build-arg CONFIG_FILE=config.yml -f images/cloud_asset_inventory/cloudquery/Dockerfile -t cq images/cloud_asset_inventory/cloudquery
+build:
+	docker-compose -f images/cloudquery/dev/docker-compose.yml build
 
-build-dev-cq:
-	docker build --build-arg CONFIG_FILE=config.yml -f images/cloud_asset_inventory/cloudquery/dev/Dockerfile -t cq-dev images/cloud_asset_inventory/cloudquery/dev
+up:
+	export AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID); \
+	export AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY); \
+	export AWS_SESSION_TOKEN=$(AWS_SESSION_TOKEN); \
+	docker-compose -f images/cloudquery/dev/docker-compose.yml up -d
 
-run-dev-cloud-query:
-	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml up -d app
+shell:
+	docker-compose -f images/cloudquery/dev/docker-compose.yml exec app /bin/bash
 
-stop-dev-cloud-query:
-	docker-compose -f images/cloud_asset_inventory/cloudquery/dev/docker-compose.yml down
+down:
+	docker-compose -f images/cloudquery/dev/docker-compose.yml down
+
+.PHONY: build up shell down
