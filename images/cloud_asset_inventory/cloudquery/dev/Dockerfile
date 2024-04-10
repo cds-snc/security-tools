@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/devcontainers/base:bullseye
+FROM debian:bullseye@sha256:ad47d883924a75f704037e49c71c20ef209fb3ba05be7070322cb45d2e089261
 
 # Set the working directory
 WORKDIR /app
@@ -34,10 +34,6 @@ ENV CLOUDQUERY_API_KEY=${CLOUDQUERY_API_KEY}
 ARG CONFIG_FILE=./config.yml
 COPY ${CONFIG_FILE} ./config.yml
 RUN cloudquery plugin install config.yml
-
-# Copy the psql.sh file and make it executable
-COPY psql.sh ./psql.sh
-RUN chmod +x ./psql.sh
 
 # Copy the log_connections.sh file and make it executable
 COPY ./log_connections.sh /usr/local/bin/log_connections.sh
