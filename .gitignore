@@ -17,3 +17,13 @@ connector.zip
 /tools/logs-analyzer/connection_logs.txt
 /tools/logs-analyzer/cloudquery.log
 /tools/logs-analyzer/cloudquery/*
+
+# Python
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.py[cod]
+*$py.class
+
+**/env/*
