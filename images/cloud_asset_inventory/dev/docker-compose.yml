@@ -1,8 +1,8 @@
 services:
   app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../
+      dockerfile: dev/Dockerfile
       args:
         CLOUDQUERY_API_KEY: ${CLOUDQUERY_API_KEY}
     volumes:
