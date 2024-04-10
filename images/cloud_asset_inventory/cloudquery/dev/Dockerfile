@@ -18,7 +18,7 @@ ARG TOOL=cli-v5.13.1
 ARG DISTRIBUTION=cloudquery_linux_amd64
 
 # Download the CloudQuery CLI
-COPY ./get_cloudquery.sh .
+COPY ../get_cloudquery.sh .
 RUN ./get_cloudquery.sh ${TOOL} ${DISTRIBUTION} && \
   mv cloudquery /usr/local/bin/cloudquery && \
   chmod +x /usr/local/bin/cloudquery && \
