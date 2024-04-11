@@ -3,7 +3,7 @@
 resource "aws_cloudwatch_event_rule" "cloudquery" {
   name                = "cloudquery"
   description         = "CloudQuery ECS Task"
-  schedule_expression = "cron(0 22 * * ? *)"
+  schedule_expression = "cron(0 4 ? * MON *)"
 }
 
 resource "aws_cloudwatch_event_target" "cloudquery" {

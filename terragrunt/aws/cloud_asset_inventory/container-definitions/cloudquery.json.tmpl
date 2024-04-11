@@ -18,6 +18,11 @@
       }
     },
     "portMappings" : [],
-    "secrets" : []
+    "secrets" : [
+      {
+        "name": "CLOUDQUERY_API_KEY",
+        "valueFrom": "${CLOUDQUERY_API_KEY_SSM_PARAMETER_ARN}"
+      }
+    ]
   }
 ]
