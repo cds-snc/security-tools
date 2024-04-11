@@ -17,6 +17,7 @@ env:
   TF_INPUT: false
   TF_VAR_customer_id: ${{ secrets.TF_VARS_LOG_ANALYTICS_CUSTOMER_ID }}
   TF_VAR_shared_key: ${{ secrets.TF_VARS_LOG_ANALYTICS_SHARED_KEY }}
+  TF_VAR_cloudquery_api_key: ${{ secrets.TF_VARS_CLOUDQUERY_API_KEY }}
 
 permissions:
   id-token: write
