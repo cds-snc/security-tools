@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euo pipefail
+
 TOOL=$1
 DISTRIBUTION=$2
 
