@@ -23,9 +23,13 @@ test:
 build:
 	docker-compose -f images/cloud_asset_inventory/dev/docker-compose.yml build
 
-build-prod:
-	docker-compose -f images/cloud_asset_inventory/cloudquery/docker-compose.yml build
-
+build-prod: # Local build of prod image
+	docker build \
+	--build-arg CLOUDQUERY_API_KEY=$(CLOUDQUERY_API_KEY) \
+	--build-arg CQ_S3_BUCKET=$(CQ_S3_BUCKET) \
+	-t cloud_asset_inventory:latest \
+	images/cloud_asset_inventory/cloudquery
+	
 start:
 	export AWS_ACCESS_KEY_ID=$(AWS_ACCESS_KEY_ID); \
 	export AWS_SECRET_ACCESS_KEY=$(AWS_SECRET_ACCESS_KEY); \
