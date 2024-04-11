@@ -23,8 +23,8 @@ resource "aws_ssm_parameter" "shared_key" {
 }
 
 resource "aws_ssm_parameter" "cloudquery_api_key" {
-  name = "/${var.ssm_prefix}/cloudquery_api_key"
-  type = "SecureString"
+  name  = "/${var.ssm_prefix}/cloudquery_api_key"
+  type  = "SecureString"
   value = var.cloudquery_api_key
 
   tags = {

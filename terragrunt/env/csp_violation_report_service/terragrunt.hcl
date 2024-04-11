@@ -11,12 +11,12 @@ dependencies {
 }
 
 dependency "base" {
-  config_path = "../base"
+  config_path                             = "../base"
   mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
   mock_outputs_merge_with_state           = true
   mock_outputs = {
     hosted_zone_id = "1234567890"
-  }  
+  }
 }
 
 inputs = {

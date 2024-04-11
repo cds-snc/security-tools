@@ -28,7 +28,7 @@ variable "shared_key" {
 
 variable "cloudquery_api_key" {
   description = "(Required) Cloudquery API key"
-  sensitive = true
+  sensitive   = true
   type        = string
 }
 
