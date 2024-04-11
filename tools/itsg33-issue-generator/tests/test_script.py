@@ -211,7 +211,7 @@ def test_get_labels(mock_get_suggested_assignment):
         "Priority: P1",
         "Class: Operational",
         "Suggested Assignment: IT Security",
-        "ITSG-33"
+        "ITSG-33",
     ]
 
 
@@ -327,7 +327,11 @@ def test_get_title_with_enhancement():
         "",
         "",
     ]
-    assert script.get_title(row) == "CM-11-2: User-installed Software | Prohibit Installation Without Privileged Status"
+    assert (
+        script.get_title(row)
+        == "CM-11-2: User-installed Software | Prohibit Installation Without Privileged Status"
+    )
+
 
 def test_get_title_with_enhancement_100():
     row = [
