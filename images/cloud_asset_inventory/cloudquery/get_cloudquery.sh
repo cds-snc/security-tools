@@ -36,14 +36,4 @@ else
   echo "Checksums match!"
 fi
 
-# # Make cloudquery executable
-# chmod a+x cloudquery
-
-# # Move cloudquery to /usr/local/bin/
-# mv cloudquery /usr/local/bin/
-
-# Remove checksums.txt
 rm checksums.txt
-
-# # Remove the cloudquery binary
-# rm cloudquery
