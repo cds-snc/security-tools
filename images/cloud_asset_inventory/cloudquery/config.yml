@@ -42,7 +42,7 @@ spec:
   name: "s3"
   path: "cloudquery/s3"
   version: "v5.1.3"
- supports 'append' mode
+  write_mode: "append"
   spec:
     bucket: ${CQ_S3_BUCKET}
     region: "ca-central-1"
