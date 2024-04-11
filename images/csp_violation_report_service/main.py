@@ -1,6 +1,7 @@
 """
 Log csp-reports
 """
+
 import base64
 import logging
 
