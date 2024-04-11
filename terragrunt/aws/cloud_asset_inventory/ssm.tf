@@ -21,3 +21,15 @@ resource "aws_ssm_parameter" "shared_key" {
     Product               = "${var.product_name}-${var.tool_name}"
   }
 }
+
+resource "aws_ssm_parameter" "cloudquery_api_key" {
+  name = "/${var.ssm_prefix}/cloudquery_api_key"
+  type = "SecureString"
+  value = var.cloudquery_api_key
+
+  tags = {
+    (var.billing_tag_key) = var.billing_tag_value
+    Terraform             = true
+    Product               = "${var.product_name}-${var.tool_name}"
+  }
+}
