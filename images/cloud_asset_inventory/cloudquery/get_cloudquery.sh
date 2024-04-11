@@ -36,5 +36,4 @@ else
   echo "Checksums match!"
 fi
 
-# Remove checksums.txt
 rm checksums.txt

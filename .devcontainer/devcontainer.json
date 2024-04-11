@@ -19,7 +19,8 @@
       "version": "1.1.9",
       "tflint": "latest",
       "terragrunt": "0.36.7"
-    }
+    },
+    "ghcr.io/devcontainers/features/python:1": {}
   },
   "customizations": {
     "vscode": {
