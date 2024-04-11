@@ -59,7 +59,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2.0.1
 
       - name: Build container
-        working-directory: ./${{ matrix.image }}
+        working-directory: ./images/${{ matrix.image }}
         run: |
           docker build \
           --build-arg git_sha=$GITHUB_SHA \
