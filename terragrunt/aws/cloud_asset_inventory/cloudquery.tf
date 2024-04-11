@@ -8,6 +8,7 @@ data "template_file" "cloudquery_container_definition" {
     CLOUDQUERY_IMAGE        = "${aws_ecr_repository.cloudquery.repository_url}:latest"
     CLOUDQUERY_SERVICE_NAME = local.cloudquery_service_name
     CQ_S3_BUCKET            = "${module.cloudquery_s3_bucket.s3_bucket_id}"
+    CLOUDQUERY_API_KEY_SSM_PARAMETER_ARN = aws_ssm_parameter.cloudquery_api_key.arn
   }
 }
 
