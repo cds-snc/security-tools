@@ -26,6 +26,12 @@ variable "shared_key" {
   type        = string
 }
 
+variable "cloudquery_api_key" {
+  description = "(Required) Cloudquery API key"
+  sensitive = true
+  type        = string
+}
+
 variable "vpc_private_subnet_cidrs" {
   description = "(Required) The private subnet CIDRs for the VPC"
   type        = list(string)
