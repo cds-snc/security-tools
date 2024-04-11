@@ -24,15 +24,17 @@ RUN ./get_cloudquery.sh ${TOOL} ${DISTRIBUTION} && \
   chmod +x /usr/local/bin/cloudquery && \
   rm get_cloudquery.sh
 
-# Accept the API key as a build argument
-ARG CLOUDQUERY_API_KEY
-
 # Set the API key as an environment variable
+ARG CLOUDQUERY_API_KEY
 ENV CLOUDQUERY_API_KEY=${CLOUDQUERY_API_KEY}
+
+# Set the S3 bucket variable
+ARG CQ_S3_BUCKET
+ENV CQ_S3_BUCKET=${CQ_S3_BUCKET}
 
 # Copy the config file and install the plugins (requires the API key)
 ARG CONFIG_FILE=./config.yml
 COPY ${CONFIG_FILE} ./config.yml
 RUN cloudquery plugin install config.yml
 
-CMD [ "sync", "--log-console", "--log-level", "debug","./config.yml"]
+CMD [ "sync", "--log-console", "--log-level", "debug","config.yml"]

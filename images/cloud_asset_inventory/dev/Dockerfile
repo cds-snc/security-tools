@@ -26,8 +26,6 @@ RUN ./get_cloudquery.sh ${TOOL} ${DISTRIBUTION} && \
 
 # Accept the API key as a build argument
 ARG CLOUDQUERY_API_KEY
-
-# Set the API key as an environment variable
 ENV CLOUDQUERY_API_KEY=${CLOUDQUERY_API_KEY}
 
 # Copy the config file and install the plugins (requires the API key)
