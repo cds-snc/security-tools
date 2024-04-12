@@ -1,9 +1,9 @@
 module "sentinel_forwarder" {
-  source            = "github.com/cds-snc/terraform-modules//sentinel_forwarder?ref=v8.0.0"
+  source            = "github.com/cds-snc/terraform-modules//sentinel_forwarder?ref=v9.3.8"
   function_name     = "${var.tool_name}_sentinel"
   billing_tag_value = var.tool_name
 
-  layer_arn = "arn:aws:lambda:ca-central-1:283582579564:layer:aws-sentinel-connector-layer:87"
+  layer_arn = "arn:aws:lambda:ca-central-1:283582579564:layer:aws-sentinel-connector-layer:125"
 
   customer_id = var.log_analytics_workspace_id
   shared_key  = var.log_analytics_workspace_key
