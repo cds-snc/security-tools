@@ -1,5 +1,5 @@
 module "sentinel_forwarder" {
-  source = "github.com/cds-snc/terraform-modules//sentinel_forwarder?ref=v9.4.3"
+  source = "github.com/cds-snc/terraform-modules//sentinel_forwarder?ref=v9.4.4"
 
   function_name = "cloudquery-sentinel-forwarder"
   customer_id   = var.customer_id
