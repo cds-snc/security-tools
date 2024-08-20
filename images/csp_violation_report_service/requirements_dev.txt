@@ -1,4 +1,4 @@
-black==24.4.2
+black==24.8.0
 coverage==7.6.1
 flake8==6.1.0
 pytest==7.4.4
