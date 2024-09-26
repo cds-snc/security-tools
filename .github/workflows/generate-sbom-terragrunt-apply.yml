@@ -1,0 +1,56 @@
+name: "Terragrunt apply generate SBOM"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/generate-sbom-terragrunt-apply.yml"
+      - "terragrunt/*/generate_sbom/**"
+      - "terragrunt/*/common/**"
+      - "terragrunt/env/terragrunt.hcl"
+
+env:
+  AWS_REGION: ca-central-1
+  CONFTEST_VERSION: 0.27.0
+  TERRAFORM_VERSION: 1.1.9
+  TERRAGRUNT_VERSION: 0.36.7
+  TF_INPUT: false
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  terragrunt-apply:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+
+      - name: Setup Terraform tools
+        uses: cds-snc/terraform-tools-setup@v1
+
+      - uses: cds-snc/paths-filter@b316143212d841aed668b7b29240c719d603a9b9 # v2.10.4
+        id: filter
+        with:
+          filters: |
+            generate_sbom:
+              - 'terragrunt/aws/generate_sbom/**'
+              - 'terragrunt/env/generate_sbom/**'
+            common:
+              - '.github/workflows/generate-sbom-terragrunt-apply.yml'
+              - 'terragrunt/env/common/**'
+              - 'terragrunt/env/terragrunt.hcl'
+
+      - name: configure aws credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@master
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/security-tools-apply
+          role-session-name: TFApply
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Terragrunt apply generate SBOM
+        if: ${{ steps.filter.outputs.generate_sbom == 'true' || steps.filter.outputs.common == 'true' }}
+        working-directory: "terragrunt/env/generate_sbom"
+        run: terragrunt apply --terragrunt-non-interactive -auto-approve

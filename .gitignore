@@ -25,5 +25,3 @@ connector.zip
 __pycache__/
 *.py[cod]
 *$py.class
-
-**/env/*
