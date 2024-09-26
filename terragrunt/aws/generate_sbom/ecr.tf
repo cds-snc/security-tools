@@ -6,6 +6,10 @@ resource "aws_ecr_repository" "generate_sbom" {
     scan_on_push = true
   }
 
+  encryption_configuration {
+    encryption_type = "KMS"
+  }
+
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
