@@ -15,6 +15,7 @@ env:
   CONFTEST_VERSION: 0.27.0
   TERRAFORM_VERSION: 1.1.9
   TERRAGRUNT_VERSION: 0.36.7
+  TF_VAR_aws_org_id: ${{ secrets.AWS_ORG_ID }}
   TF_INPUT: false
 
 permissions:
