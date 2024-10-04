@@ -1,6 +1,6 @@
 resource "aws_ecrpublic_repository" "generate_sbom_public" {
   provider        = aws.us-east-1
-  repository_name = "${var.product_name}/generate_sbom/trivy"
+  repository_name = "${var.product_name}/generate_sbom/trivy-db"
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
