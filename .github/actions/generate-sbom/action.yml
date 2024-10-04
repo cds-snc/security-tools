@@ -24,7 +24,7 @@ runs:
   steps:
     - name: Install Trivy
       env:
-        TRIVY_VERSION: "v0.36.0"
+        TRIVY_VERSION: "v0.56.1"
       run: |
         curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | \
           sh -s -- -b /usr/local/bin ${{ env.TRIVY_VERSION }}
