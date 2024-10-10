@@ -14,15 +14,15 @@ attempt=0
 backoff=1
 
 while [ $attempt -lt $max_attempts ]; do
-if oras cp public.ecr.aws/aquasecurity/trivy-db:latest "$target_repo"; then
-    echo "Trivy Database refreshed successfully."
-    break
-else
-    attempt=$((attempt + 1))
-    echo "Attempt $attempt failed. Retrying in $backoff seconds..."
-    sleep $backoff
-    backoff=$((backoff * 2))
-fi
+    if oras cp public.ecr.aws/aquasecurity/trivy-db:latest "$target_repo"; then
+        echo "Trivy Database refreshed successfully."
+        break
+    else
+        attempt=$((attempt + 1))
+        echo "Attempt $attempt failed. Retrying in $backoff seconds..."
+        sleep $backoff
+        backoff=$((backoff * 2))
+    fi
 done
 
 if [ $attempt -eq $max_attempts ]; then
