@@ -83,11 +83,11 @@ resource "aws_ecr_lifecycle_policy" "generate_sbom_trivy_java_db" {
 }
 
 moved {
-  from = aws_ecr_repository.generate_sbom_public
-  to   = aws_ecr_repository.generate_sbom_trivy_db
+  from = aws_ecrpublic_repository.generate_sbom_public
+  to   = aws_ecrpublic_repository.generate_sbom_trivy_db
 }
 
 moved {
-  from = aws_ecrpublic_repository_polic.sbom_public_policy
-  to   = aws_ecrpublic_repository_polic.generate_sbom_trivy_db
+  from = aws_ecrpublic_repository_policy.sbom_public_policy
+  to   = aws_ecrpublic_repository_policy.generate_sbom_trivy_db
 }
