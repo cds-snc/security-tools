@@ -8,14 +8,15 @@
 # This script expects that ECR authentication has already been performed.
 #
 
-target_repo="$1"
+trivy_db_name="$1"
+target_repo="$2"
 max_attempts=5
 attempt=0
 backoff=1
 
 while [ $attempt -lt $max_attempts ]; do
-    if oras cp public.ecr.aws/aquasecurity/trivy-db:latest "$target_repo"; then
-        echo "Trivy Database refreshed successfully."
+    if oras cp public.ecr.aws/aquasecurity/$trivy_db_name "$target_repo"; then
+        echo "$trivy_db_name refreshed successfully."
         break
     else
         attempt=$((attempt + 1))
@@ -26,6 +27,6 @@ while [ $attempt -lt $max_attempts ]; do
 done
 
 if [ $attempt -eq $max_attempts ]; then
-    echo "Failed to refresh Trivy Database after $max_attempts attempts."
+    echo "Failed to refresh $trivy_db_name database after $max_attempts attempts."
     exit 1
 fi

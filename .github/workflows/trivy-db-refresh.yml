@@ -30,9 +30,10 @@ jobs:
         with:
           registry-type: public
 
-      - name: Refresh Trivy Database
+      - name: Refresh Trivy Databases
         run: |
-          ./bin/generate_sbom/trivy_db_refresh.sh ${{ vars.TRIVY_DB_REPOSITORY }}
+          ./bin/generate_sbom/trivy_db_refresh.sh trivy-db:latest ${{ vars.TRIVY_DB_REPOSITORY }}
+          ./bin/generate_sbom/trivy_db_refresh.sh trivy-java-db:1 ${{ vars.TRIVY_JAVA_DB_REPOSITORY }}
 
       - name: Logout of Amazon ECR
         run: docker logout ${{ steps.login-ecr.outputs.registry }}
