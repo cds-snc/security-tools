@@ -72,13 +72,13 @@ resource "aws_ecrpublic_repository_policy" "generate_sbom_trivy_java_db" {
 #
 resource "aws_ecr_lifecycle_policy" "generate_sbom_trivy_db" {
   provider   = aws.us-east-1
-  repository = aws_ecr_repository.generate_sbom_trivy_db.name
+  repository = aws_ecrpublic_repository.generate_sbom_trivy_db.repository_name
   policy     = file("${path.module}/policy/lifecycle.json")
 }
 
 resource "aws_ecr_lifecycle_policy" "generate_sbom_trivy_java_db" {
   provider   = aws.us-east-1
-  repository = aws_ecr_repository.generate_sbom_trivy_java_db.name
+  repository = aws_ecrpublic_repository.generate_sbom_trivy_java_db.repository_name
   policy     = file("${path.module}/policy/lifecycle.json")
 }
 
