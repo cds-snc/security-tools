@@ -9,11 +9,19 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  ORAS_VERSION: 1.2.0
+
 jobs:
   trivy-db-refresh:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install oras
+        uses: oras-project/setup-oras@9c92598691bfef1424de2f8fae81941568f5889c # v1.2.1
+        with:
+          version: ${{ env.ORAS_VERSION }}
+
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
