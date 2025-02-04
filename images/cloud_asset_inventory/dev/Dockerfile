@@ -1,4 +1,4 @@
-FROM debian:bullseye@sha256:01559430c84e6bc864bed554345d1bfbfa94ac108ab68f39915cae34604b15c3
+FROM debian:bullseye@sha256:63904b1442dc0bb1e7a7a7065b3ba0d10d4e300f984115a40d371827fe4e3a85
 
 # Set the working directory
 WORKDIR /app
