@@ -2,7 +2,7 @@ module "vpc" {
   source = "github.com/cds-snc/terraform-modules//vpc?ref=v10.3.0"
   name   = "${var.product_name}-${var.tool_name}"
 
-  availability_zones = 3 
+  availability_zones = 3
   enable_flow_log    = false
   block_ssh          = true
   block_rdp          = true
