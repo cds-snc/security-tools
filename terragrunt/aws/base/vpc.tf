@@ -3,6 +3,7 @@ module "vpc" {
   name   = "${var.product_name}-${var.tool_name}"
 
   availability_zones = 3
+  cidrsubnet_newbits = 8
   enable_flow_log    = false
   block_ssh          = true
   block_rdp          = true
