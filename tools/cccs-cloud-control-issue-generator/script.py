@@ -28,6 +28,29 @@ SELECTED_CONTROLS_FILE = os.getenv("SELECTED_CONTROLS_FILE", "selected-system-le
 LOG_LEVEL = os.getenv("LOG_LEVEL", logging.INFO)
 CONTROL_PROFILE_TYPE = ""
 
+"""
+Long Security Control Family Description
+"""
+LONG_CONTROL_FAMILY = {
+    "AC" : "Access Control (AC)",
+    "AT" : "Security Awareness and Training (AT)",
+    "AU" : "Audit and Accountability (AU)",
+    "CA" : "Security Assessment and Authorization (CA)",
+    "CM" : "Configuration Management (CM)",
+    "CP" : "Contingency Planning (CP)",
+    "IA" : "Identification and Authentication (IA)",
+    "IR" : "Incident Response (IR)",
+    "MA" : "System Management (MA)",
+    "MP" : "Media Protection (MP)",
+    "PE" : "Physical and Environment (PE)",
+    "PL" : "Security Planning (PL)",
+    "PS" : "Personnel Security (PS)",
+    "RA" : "Risk Assessment (RA)",
+    "SA" : "System and Services Acquisition (SA)",
+    "SC" : "System and Communications Protection (SC)",
+    "SI" : "System and Information Integrity (SI)"
+}
+
 
 class Header(Enum):
     CONTROL_ID = 0
@@ -258,14 +281,23 @@ def get_body(row):
     return body
 
 
+def get_control_family(control_id):
+    match = re.match(r"([A-Z][A-Z])-.*", control_id)
+    if match:
+        return LONG_CONTROL_FAMILY[match.group(1)]
+
+
 def get_labels(row):
     """
     Get labels for issue to help future retrieval
     """
     labels = []
-    labels.append(
-        "Control: {}".format(get_control_id(row))
-    )
+
+    control_id = get_control_id(row)
+
+    labels.append("Control: {}".format(control_id))
+    labels.append("Family: {}".format(get_control_family(control_id)))
+
     if row[Header.CONTROL_CLASS.value]:
         labels.append("Class: {}".format(row[Header.CONTROL_CLASS.value].strip()))
 
