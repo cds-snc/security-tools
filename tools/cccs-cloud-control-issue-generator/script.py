@@ -10,7 +10,9 @@ import os
 import string
 import logging
 import json
+import re
 from enum import Enum
+from io import StringIO
 
 """
 env vars:
@@ -141,17 +143,117 @@ def get_issues_json(row, supplementary_labels):
     return {"title": title, "body": body, "labels": labels}
 
 
+def get_control_definition_group(control_definition):
+    ctl_grp = ""
+    sio = StringIO(control_definition)
+    pos = sio.tell()
+
+    for line in sio:
+        # ignore empty lines, lines with |
+        match_empty = re.match(r"^\s*$", line)
+        match_pipe = re.match(r".*\|.*$", line)
+        if match_empty or match_pipe:
+            continue
+
+        # collect main control and sub-controls
+        # - match main control, then
+        # - match sub-control: (a) def
+        if not ctl_grp:
+            match_ctl_not_enum = re.match(r"[a-zA-Z0-9]+", line)
+            match_ctl = re.match(r"\([A-Z]\).*", line)
+            if match_ctl_not_enum or match_ctl:
+                logging.debug("found main control: {}".format(line))
+                ctl_grp = line.strip()
+                pos = sio.tell()
+                continue
+        else:
+            match_sub_ctl = re.match(r"\([a-z]\).*", line)
+            if match_sub_ctl:
+                logging.debug("found sub control: {}".format(line))
+                ctl_grp += " {}".format(line.rstrip())
+                continue
+            else:
+                # no sub-controls, reset stream position
+                sio.seek(pos)
+
+        if ctl_grp:
+            yield ctl_grp
+            ctl_grp = ""
+
+    if ctl_grp:
+        yield ctl_grp
+
+
 def get_body(row):
     """
-    Get body for issue. Has at least the control definition.
+    Get body for issue: Control definition and Control management
     """
     body = "# Control Definition\n{}\n\n".format(row[Header.CONTROL_DEFINITION.value])
     if row[Header.CONTROL_CLASS.value]:
-        body += "# Class\n{}\n\n".format(row[Header.CONTROL_CLASS.value])
+        body += "## Class\n{}\n\n".format(row[Header.CONTROL_CLASS.value])
     if row[Header.SUPPLEMENTAL_GUIDANCE.value]:
-        body += "# Supplemental Guidance\n{}\n\n".format(
+        body += "## Supplemental Guidance\n{}\n\n".format(
             row[Header.SUPPLEMENTAL_GUIDANCE.value]
         )
+
+    body += "# Control Management\n"
+    body += "## Assignment\n"
+    body += "Responsible Principals: \n"
+    body += "- _TBD: CDS Teams which are responsible for the control_\n"
+
+    body += "## Risk Assessment\n"
+    body += "| Impact Rating &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "
+    body += "&nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; |"
+    body += " Impact Description for a Realized Risk Event |\n"
+    body += "| --- | --- |\n"
+    body += "| <ul><li>[ ] Catastrophic</li></ul> "
+    body += "|<ul><li><kbd>Confidentiality: **Complete** loss of confidentiality of **critical** data or systems, "
+    body += "which could result in unauthorized access to **sensitive** information.</kbd></li>"
+    body += "<li><kbd>Integrity: **Complete** loss of data or systems, which could result in data corruption, "
+    body += "alteration or destruction of data, or manipulation of **critical** systems.</kbd></li>"
+    body += "<li><kbd>Availability: **Complete** system failure, which could result in **extended** downtime, "
+    body += "loss of access to **critical** systems, or **inability** to perform **critical** business functions.</kbd></li></ul> |\n"
+    body += "| <ul><li>[ ] Critical</li></ul> "
+    body += "|<ul><li><kbd>Confidentiality: **Partial** loss of confidentiality of **important** data or systems, "
+    body += "which could result in unauthorized access to **sensitive** information.</kbd></li>"
+    body += "<li><kbd>Integrity: **Partial** loss of data or systems, which could result in data corruption, "
+    body += "alteration, or destruction of data, or manipulation of **important** systems.</kbd></li>"
+    body += "<li><kbd>Availability: **Partial** system failure, which could result in **temporary** downtime, "
+    body += "loss of access to **important** systems, or **reduced ability** to perform **critical** business functions.</kbd></li></ul> |\n"
+    body += "| <ul><li>[ ] Marginal</li></ul> "
+    body += "|<ul><li><kbd>Confidentiality: **Minor** loss of confidentiality of **non-critical** data or systems, "
+    body += "which could result in unauthorized access to **less-sensitive** information.</kbd></li>"
+    body += "<li><kbd>Integrity: **Minor** loss of data or systems, which could result in data corruption, "
+    body += "alteration, or destruction of **non-critical** data, or manipulation of **non-critical** systems.</kbd></li>"
+    body += "<li><kbd>Availability: **Minor** system disruption or degradation, "
+    body += "which could result in **reduced** performance or access to **non-critical** systems.</kbd></li></ul> |\n"
+    body += "| <ul><li>[ ] Negligible</li></ul> "
+    body += "|<ul><li><kbd>Confidentiality: Little to no impact on confidentiality of data or systems.</kbd></li>"
+    body += "<li><kbd>Integrity: Little to no impact on integrity of data or systems.</kbd></li>"
+    body += "<li><kbd>Availability: Little to no impact on availability of systems or access to data.</kbd></li></ul> |\n"
+
+    body += "\n| Probability | Likelihood of a Risk Event to be realized |\n"
+    body += "| ------------- | --- |\n"
+    body += "| <ul><li>[ ] Very Likely</li></ul> "
+    body += "|<kbd>The risk event is expected to occur frequently or is highly likely to occur, based on historical data or expert opinion.</kbd>|\n"
+    body += "| <ul><li>[ ] Likely</li></ul> "
+    body += "|<kbd>The risk event is expected to occur occasionally or is somewhat likely to occur, based on historical data or expert opinion.</kbd>|\n"
+    body += "| <ul><li>[ ] Neutral</li></ul> "
+    body += "|<kbd>The likelihood of the risk event occurring is unclear or unknown.</kbd>|\n"
+    body += "| <ul><li>[ ] Unlikely</li></ul> "
+    body += "|<kbd>The risk event is not expected to occur often or is somewhat unlikely to occur, based on historical data or expert opinion.</kbd>|\n"
+    body += "| <ul><li>[ ] Rare</li></ul> "
+    body += "|<kbd>The risk event is not expected to occur at all or is highly unlikely to occur, based on historical data or expert opinion.</kbd>|\n"
+    body += "| **Rationale** | _TBD: Describe rationale for probability_ |\n"
+
+    body += "## Controls In Place\n"
+    body += "| Control Requirement | Control in Place "
+    body += "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; | Evidence |\n"
+    body += "| --- | --- | --- |\n"
+
+    for ctl_grp in get_control_definition_group(row[Header.CONTROL_DEFINITION.value]):
+        body += "| {} | <ul><li>[ ] Yes</li><li>[ ] No</li><li>[ ] Partial</li></ul> ".format(ctl_grp)
+        body += "| _Note: Provide only link(s) to evidence in comments_ |\n"
 
     return body
 
