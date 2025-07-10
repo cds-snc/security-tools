@@ -221,11 +221,11 @@ def get_body(row):
 
     body += "# Control Management\n"
     body += "## Assignment\n"
-    body += "Responsible Principals: \n"
-    body += "- _TBD: CDS Teams which are responsible for the control_\n"
+    body += "Responsible Principals:[^1] \n"
+    body += "- _TBD: CDS Teams_\n"
 
     body += "## Risk Assessment\n"
-    body += "| Impact Rating &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "
+    body += "| Impact Rating[^2] &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; "
     body += "&nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; |"
     body += " Impact Description for a Realized Risk Event |\n"
     body += "| --- | --- |\n"
@@ -255,7 +255,7 @@ def get_body(row):
     body += "<li><kbd>Integrity: Little to no impact on integrity of data or systems.</kbd></li>"
     body += "<li><kbd>Availability: Little to no impact on availability of systems or access to data.</kbd></li></ul> |\n"
 
-    body += "\n| Probability | Likelihood of a Risk Event to be realized |\n"
+    body += "\n| Probability[^3] | Likelihood of a Risk Event to be realized |\n"
     body += "| ------------- | --- |\n"
     body += "| <ul><li>[ ] Very Likely</li></ul> "
     body += "|<kbd>The risk event is expected to occur frequently or is highly likely to occur, based on historical data or expert opinion.</kbd>|\n"
@@ -267,16 +267,23 @@ def get_body(row):
     body += "|<kbd>The risk event is not expected to occur often or is somewhat unlikely to occur, based on historical data or expert opinion.</kbd>|\n"
     body += "| <ul><li>[ ] Rare</li></ul> "
     body += "|<kbd>The risk event is not expected to occur at all or is highly unlikely to occur, based on historical data or expert opinion.</kbd>|\n"
-    body += "| **Rationale** | _TBD: Describe rationale for probability_ |\n"
+
+    body += "## Rationale\n"
+    body += "- _TBD: Describe rationale for Impact and/or Probability assessment_\n"
 
     body += "## Controls In Place\n"
-    body += "| Control Requirement | Control in Place "
+    body += "| Control Definition | Control in Place "
     body += "&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; | Evidence |\n"
     body += "| --- | --- | --- |\n"
 
     for ctl_grp in get_control_definition_group(row[Header.CONTROL_DEFINITION.value]):
         body += "| {} | <ul><li>[ ] Yes</li><li>[ ] No</li><li>[ ] Partial</li></ul> ".format(ctl_grp)
         body += "| _Note: Provide only link(s) to evidence in comments_ |\n"
+
+    # footnote
+    body += "[^1]: CDS Principals/Teams responsible for implementing controls, and providing evidence for the controls.\n"
+    body += "[^2]: When assessing Impact, CDS business context and Security Categorization of information should be taken into account.\n"
+    body += "[^3]: When assessing Probability, the controls in place, or lack thereof, should be taken into account.\n"
 
     return body
 
@@ -313,8 +320,7 @@ def get_labels(row):
 
 def get_title(row):
     """
-    Get title for issue. The logic required is encapsulated in this function. Some controls have enhancements, and if they do,
-    the title should be formatted to show such info.
+    Get title for issue.
     """
     title = "{}: {}".format(
         get_control_id(row),
