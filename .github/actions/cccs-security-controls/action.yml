@@ -14,6 +14,7 @@ runs:
       with:
         repository: cds-snc/security-tools
         path: ./.github/tmp/security-tools
+        ref: feat/cccs-cloud-control-issue-generator
       
     - name: Run python script to create gh issues
       working-directory: ./.github/tmp/security-tools/tools/cccs-cloud-control-issue-generator
