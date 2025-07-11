@@ -1,0 +1,27 @@
+CONTEXTS
+
+The security control profiles recommended in this workbook are suitable for organizations using public cloud services to support business activities with LOW and MEDIUM sensitivity and criticality.
+
+"The CCCS LOW security control profile contained in this worksheet is suitable for organizations using public cloud services to support business activities with LOW Confidentiality, Integrity, and Availability (CIA) requirements.  Workloads with LOW CIA requirements mean that unauthorized disclosure, modification, or loss of access to the information or services used by the business activity could reasonably be expected to cause no or limited injury to individuals or the organization. Examples of these levels of injury include:
+- Minor effect on annual profit
+- Minor loss of sale
+- Minor compliance violation
+- Privacy violation - 1 person
+- Affects program performance
+- Stress
+- Physical discomfort
+- Civil disobedience
+- Loss of confidence"
+"The CCCS MEDIUM security control profile contained in this worksheet is suitable for organizations using public cloud services to support business activities with MEDIUM CIA requirements.  Workloads with MEDIUM CIA requirements mean that unauthorized disclosure, modification, or loss of access to the information or services used by the business activity could reasonably be expected to cause serious injury to an individual or organization or limited injury to a group of individuals.  Examples of these levels of injury include:
+- Significant effect on annual profit
+- Loss of major accounts
+- Loss of goodwill
+- Clear compliance violation
+- Privacy violation - hundreds/thousands of people
+- Affects program performance
+- Causing mental disorder or illness
+- Sabotage
+- Damage to reputation
+- Individual financial hardship
+"
+"The CCCS HIGH security control profile contained in this worksheet is suitable for organizations using private cloud services to support business activities with HIGH CIA requirements.  Workloads with HIGH CIA requirements are those with Protected C or Secret confidentiality requirements,  high availability requirements, and/or high integrity."
