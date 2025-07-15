@@ -19,8 +19,9 @@ runs:
     - name: Checkout Code
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       with:
-        repository: cds-snc/test-cccs-cloud-control-issue-generator
+        repository: ${{ github.repository }}
         path: ./.github/tmp/security-tools
+        token: ${{ inputs.token }}
       
     - name: Run python script to create gh issues
       working-directory: ./.github/tmp/security-tools/tools/cccs-cloud-control-issue-generator
