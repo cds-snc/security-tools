@@ -15,18 +15,26 @@ from enum import Enum
 from io import StringIO
 
 """
+globals
+"""
+CONTROL_PROFILE_TYPE = ""
+CONTROLS_FILTER_ORG = "ORGANIZATION"
+CONTROLS_FILTER_SYS = "SYSTEM"
+
+"""
 env vars:
 REPO = owner/repo
 GITHUB_TOKEN = github token to create issues
 CSV_FILE = path to csv file
+CONTROLS_FILTER = SYSTEM (default) or ORGANIZATION
 LOG_LEVEL = If exists, set logging level to this. Otherwise, set to INFO
 """
 REPO = os.getenv("REPO")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 CSV_FILE = os.getenv("CSV_FILE", "annex-b-cccs-medium-cloud-profile.csv")
-SELECTED_CONTROLS_FILE = os.getenv("SELECTED_CONTROLS_FILE", "selected-system-level-controls.json")
+CONTROLS_FILTER = os.getenv("CONTROLS_FILTER", CONTROLS_FILTER_SYS)
 LOG_LEVEL = os.getenv("LOG_LEVEL", logging.INFO)
-CONTROL_PROFILE_TYPE = ""
+
 
 """
 Long Security Control Family Description
@@ -65,6 +73,9 @@ class Header(Enum):
     CSP_STACKED_SAAS = 9
     CLIENT_IAAS_PAAS = 10
     CLIENT_SAAS = 11
+    CDS_SUPP_ATTR_ORG_LEVEL_CTL = 12
+    CDS_SUPP_ATTR_SYS_LEVEL_CTR = 13
+    CDS_SUPP_ATTR_PRIORITY = 14
 
 
 """
@@ -81,6 +92,7 @@ def main():
     """
     Program entrypoint to create issues in github for each control in CCCS control profile.
     """
+    """
     selected_controls = get_selected_controls(SELECTED_CONTROLS_FILE)
 
     for control in get_controls(CSV_FILE):
@@ -96,6 +108,28 @@ def main():
             logging.debug("Issues JSON: {}".format(issues_json))
             logging.debug("Response: {}".format(response.text))
             logging.debug("Headers: {}".format(headers))
+    """
+    for control in get_controls(CSV_FILE):
+        control_id = get_control_id(control)
+
+        # apply selected controls filter: ORG/SYS
+        if CONTROLS_FILTER == CONTROLS_FILTER_SYS:
+            if not is_attribute_set(control, Header.CDS_SUPP_ATTR_SYS_LEVEL_CTR.value):
+                continue
+        elif CONTROLS_FILTER == CONTROLS_FILTER_ORG:
+            if not is_attribute_set(control, Header.CDS_SUPP_ATTR_SYS_LEVEL_CTR.value):
+                continue
+
+        issues_url = get_issues_url()
+        headers = get_header()
+        issues_json = get_issues_json(control)
+
+        response = post_request(issues_url, headers, issues_json)
+
+        logging.debug("Issues URL: {}".format(issues_url))
+        logging.debug("Issues JSON: {}".format(issues_json))
+        logging.debug("Response: {}".format(response.text))
+        logging.debug("Headers: {}".format(headers))
 
 
 def post_request(issues_url, headers, issues_json):
@@ -153,15 +187,13 @@ def get_header():
     return header
 
 
-def get_issues_json(row, supplementary_labels):
+def get_issues_json(row):
     """
     Get issues json to have the required and relevant fields
     """
     title = get_title(row)
     body = get_body(row)
     labels = get_labels(row)
-    if supplementary_labels:
-        labels.extend(supplementary_labels)
 
     return {"title": title, "body": body, "labels": labels}
 
@@ -269,7 +301,7 @@ def get_body(row):
     body += "|<kbd>The risk event is not expected to occur at all or is highly unlikely to occur, based on historical data or expert opinion.</kbd>|\n"
 
     body += "## Rationale\n"
-    body += "- _TBD: Describe rationale for Impact and/or Probability assessment_\n"
+    body += "- _TBD: Provide rationale for Impact and/or Probability assessment_\n"
 
     body += "## Controls In Place\n"
     body += "| Control Definition | Control in Place "
@@ -310,9 +342,9 @@ def get_labels(row):
 
     labels.append(CONTROL_PROFILE_TYPE)
 
-    if row[Header.CLIENT_IAAS_PAAS.value].strip() == "X":
+    if is_attribute_set(row, Header.CLIENT_IAAS_PAAS.value):
         labels.append("IaaS/PaaS")
-    if row[Header.CLIENT_SAAS.value].strip() == "X":
+    if is_attribute_set(row, Header.CLIENT_SAAS.value):
         labels.append("SaaS")
 
     return labels
@@ -351,6 +383,10 @@ def likely_header(row):
         return True
 
     return False
+
+
+def is_attribute_set(row, header_enum):
+    return row[header_enum].strip().upper() == "X"
 
 
 def get_controls(control_file):
