@@ -25,7 +25,7 @@ runs:
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       with:
         repository: ${{ github.repository }}
-        path: ./.github/tmp/security-tools
+        path: ./.github/tmp/cccs-cloud-control-profile-input
       
     - name: Run python script to create gh issues
       working-directory: ./.github/tmp/security-tools/tools/cccs-cloud-control-issue-generator
