@@ -18,7 +18,7 @@ runs:
 
     - name: Checkout Code from Target Issue Repository
       run: |
-        git config --global url."https://oauth2:${{ secrets.GITHUB_TOKEN}}@github.com".insteadOf https://github.com
+        git config --global url."https://oauth2:${{ inputs.token}}@github.com".insteadOf https://github.com
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       with:
         repository: ${{ github.repository }}
