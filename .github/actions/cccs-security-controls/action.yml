@@ -16,10 +16,12 @@ runs:
         path: ./.github/tmp/security-tools
         ref: feat/cccs-cloud-control-issue-generator
 
-    - name: Checkout Code from Target Issue Repository
+    - name: Run git config
       run: |
         git config --global url."https://oauth2:${{ inputs.token}}@github.com".insteadOf https://github.com
       shell: bash
+
+    - name: Checkout Code from Target Issue Repository
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       with:
         repository: ${{ github.repository }}
