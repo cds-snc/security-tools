@@ -9,18 +9,20 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Checkout Code
+    - name: Get token for github internal repo access
+      run: git config --global url."https://oauth2:${{ secrets.GITHUB_TOKEN}}@github.com".insteadOf https://github.com
+
+    - name: Checkout Code for tool
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       with:
         repository: cds-snc/security-tools
         path: ./.github/tmp/security-tools
         ref: feat/cccs-cloud-control-issue-generator
-    
-    - name: Checkout Code
+
+    - name: Checkout Code from Target Issue Repository
       uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
       with:
         path: ./.github/tmp/security-tools
-        token: ${{ inputs.token }}
       
     - name: Run python script to create gh issues
       working-directory: ./.github/tmp/security-tools/tools/cccs-cloud-control-issue-generator
