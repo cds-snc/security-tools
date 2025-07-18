@@ -31,7 +31,7 @@ LOG_LEVEL = If exists, set logging level to this. Otherwise, set to INFO
 """
 REPO = os.getenv("REPO")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-CSV_FILE = os.getenv("CSV_FILE", "annex-b-cccs-medium-cloud-profile.csv")
+CSV_FILE = os.getenv("CSV_FILE", "cccs-cloud-profile.csv")
 CONTROLS_FILTER = os.getenv("CONTROLS_FILTER", CONTROLS_FILTER_SYS)
 LOG_LEVEL = os.getenv("LOG_LEVEL", logging.INFO)
 
