@@ -18,7 +18,7 @@ runs:
 
     - name: get file
       run: |
-        curl -H "Authorization: token ${{ inputs.token }}" https://raw.githubusercontent.com/cds-snc/test-cccs-cloud-control-issue-generator/main/GC-Forms-Annex-B-CCCS-MEDIUM-Cloud-Profile-Recommendations.csv
+        curl -H "Authorization: token ${{ inputs.token }}" https://raw.githubusercontent.com/cds-snc/test-cccs-cloud-control-issue-generator/main/cccs-cloud-profile.csv
       shell: bash
       
     - name: Run python script to create gh issues
