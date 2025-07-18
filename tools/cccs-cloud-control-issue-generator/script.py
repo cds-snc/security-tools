@@ -32,7 +32,7 @@ LOG_LEVEL = If exists, set logging level to this. Otherwise, set to INFO
 """
 REPO = os.getenv("REPO")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-CSV_FILE = os.getenv("CSV_FILE", "cccs-cloud-profile.csv")
+CSV_FILE = os.getenv("CSV_FILE")
 CONTROLS_FILTER = os.getenv("CONTROLS_FILTER", CONTROLS_FILTER_SYS)
 LOG_LEVEL = os.getenv("LOG_LEVEL", logging.INFO)
 
@@ -167,6 +167,16 @@ def get_repo():
         return REPO
     else:
         raise Exception("REPO env var not set")
+
+
+def get_repo():
+    """
+    Get repo from env var
+    """
+    if CSV_FILE:
+        return CSV_FILE
+    else:
+        raise Exception("CSV_FILE env var not set")
 
 
 def get_issues_url():
