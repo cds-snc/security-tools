@@ -5,6 +5,9 @@ inputs:
   token:
     description: "Token for allowing the action to create issues"
     required: true
+  csv_file:
+    description: "Input control file in csv"
+    required: true
 
 runs:
   using: "composite"
