@@ -14,14 +14,7 @@ runs:
       with:
         repository: cds-snc/security-tools
         path: ./.github/tmp/security-tools
-        ref: feat/cccs-cloud-control-issue-generator
-
-    - name: get file
-      env:
-        TOKEN: ${{ inputs.token }}
-      run: |
-        curl -H "Authorization: token ${TOKEN}" https://raw.githubusercontent.com/cds-snc/test-cccs-cloud-control-issue-generator/refs/heads/main/cccs-cloud-profile.csv
-      shell: bash
+        ref: ${{ github.ref_name }}
       
     - name: Run python script to create gh issues
       working-directory: ./.github/tmp/security-tools/tools/cccs-cloud-control-issue-generator

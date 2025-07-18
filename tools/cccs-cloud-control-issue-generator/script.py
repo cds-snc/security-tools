@@ -13,6 +13,7 @@ import json
 import re
 from enum import Enum
 from io import StringIO
+from pathlib import Path
 
 """
 globals
@@ -391,9 +392,11 @@ def is_attribute_set(row, header_enum):
 
 def get_controls(control_file):
     """
-    Get controls from CCCS Control Profile csv file.
+    Get controls from CCCS Control Profile csv file located in:
+    input/<REPO>/<CSV_FILE>
     """
-    with open(control_file, "r", newline='') as csvfile:
+    p = Path('input', get_repo(), CSV_FILE)
+    with p.open(control_file, "r", newline='') as csvfile:
         logging.info("opened baseline control file: {}".format(control_file))
         csvreader = csv.reader(csvfile)
 
@@ -402,13 +405,6 @@ def get_controls(control_file):
                 set_control_profile_type(row)
             else:
                 yield row
-
-
-def get_selected_controls(selected_control_file):
-    with open(selected_control_file, 'r') as f:
-        logging.info("opened selected control file: {}".format(selected_control_file))
-        data = json.load(f)
-        return data
 
 
 if __name__ == "__main__":
