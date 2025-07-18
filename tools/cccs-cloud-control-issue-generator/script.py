@@ -93,26 +93,7 @@ def main():
     """
     Program entrypoint to create issues in github for each control in CCCS control profile.
     """
-    """
-    selected_controls = get_selected_controls(SELECTED_CONTROLS_FILE)
-
-    for control in get_controls(CSV_FILE):
-        control_id = get_control_id(control)
-        if control_id in selected_controls.keys():
-            issues_url = get_issues_url()
-            headers = get_header()
-            issues_json = get_issues_json(control, selected_controls[control_id])
-
-            response = post_request(issues_url, headers, issues_json)
-
-            logging.debug("Issues URL: {}".format(issues_url))
-            logging.debug("Issues JSON: {}".format(issues_json))
-            logging.debug("Response: {}".format(response.text))
-            logging.debug("Headers: {}".format(headers))
-    """
-    for control in get_controls(CSV_FILE):
-        control_id = get_control_id(control)
-
+    for control in get_controls(get_csv_file()):
         # apply selected controls filter: ORG/SYS
         if CONTROLS_FILTER == CONTROLS_FILTER_SYS:
             if not is_attribute_set(control, Header.CDS_SUPP_ATTR_SYS_LEVEL_CTR.value):
@@ -169,7 +150,7 @@ def get_repo():
         raise Exception("REPO env var not set")
 
 
-def get_repo():
+def get_csv_file():
     """
     Get repo from env var
     """
