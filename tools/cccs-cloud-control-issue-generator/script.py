@@ -390,12 +390,19 @@ def is_attribute_set(row, header_enum):
     return row[header_enum].strip().upper() == "X"
 
 
+def control_file_path(control_file):
+    """
+    Input control file location: input/<REPO>/<CSV_FILE>
+    """
+    return Path('input', get_repo().split('/')[-1], control_file).str()
+
+
 def get_controls(control_file):
     """
     Get controls from CCCS Control Profile csv file located in:
-    input/<REPO>/<CSV_FILE>
+
     """
-    with open('input' + get_repo() + control_file, "r", newline='') as csvfile:
+    with open(control_file_path(control_file), "r", newline='') as csvfile:
         logging.info("opened baseline control file: {}".format(control_file))
         csvreader = csv.reader(csvfile)
 
