@@ -394,7 +394,7 @@ def control_file_path(control_file):
     """
     Input control file location: input/<REPO>/<CSV_FILE>
     """
-    return Path('input', get_repo().split('/')[-1], control_file).str()
+    return str(Path('input', get_repo().split('/')[-1], control_file))
 
 
 def get_controls(control_file):
