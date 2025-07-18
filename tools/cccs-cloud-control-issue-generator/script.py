@@ -395,8 +395,7 @@ def get_controls(control_file):
     Get controls from CCCS Control Profile csv file located in:
     input/<REPO>/<CSV_FILE>
     """
-    p = Path('input', get_repo(), CSV_FILE)
-    with p.open(control_file, "r", newline='') as csvfile:
+    with open('input' + get_repo() + control_file, "r", newline='') as csvfile:
         logging.info("opened baseline control file: {}".format(control_file))
         csvreader = csv.reader(csvfile)
 
