@@ -10,6 +10,7 @@ This repository will contain various tools used by CDS to ensure the confidentia
 - Cloud Asset Inventory: AWS, ECS, [CloudQuery](https://www.cloudquery.io/docs)
 - Content Security Policy (CSP) violation reporting: AWS, Lambda
   - Onboard by adding the `report-uri https://csp-report-to.security.cdssandbox.xyz/report;` directive to your apps existing CSP
+- CCCS Cloud Control Issue Generator
 
 ## License
 
