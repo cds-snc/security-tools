@@ -22,8 +22,7 @@ You will be working with the following input files:
 
 ## Preparation
 
-- Create _target-repository_.
-  - Ensure visibility is private/internal.
+- Create _target-repository_ from the following template: https://github.com/cds-snc/system-level-security-controls-template
 - Create a Github action workflow (`.github/workflows/deploy-tickets.yml`) in _target-repository_:
   - Create a copy from https://github.com/cds-snc/test-cccs-cloud-control-issue-generator/blob/main/.github/workflows/deploy-tickets.yml
   - Update the parameter `csv_file` accordingly. This is the input csv file (see *Input* section below).
