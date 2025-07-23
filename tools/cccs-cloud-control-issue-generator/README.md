@@ -44,6 +44,22 @@ The tool will create issues in the _target-repository_.
 
 ## Execute
 
+### Parameters
+
+The following parameters can be specified using environment variables:
+
+| Parameter | Description | Default Value |
+| --- | --- | --- |
+| REPO | _target-repository_ | |
+| GITHUB_TOKEN | token with write permission for _target-repository_ | |
+| CSV_FILE | Input Control CSV file | |
+| CONTROLS_FILTER | Controls Filter: *ORGANIZATION* or *SYSTEM* | *SYSTEM* |
+| LOG_LEVEL | Logging level | *INFO* |
+
+Parameters without default value must be specified.
+
+### Github Actions Workflow
+
 In the _target-repository_:
 - Use the Github Actions workflow: `Create issues using CCCS Cloud Control Profile as baseline`.
 - Optionally, select a branch `your-branch` to test changes on a branch (defaults to `main`).

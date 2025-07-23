@@ -95,10 +95,10 @@ def main():
     """
     for control in get_controls(get_csv_file()):
         # apply selected controls filter: ORG/SYS
-        if CONTROLS_FILTER == CONTROLS_FILTER_SYS:
+        if CONTROLS_FILTER.upper() == CONTROLS_FILTER_SYS:
             if not is_attribute_set(control, Header.CDS_SUPP_ATTR_SYS_LEVEL_CTR.value):
                 continue
-        elif CONTROLS_FILTER == CONTROLS_FILTER_ORG:
+        elif CONTROLS_FILTER.upper() == CONTROLS_FILTER_ORG:
             if not is_attribute_set(control, Header.CDS_SUPP_ATTR_SYS_LEVEL_CTR.value):
                 continue
 
