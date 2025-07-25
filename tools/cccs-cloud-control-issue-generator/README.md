@@ -22,21 +22,21 @@ You will be working with the following input files:
 
 ## Preparation
 
-- Create _target-repository_ from the following template: https://github.com/cds-snc/system-level-security-controls-template
-- Create a Github action workflow (`.github/workflows/deploy-tickets.yml`) in _target-repository_:
-  - Create a copy from https://github.com/cds-snc/test-cccs-cloud-control-issue-generator/blob/main/.github/workflows/deploy-tickets.yml
-  - Update the parameter `csv_file` accordingly. This is the input csv file (see *Input* section below).
-  - Check-in this file (`main` branch)
-- Create a copy of CCCS Cloud Profile (_cccs control profile template_) from one of the CCCS Cloud profile templates (.xlsx).
-  - Rename the copy, and check-in to the _target-repository_ (`main` branch).
-  - Perform controls selection, and check-in.
+- Create _target-repository_ from the following template: https://github.com/cds-snc/system-level-security-controls-template (*Note: this will also create the Github action workflow to create issues, see below*.)
+- In the newly created _target-repository_:
+  - Update parameters in the Github action workflow (`.github/workflows/deploy-tickets.yml`):
+    - `csv_file`: This is the input csv file (see *Input* section below).
+    - `controls_filter`: By default, this is set to SYSTEM (system-level controls).
+    - Check-in this file (`main` branch).
+  - Download and open the CCCS Cloud Profile (_cccs control profile template_) from one of the CCCS Cloud profile templates (.xlsx) (*Note: you may need to upload the (.xlsx) template to Google Workspace in order to edit the file).
+    - Perform controls selection, and check-in to the _target-repository_ (`main` branch).
 
 ### Input
 
 - Convert the _cccs control profile template_ (.xlsx), in preparation step, to CSV format.
   - Create an input directory in the _tool-repository_ for the input file using the following naming convention: `input/<target-repository>`
   - Add the .csv file to this input directory.
-  - Check-in this file (`main` branch).
+  - Check-in this file (*including directory*) to the _tool-reposutory_ (`main` branch).
 
 ### Output
 
