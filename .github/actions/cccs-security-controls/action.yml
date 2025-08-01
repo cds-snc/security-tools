@@ -1,0 +1,31 @@
+name: "Generate CCCS Cloud Control Profile GitHub issues"
+description: "Create github issues for selected controls"
+
+inputs:
+  token:
+    description: "Token for allowing the action to create issues"
+    required: true
+  csv_file:
+    description: "Input control file in csv"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout Code for tool
+      uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      with:
+        repository: cds-snc/security-tools
+        path: ./.github/tmp/security-tools
+        ref: ${{ github.ref_name }}
+      
+    - name: Run python script to create gh issues
+      working-directory: ./.github/tmp/security-tools/tools/cccs-cloud-control-issue-generator
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+        REPO: ${{ github.repository }}
+        CSV_FILE: ${{ inputs.csv_file }}
+      run: |
+        make install
+        make
+      shell: bash
