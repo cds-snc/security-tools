@@ -339,6 +339,23 @@ def get_labels(row):
     if is_attribute_set(row, Header.CLIENT_SAAS.value):
         labels.append("SaaS")
 
+    # Map CSV Priority column (P1/P2/P3) to existing repo labels.
+    # The priority labels are supposed to be created when 
+    # the repo is created from a template
+    priority_label_map = {
+        "P1": "High Priority | Haute priorité",
+        "P2": "Medium Priority  | Priorité moyenne",
+        "P3": "Low Priority | Faible priorité",
+    }
+    try:
+        priority_val = (row[Header.CDS_SUPP_ATTR_PRIORITY.value] or "").strip().upper()
+        mapped_label = priority_label_map.get(priority_val)
+        if mapped_label:
+            labels.append(mapped_label)
+    except IndexError:
+        # CSV row missing the priority column; ignore silently
+        pass
+
     return labels
 
 
