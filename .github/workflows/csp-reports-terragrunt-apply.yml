@@ -1,6 +1,7 @@
 name: "Terragrunt apply csp reports"
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
