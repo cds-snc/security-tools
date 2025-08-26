@@ -28,12 +28,14 @@ REPO = owner/repo
 GITHUB_TOKEN = github token to create issues
 CSV_FILE = path to csv file
 CONTROLS_FILTER = SYSTEM (default) or ORGANIZATION
+CONTROLS_OVERRIDE = CSV separated list of controls. If exists, only the specified controls will be added.
 LOG_LEVEL = If exists, set logging level to this. Otherwise, set to INFO
 """
 REPO = os.getenv("REPO")
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
 CSV_FILE = os.getenv("CSV_FILE")
 CONTROLS_FILTER = os.getenv("CONTROLS_FILTER", CONTROLS_FILTER_SYS)
+CONTROLS_OVERRIDE = os.getenv("CONTROLS_OVERRIDE")
 LOG_LEVEL = os.getenv("LOG_LEVEL", logging.INFO)
 
 
@@ -93,14 +95,21 @@ def main():
     """
     Program entrypoint to create issues in github for each control in CCCS control profile.
     """
+    if CONTROLS_OVERRIDE:
+        ctls_override = CONTROLS_OVERRIDE.split(",")
+
     for control in get_controls(get_csv_file()):
-        # apply selected controls filter: ORG/SYS
-        if CONTROLS_FILTER.upper() == CONTROLS_FILTER_SYS:
-            if not is_attribute_set(control, Header.CDS_SUPP_ATTR_SYS_LEVEL_CTR.value):
+        if ctls_override:
+            if control not in ctls_override:
                 continue
-        elif CONTROLS_FILTER.upper() == CONTROLS_FILTER_ORG:
-            if not is_attribute_set(control, Header.CDS_SUPP_ATTR_SYS_LEVEL_CTR.value):
-                continue
+        else:
+            # apply selected controls filter: ORG/SYS
+            if CONTROLS_FILTER.upper() == CONTROLS_FILTER_SYS:
+                if not is_attribute_set(control, Header.CDS_SUPP_ATTR_SYS_LEVEL_CTR.value):
+                    continue
+            elif CONTROLS_FILTER.upper() == CONTROLS_FILTER_ORG:
+                if not is_attribute_set(control, Header.CDS_SUPP_ATTR_SYS_LEVEL_CTR.value):
+                    continue
 
         issues_url = get_issues_url()
         headers = get_header()
