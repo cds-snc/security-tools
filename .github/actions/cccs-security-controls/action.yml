@@ -25,6 +25,8 @@ runs:
         GITHUB_TOKEN: ${{ inputs.token }}
         REPO: ${{ github.repository }}
         CSV_FILE: ${{ inputs.csv_file }}
+        CONTROLS_FILTER: ${{ inputs.controls_filter }}
+        CONTROLS_OVERRIDE: ${{ inputs.controls_override }}
       run: |
         make install
         make
