@@ -8,6 +8,12 @@ inputs:
   csv_file:
     description: "Input control file in csv"
     required: true
+  controls_filter:
+    description: "Create issues for SYSTEM or ORGANIZATION level controls, default to SYSTEM"
+    required: false
+  controls_override:
+    description: "CSV separated list of controls. If exists, only the specified controls will be added."
+    required: false
 
 runs:
   using: "composite"
