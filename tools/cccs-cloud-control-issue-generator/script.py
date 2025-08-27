@@ -97,10 +97,10 @@ def main():
     """
     if CONTROLS_OVERRIDE:
         ctls_override = CONTROLS_OVERRIDE.split(",")
+        logging.info("Only creating issues for controls in CONTROLS_OVERRIDE: {}".format(ctls_override))
 
     for control in get_controls(get_csv_file()):
         if ctls_override:
-            logging.info("Only creating issues for controls in CONTROLS_OVERRIDE: {}".format(ctls_override))
             if control not in ctls_override:
                 continue
         else:
