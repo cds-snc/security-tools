@@ -95,14 +95,15 @@ def main():
     """
     Program entrypoint to create issues in github for each control in CCCS control profile.
     """
-    logging.info("CONTROLS_OVERRIDE: {}".format(CONTROLS_OVERRIDE))
+    ctls_override = None
+
     if CONTROLS_OVERRIDE:
         ctls_override = CONTROLS_OVERRIDE.split(",")
         logging.info("Only creating issues for controls in CONTROLS_OVERRIDE: {}".format(ctls_override))
 
     for control in get_controls(get_csv_file()):
         if ctls_override:
-            if control not in ctls_override:
+            if get_control_id(control) not in ctls_override:
                 continue
         else:
             # apply selected controls filter: ORG/SYS
