@@ -4,13 +4,13 @@ locals {
 }
 
 module "log_bucket" {
-  source            = "github.com/cds-snc/terraform-modules//S3_log_bucket?ref=v8.0.0"
+  source            = "github.com/cds-snc/terraform-modules//S3_log_bucket?ref=v10.7.1"
   bucket_name       = "${local.name_prefix}-logs"
   billing_tag_value = var.billing_tag_value
 }
 
 module "athena" {
-  source      = "github.com/cds-snc/terraform-modules//S3?ref=v8.0.0"
+  source      = "github.com/cds-snc/terraform-modules//S3?ref=v10.7.1"
   bucket_name = local.athena_name
   lifecycle_rule = [{
     id      = "expire"
