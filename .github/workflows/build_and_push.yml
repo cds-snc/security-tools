@@ -32,7 +32,6 @@ jobs:
         id: filter
         with:
           filters: |
-            cloud_asset_inventory/cloudquery: 'images/cloud_asset_inventory/cloudquery/**'
             csp_violation_report_service: 'images/csp_violation_report_service/**'
 
   build-push-and-deploy:
