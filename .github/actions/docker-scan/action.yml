@@ -8,6 +8,10 @@ inputs:
   dockerfile_path:
     description: "The path to the Dockerfile being scanned"
     required: true
+  platform:
+    description: "The Docker image platform that's being scanned"
+    required: false
+    default: "linux/amd64"
   token:
     description: "Token for allowing the action to post in the security tab"
     required: true
@@ -16,11 +20,13 @@ runs:
   using: "composite"
   steps:
     - name: Run docker vulnerability scanner
-      uses: aquasecurity/trivy-action@6e7b7d1fd3e4fef0c5fa8cce1229c54b2c9bd0d8 # v0.24.0
+      uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # v0.33.1
+      env:
+        TRIVY_PLATFORM: ${{ inputs.platform }}
       with:
         image-ref: "${{ inputs.docker_image }}"
         format: "sarif"
-        security-checks: "vuln"
+        scanners: "vuln"
         timeout: "15m"
         output: "trivy-results.sarif"
 
