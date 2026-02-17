@@ -62,6 +62,7 @@ jobs:
         working-directory: ./images/${{ matrix.image }}
         run: |
           docker build \
+          --provenance=false \
           --build-arg git_sha=$GITHUB_SHA \
           -t $REGISTRY/${{ matrix.image }}:$GITHUB_SHA \
           -t $REGISTRY/${{ matrix.image }}:latest .
