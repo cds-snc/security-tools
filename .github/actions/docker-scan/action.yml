@@ -20,13 +20,14 @@ runs:
   using: "composite"
   steps:
     - name: Run docker vulnerability scanner
-      uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # v0.33.1
+      uses: aquasecurity/trivy-action@c1824fd6edce30d7ab345a9989de00bbd46ef284 # v0.34.0
       env:
         TRIVY_PLATFORM: ${{ inputs.platform }}
       with:
         image-ref: "${{ inputs.docker_image }}"
         format: "sarif"
         scanners: "vuln"
+        vuln-type: "os"
         timeout: "15m"
         output: "trivy-results.sarif"
 
@@ -34,7 +35,8 @@ runs:
       run: |
         cat trivy-results.sarif | \
           jq '.runs[].results[].locations[].physicalLocation.artifactLocation += {"uri": "${{ inputs.dockerfile_path }}","uriBaseId": "ROOTPATH"}' | \
-          jq '.runs[].results[].locations[].physicalLocation.region += {"startLine": 1,"startColumn": 1,"endLine": 1,"endColumn": 1}' > sarif.tmp
+          jq '.runs[].results[].locations[].physicalLocation.region += {"startLine": 1,"startColumn": 1,"endLine": 1,"endColumn": 1}' | \
+          jq '.runs[].results[] |= (if .ruleId then . + {partialFingerprints: {"primaryLocationLineHash": .ruleId}} else . end)' > sarif.tmp
         mv sarif.tmp trivy-results.sarif
       shell: bash
 
