@@ -12,6 +12,10 @@ inputs:
     description: "The Docker image platform that's being scanned"
     required: false
     default: "linux/amd64"
+  vuln_type:
+    description: "The type of vulnerabilities to scan for (os, library)"
+    required: false
+    default: "os"
   token:
     description: "Token for allowing the action to post in the security tab"
     required: true
@@ -27,7 +31,7 @@ runs:
         image-ref: "${{ inputs.docker_image }}"
         format: "sarif"
         scanners: "vuln"
-        vuln-type: "os"
+        vuln-type: ${{ inputs.vuln_type }}
         timeout: "15m"
         output: "trivy-results.sarif"
 
