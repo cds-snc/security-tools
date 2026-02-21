@@ -1,5 +1,5 @@
 module "sentinel_forwarder" {
-  source            = "github.com/cds-snc/terraform-modules//sentinel_forwarder?ref=v10.10.2"
+  source            = "github.com/cds-snc/terraform-modules//sentinel_forwarder?ref=v10.11.0"
   function_name     = "${var.tool_name}_sentinel"
   billing_tag_value = var.tool_name
 
