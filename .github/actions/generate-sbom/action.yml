@@ -24,10 +24,14 @@ runs:
   steps:
     - name: Install Trivy
       env:
-        TRIVY_VERSION: "v0.69.2"
+        TRIVY_VERSION: "0.69.3"
+        TRIVY_SHA256_AMD64: "1816b632dfe529869c740c0913e36bd1629cb7688bd5634f4a858c1d57c88b75"
+        TRIVY_SHA256_ARM64: "7e3924a974e912e57b4a99f65ece7931f8079584dae12eb7845024f97087bdfd"
       run: |
-        curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | \
-          sh -s -- -b /usr/local/bin ${{ env.TRIVY_VERSION }}
+        bash "${{ github.action_path }}/../../scripts/install_trivy.sh" \
+          "${{ env.TRIVY_VERSION }}" \
+          "${{ env.TRIVY_SHA256_AMD64 }}" \
+          "${{ env.TRIVY_SHA256_ARM64 }}"
       shell: bash
 
     - name: Re-tag docker image
