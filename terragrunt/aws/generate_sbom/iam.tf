@@ -4,7 +4,7 @@ locals {
 
 module "github_workflow_roles" {
   source            = "github.com/cds-snc/terraform-modules//gh_oidc_role?ref=v10.11.0"
-  billing_tag_value = local.billing_tag_value
+  billing_tag_value = var.billing_tag_value
   roles = [
     {
       name      = local.trivy_download
