@@ -1,5 +1,5 @@
 locals {
-  trivy_download = "trivy-download"
+  trivy_db_download = "trivy-db-download"
 }
 
 module "github_workflow_roles" {
@@ -7,7 +7,7 @@ module "github_workflow_roles" {
   billing_tag_value = var.billing_tag_value
   roles = [
     {
-      name      = local.trivy_download
+      name      = local.trivy_db_download
       repo_name = "*" # Allow any CDS repo to use this role
       claim     = "ref:refs/heads/main"
     }
@@ -15,29 +15,28 @@ module "github_workflow_roles" {
 }
 
 #
-# Allow GitHub workflows in CDS repos to download the Trivy binary
+# Allow GitHub workflows in CDS repos to download the Trivy database
 #
-resource "aws_iam_role_policy_attachment" "trivy_download" {
-  role       = local.trivy_download
-  policy_arn = aws_iam_policy.trivy_download.arn
+resource "aws_iam_role_policy_attachment" "trivy_db_download" {
+  role       = local.trivy_db_download
+  policy_arn = aws_iam_policy.trivy_db_download.arn
   depends_on = [
     module.github_workflow_roles
   ]
 }
 
-resource "aws_iam_policy" "trivy_download" {
-  name   = local.trivy_download
-  policy = data.aws_iam_policy_document.trivy_download.json
+resource "aws_iam_policy" "trivy_db_download" {
+  name   = local.trivy_db_download
+  policy = data.aws_iam_policy_document.trivy_db_download.json
 }
 
-data "aws_iam_policy_document" "trivy_download" {
+data "aws_iam_policy_document" "trivy_db_download" {
   statement {
-    sid = "S3Read"
+    sid = "ECRPublicAuth"
     actions = [
-      "s3:GetObject",
+      "ecr-public:GetAuthorizationToken",
+      "sts:GetServiceBearerToken",
     ]
-    resources = [
-      "${module.security_tools_binaries.s3_bucket_arn}/trivy/*"
-    ]
+    resources = ["*"]
   }
 }

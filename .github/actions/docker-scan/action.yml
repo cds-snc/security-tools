@@ -23,17 +23,29 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Run docker vulnerability scanner
-      uses: aquasecurity/trivy-action@c1824fd6edce30d7ab345a9989de00bbd46ef284 # v0.34.0
+    - name: Install Trivy
       env:
-        TRIVY_PLATFORM: ${{ inputs.platform }}
-      with:
-        image-ref: "${{ inputs.docker_image }}"
-        format: "sarif"
-        scanners: "vuln"
-        vuln-type: ${{ inputs.vuln_type }}
-        timeout: "15m"
-        output: "trivy-results.sarif"
+        TRIVY_VERSION: "0.69.3"
+        TRIVY_SHA256_AMD64: "1816b632dfe529869c740c0913e36bd1629cb7688bd5634f4a858c1d57c88b75"
+        TRIVY_SHA256_ARM64: "7e3924a974e912e57b4a99f65ece7931f8079584dae12eb7845024f97087bdfd"
+      run: |
+        bash "${{ github.action_path }}/../../scripts/install_trivy.sh" \
+          "${{ env.TRIVY_VERSION }}" \
+          "${{ env.TRIVY_SHA256_AMD64 }}" \
+          "${{ env.TRIVY_SHA256_ARM64 }}"
+      shell: bash
+
+    - name: Trivy scan
+      run: |
+        trivy image \
+          --format sarif \
+          --platform ${{ inputs.platform }} \
+          --vuln-type ${{ inputs.vuln_type }} \
+          --security-checks vuln \
+          --timeout 15m \
+          --output trivy-results.sarif \
+          ${{ inputs.docker_image }}
+      shell: bash
 
     - name: Update sarif vulnerability locations
       run: |
