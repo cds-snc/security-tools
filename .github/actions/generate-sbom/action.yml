@@ -13,12 +13,8 @@ inputs:
     required: false
     default: "linux/amd64"
   sbom_name:
-    description: "The name of the SBOM"
-    required: true
-  skip_pull:
-    description: "Do not attempt to pull and re-tag the Docker image before scanning"
+    description: "The name of the SBOM which is used to group scan results. If not provided, it will default to the Docker image name."
     required: false
-    default: "false"
   token:
     description: "Token for allowing the action to post in the security tab"
     required: true
@@ -26,6 +22,16 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Setup SBOM name
+      run: |
+        if [ -z "${{ inputs.sbom_name }}" ]; then
+          echo "No SBOM name provided, defaulting to docker_image"
+          echo "SBOM_NAME=${{ inputs.docker_image }}" >> $GITHUB_ENV
+        else
+          echo "SBOM_NAME=${{ inputs.sbom_name }}" >> $GITHUB_ENV
+        fi
+      shell: bash
+
     - name: Install Trivy
       env:
         TRIVY_VERSION: "0.69.3"
@@ -38,13 +44,6 @@ runs:
           "${{ env.TRIVY_SHA256_ARM64 }}"
       shell: bash
 
-    - name: Re-tag docker image
-      if: inputs.skip_pull == 'false'
-      run: |
-        docker pull ${{ inputs.docker_image }} --platform ${{ inputs.platform }}
-        docker tag ${{ inputs.docker_image }} ${{ inputs.sbom_name }}
-      shell: bash
-
     - name: Trivy scan
       run: |
         trivy image \
@@ -54,7 +53,7 @@ runs:
           --security-checks vuln \
           --timeout 15m \
           --output dependency-results.sbom.json \
-          ${{ inputs.sbom_name }}
+          ${{ inputs.docker_image }}
       shell: bash
 
     - name: SBOM fix - update apk package type to alpine
@@ -65,14 +64,14 @@ runs:
     - name: SBOM fix - group scans with correlator and set Dockerfile path
       run: |
         cat dependency-results.sbom.json | \
-          jq '.job.correlator = "${{ inputs.sbom_name }}"' | \
+          jq '.job.correlator = "${SBOM_NAME}"' | \
           jq '.manifests[] += {"file":{"source_location": "${{ inputs.dockerfile_path }}"}}' > sbom.tmp
         mv sbom.tmp dependency-results.sbom.json
       shell: bash
 
     - name: Upload SBOM
       run: |
-        curl \
+        curl --fail \
           -H 'Accept: application/vnd.github+json' \
           -H 'Authorization: token ${{ inputs.token }}' \
           'https://api.github.com/repos/'$GITHUB_REPOSITORY'/dependency-graph/snapshots' \
