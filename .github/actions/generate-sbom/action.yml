@@ -15,6 +15,10 @@ inputs:
   sbom_name:
     description: "The name of the SBOM"
     required: true
+  skip_pull:
+    description: "Do not attempt to pull and re-tag the Docker image before scanning"
+    required: false
+    default: "false"
   token:
     description: "Token for allowing the action to post in the security tab"
     required: true
@@ -35,6 +39,7 @@ runs:
       shell: bash
 
     - name: Re-tag docker image
+      if: inputs.skip_pull == 'false'
       run: |
         docker pull ${{ inputs.docker_image }} --platform ${{ inputs.platform }}
         docker tag ${{ inputs.docker_image }} ${{ inputs.sbom_name }}
