@@ -3,7 +3,7 @@ module "sentinel_forwarder" {
   function_name     = "${var.tool_name}_sentinel"
   billing_tag_value = var.tool_name
 
-  layer_arn = "arn:aws:lambda:ca-central-1:283582579564:layer:aws-sentinel-connector-layer:125"
+  layer_arn = "arn:aws:lambda:ca-central-1:283582579564:layer:aws-sentinel-connector-layer:255"
 
   customer_id = var.log_analytics_workspace_id
   shared_key  = var.log_analytics_workspace_key
