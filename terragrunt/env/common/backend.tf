@@ -2,9 +2,9 @@
 terraform {
   backend "s3" {
     bucket         = "security-tools-794722365809-tfstate"
-    dynamodb_table = "tfstate-lock"
     encrypt        = true
     key            = "./terraform.tfstate"
     region         = "ca-central-1"
+    use_lockfile   = true
   }
 }
