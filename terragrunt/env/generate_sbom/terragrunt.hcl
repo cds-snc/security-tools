@@ -1,5 +1,5 @@
 locals {
-  parent_vars = read_terragrunt_config("../terragrunt.hcl")
+  parent_vars = read_terragrunt_config("../root.hcl")
 }
 
 terraform {
@@ -11,6 +11,6 @@ inputs = {
 }
 
 include {
-  path   = find_in_parent_folders()
+  path   = find_in_parent_folders("root.hcl")
   expose = true
 }
