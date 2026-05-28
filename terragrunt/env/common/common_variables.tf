@@ -14,6 +14,11 @@ variable "domain_name" {
   type        = string
 }
 
+variable "internal_domain_name" {
+  description = "(Required) Internal domain name for service discovery"
+  type        = string
+}
+
 variable "product_name" {
   description = "(Required) The name of the product you are deploying."
   type        = string
