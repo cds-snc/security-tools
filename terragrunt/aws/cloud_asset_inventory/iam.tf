@@ -5,8 +5,9 @@
 
 locals {
   asset_inventory_admin_role     = "secopsAssetInventoryCartographyRole"
-  asset_inventory_org_account_id = var.organization_id
 }
+
+data "aws_organizations_organization" "current" {}
 
 resource "aws_iam_role" "cartography_task_execution_role" {
   name               = local.asset_inventory_admin_role
@@ -72,7 +73,7 @@ data "aws_iam_policy_document" "cartography_task_execution_policies" {
     condition {
       test     = "StringEquals"
       variable = "aws:PrincipalOrgID"
-      values   = [var.organization_id]
+      values   = [data.aws_organizations_organization.current.id]
     }
   }
 }
