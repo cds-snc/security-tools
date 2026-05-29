@@ -1,7 +1,7 @@
 resource "aws_cloudwatch_event_rule" "asset_inventory_cartography" {
   name                = "cartography"
   schedule_expression = "cron(0 22 * * ? *)"
-  is_enabled          = true
+  state               = "ENABLED"
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
@@ -24,7 +24,7 @@ data "template_file" "asset_inventory_cartography_state_machine" {
     CARTOGRAPHY_SERVICE_NAME          = local.cartography_service_name
     CARTOGRAPHY_CLUSTER               = aws_ecs_cluster.cloud_asset_discovery.arn
     CARTOGRAPHY_TASK_DEF              = aws_ecs_task_definition.cartography.arn
-    SENTINEL_NEO4J_FORWARDER_TASK_DEF = aws_ecs_task_definition.sentinel_neo4j_forwarder.arn
+    # SENTINEL_NEO4J_FORWARDER_TASK_DEF = aws_ecs_task_definition.sentinel_neo4j_forwarder.arn
     SECURITY_GROUPS                   = aws_security_group.cartography.id
     SUBNETS                           = join(", ", [for subnet in var.vpc_private_subnet_ids : format("%q", subnet)])
   }
@@ -135,8 +135,8 @@ data "aws_iam_policy_document" "asset_inventory_cartography_state_machine" {
     resources = [
       aws_ecs_task_definition.cartography.arn,
       "arn:aws:ecs:${var.region}:${var.account_id}:task-definition/${aws_ecs_task_definition.cartography.family}",
-      aws_ecs_task_definition.sentinel_neo4j_forwarder.arn,
-      "arn:aws:ecs:${var.region}:${var.account_id}:task-definition/${aws_ecs_task_definition.sentinel_neo4j_forwarder.family}",
+      # aws_ecs_task_definition.sentinel_neo4j_forwarder.arn,
+      # "arn:aws:ecs:${var.region}:${var.account_id}:task-definition/${aws_ecs_task_definition.sentinel_neo4j_forwarder.family}",
     ]
   }
 
@@ -152,14 +152,14 @@ data "aws_iam_policy_document" "asset_inventory_cartography_state_machine" {
     ]
   }
 
-  statement {
-    effect = "Allow"
-    actions = [
-      "ssm:DescribeParameters",
-      "ssm:GetParameter",
-    ]
-    resources = [
-      aws_ssm_parameter.asset_inventory_account_list.arn,
-    ]
-  }
+  # statement {
+  #   effect = "Allow"
+  #   actions = [
+  #     "ssm:DescribeParameters",
+  #     "ssm:GetParameter",
+  #   ]
+  #   resources = [
+  #     aws_ssm_parameter.asset_inventory_account_list.arn,
+  #   ]
+  # }
 }

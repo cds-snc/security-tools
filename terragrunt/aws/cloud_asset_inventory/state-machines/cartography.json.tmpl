@@ -55,8 +55,8 @@
                         "Value": "neo4j"
                       },
                       {
-                        "Name" : "AWS_BEST_EFFORT_MODE",
-                        "Value" : "true"
+                        "Name": "AWS_BEST_EFFORT_MODE",
+                        "Value": "true"
                       }
                     ]
                   }
@@ -64,20 +64,34 @@
               },
               "NetworkConfiguration": {
                 "AwsvpcConfiguration": {
-                  "SecurityGroups": ["${SECURITY_GROUPS}"],
-                  "Subnets":[${SUBNETS}]
+                  "SecurityGroups": [
+                    "${SECURITY_GROUPS}"
+                  ],
+                  "Subnets": [${SUBNETS
+                    }
+                  ]
                 }
               }
             },
             "Retry": [
               {
-                "ErrorEquals": ["ECS.AmazonECSException"],
+                "ErrorEquals": [
+                  "ECS.AmazonECSException"
+                ],
                 "IntervalSeconds": 300,
                 "BackoffRate": 2.0,
                 "MaxAttempts": 4
               }
             ],
-            "Catch": [{"ErrorEquals": [ "States.ALL" ], "ResultPath": null, "Next": "Handle Failure"}],
+            "Catch": [
+              {
+                "ErrorEquals": [
+                  "States.ALL"
+                ],
+                "ResultPath": null,
+                "Next": "Handle Failure"
+              }
+            ],
             "End": true
           },
           "Handle Failure": {
@@ -89,22 +103,6 @@
       "MaxConcurrency": 1,
       "ItemsPath": "$.accounts",
       "ResultPath": null,
-      "Next": "Neo4J Sentinel Forwarder"
-    },
-    "Neo4J Sentinel Forwarder": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::ecs:runTask.sync",
-      "Parameters": {
-        "LaunchType": "FARGATE",
-        "Cluster" : "${CARTOGRAPHY_CLUSTER}",
-        "TaskDefinition" : "${SENTINEL_NEO4J_FORWARDER_TASK_DEF}",
-        "NetworkConfiguration": {
-          "AwsvpcConfiguration": {
-            "SecurityGroups": ["${SECURITY_GROUPS}"],
-            "Subnets":[${SUBNETS}]
-          }
-        }
-      },
       "End": true
     }
   }
