@@ -35,11 +35,6 @@ variable "neo4j_password" {
   type        = string
 }
 
-variable "organization_id" {
-  description = "(Required) The organization ID for the AWS accounts to manage cloud asset inventory for."
-  type        = string
-}
-
 variable "password_change_id" {
   description = "(Required) Id to trigger changing the neo4j password."
   type        = string

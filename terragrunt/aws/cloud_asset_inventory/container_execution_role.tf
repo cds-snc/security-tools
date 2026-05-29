@@ -44,6 +44,11 @@ data "aws_iam_policy_document" "cartography_container_execution_role" {
       type        = "Service"
       identifiers = ["ecs-tasks.amazonaws.com"]
     }
+
+    principals {
+      type        = "Service"
+      identifiers = ["scheduler.amazonaws.com"]
+    }
   }
 }
 

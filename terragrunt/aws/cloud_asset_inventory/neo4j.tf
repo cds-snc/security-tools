@@ -23,10 +23,6 @@ resource "aws_ecs_service" "neo4j" {
     container_port   = 7687
   }
 
-  service_registries {
-    registry_arn = aws_service_discovery_service.neo4j.arn
-  }
-
   network_configuration {
     security_groups = [aws_security_group.cartography.id]
     subnets         = var.vpc_private_subnet_ids
