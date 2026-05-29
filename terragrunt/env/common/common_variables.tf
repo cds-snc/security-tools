@@ -44,3 +44,13 @@ variable "billing_tag_value" {
   description = "The default tagging value"
   type        = string
 }
+
+variable "cloud_asset_inventory_cidr" {
+  description = "CIDR range for the Cloud Asset Inventory VPC"
+  type        = string
+}
+
+variable "sso_proxy_cidr" {
+  description = "CIDR range for the SSO Proxy VPC"
+  type        = string
+}
