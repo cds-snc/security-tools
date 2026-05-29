@@ -4,7 +4,7 @@
 ###
 
 locals {
-  asset_inventory_admin_role     = "secopsAssetInventoryCartographyRole"
+  asset_inventory_admin_role = "secopsAssetInventoryCartographyRole"
 }
 
 data "aws_organizations_organization" "current" {}
