@@ -67,7 +67,7 @@ data "aws_iam_policy_document" "cartography_task_execution_policies" {
     actions = [
       "sts:AssumeRole",
     ]
-    resources = "arn:aws:iam::*:role/secopsAssetInventorySecurityAuditRole"
+    resources = ["arn:aws:iam::*:role/secopsAssetInventorySecurityAuditRole"]
 
     condition {
       test     = "StringEquals"
