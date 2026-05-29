@@ -26,14 +26,20 @@ dependency "base" {
 
 inputs = {
   tool_name                                       = "cloud-asset-inventory"
+  cartography_image                               = "ghcr.io/cartography-cncf/cartography"
+  cartography_image_tag                           = "0.136@sha256:bf34b2ca0aac8831c4fa859f51be3c26f2364e09d831ce8ed00ae42ff141e7c4"
   neo4j_image                                     = "neo4j"
   neo4j_image_tag                                 = "4.4.10@sha256:8e3dabe4b3d21c3ffa94dac6750c748b29f93b38d24182c3609ee0cbf293d4cf"
+  neo4j_password                                  = "neo4j-password"
+  password_change_id                              = "change-me-to-trigger-password-change"
   cloud_asset_inventory_vpc_peering_connection_id = "pcx-0771c54d393000439"
   security_tools_vpc_id                           = dependency.base.outputs.security_tools_vpc_id
   vpc_private_subnet_cidrs                        = dependency.base.outputs.vpc_private_subnet_cidrs
   vpc_public_subnet_cidrs                         = dependency.base.outputs.vpc_public_subnet_cidrs
   vpc_private_subnet_ids                          = dependency.base.outputs.vpc_private_subnet_ids
   vpc_public_subnet_ids                           = dependency.base.outputs.vpc_public_subnet_ids
+  customer_id                                     = "fake-customer-id-for-testing"
+  shared_key                                      = "fake-shared-key-for-testing"
 }
 
 include {
