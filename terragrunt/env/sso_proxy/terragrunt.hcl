@@ -58,8 +58,7 @@ inputs = {
   vpc_private_subnet_ids    = dependency.base.outputs.vpc_private_subnet_ids
   vpc_public_subnet_ids     = dependency.base.outputs.vpc_public_subnet_ids
 
-  cloud_asset_inventory_load_balancer_dns        = dependency.cloud_asset_inventory.outputs.cloud_asset_inventory_load_balancer_dns
-  csp_violation_report_service_load_balancer_dns = dependency.csp_violation_report_service.outputs.csp_violation_report_service_load_balancer_dns
+  cloud_asset_inventory_load_balancer_dns = dependency.cloud_asset_inventory.outputs.cloud_asset_inventory_load_balancer_dns
 }
 
 
