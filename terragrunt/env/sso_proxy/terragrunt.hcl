@@ -7,7 +7,7 @@ terraform {
 }
 
 dependencies {
-  paths = ["../base", "../cloud_asset_inventory", "../csp_violation_report_service"]
+  paths = ["../base", "../cloud_asset_inventory"]
 }
 
 dependency "base" {
@@ -35,21 +35,12 @@ dependency "cloud_asset_inventory" {
   }
 }
 
-dependency "csp_violation_report_service" {
-  config_path = "../csp_violation_report_service"
-
-  mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
-  mock_outputs = {
-    csp_violation_report_service_load_balancer_dns = "my-loadbalancer-1234567890.ca-central-1.elb.amazonaws.com"
-  }
-}
-
 inputs = {
   tool_name                 = "sso-proxy"
   pomerium_image            = "pomerium/pomerium"
-  pomerium_image_tag        = "git-74310b3d"
+  pomerium_image_tag        = "git-1ef21ae9@sha256:b1d0366ab16ed610c676e9d428cb21ac31c5d3ffa6362a7511a32adec8d6dae0"
   pomerium_verify_image     = "pomerium/verify"
-  pomerium_verify_image_tag = "sha-6b38dd5"
+  pomerium_verify_image_tag = "latest@sha256:0e52cfc1a9252a9b5158a8e20d6c6a96e34994a805abbb4211a0294036f24af0"
   session_cookie_expires_in = "8h"
   security_tools_vpc_id     = dependency.base.outputs.security_tools_vpc_id
   vpc_main_nacl_id          = dependency.base.outputs.vpc_main_nacl_id
