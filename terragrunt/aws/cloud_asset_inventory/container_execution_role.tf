@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "cartography_policies" {
     actions = [
       "sts:AssumeRole",
     ]
-    resources = local.trusted_role_arns
+    resources = ["*"]
   }
 
   statement {
@@ -104,7 +104,7 @@ data "aws_iam_policy_document" "cartography_policies" {
     resources = [
       aws_ssm_parameter.neo4j_auth.arn,
       aws_ssm_parameter.neo4j_password.arn,
-      aws_ssm_parameter.asset_inventory_account_list.arn,
+      # aws_ssm_parameter.asset_inventory_account_list.arn,
       aws_ssm_parameter.customer_id.arn,
       aws_ssm_parameter.shared_key.arn,
     ]
