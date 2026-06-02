@@ -3,6 +3,16 @@ variable "cloud_asset_inventory_load_balancer_dns" {
   type        = string
 }
 
+variable "hosted_zone_id" {
+  description = "(Required) The Route53 hosted zone ID for the security tools domain"
+  type        = string
+}
+
+variable "hosted_zone_certificate_arn" {
+  description = "(Required) The ARN of the ACM certificate for the security tools hosted zone"
+  type        = string
+}
+
 variable "pomerium_client_id" {
   description = "The pomerium client id"
   type        = string
@@ -56,6 +66,7 @@ variable "security_tools_domain_name" {
   description = "(Required) The domain name to use for security tools"
   type        = string
 }
+
 
 variable "session_cookie_expires_in" {
   description = "The duration the pomerium session cookie should last"

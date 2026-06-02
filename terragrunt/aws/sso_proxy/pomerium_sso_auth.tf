@@ -9,13 +9,23 @@ resource "aws_ecs_service" "pomerium_sso_proxy_auth" {
   desired_count   = 1
   launch_type     = "FARGATE"
 
-  service_registries {
-    registry_arn = aws_service_discovery_service.auth.arn
-  }
-
   network_configuration {
     security_groups = [aws_security_group.pomerium.id]
     subnets         = var.vpc_private_subnet_ids
+  }
+
+  service_connect_configuration {
+    enabled   = true
+    namespace = aws_service_discovery_http_namespace.internal_mesh.arn
+
+    service {
+      client_alias {
+        port     = 8000
+        dns_name = "pomerium-auth.internal.mesh"
+      }
+      discovery_name = "pomerium-auth"
+      port_name      = "auth-port"
+    }
   }
 
   tags = {
@@ -32,8 +42,8 @@ data "template_file" "pomerium_sso_proxy_auth_container_definition" {
     AWS_LOGS_GROUP                = aws_cloudwatch_log_group.pomerium_sso_proxy_auth.name
     AWS_LOGS_REGION               = var.region
     AWS_LOGS_STREAM_PREFIX        = "${local.pomerium_sso_proxy_auth_service_name}-task"
-    POMERIUM_CLIENT_ID            = aws_ssm_parameter.pomerium_client_id.arn
-    POMERIUM_CLIENT_SECRET        = aws_ssm_parameter.pomerium_client_secret.arn
+    SESSION_KEY                   = aws_ssm_parameter.session_key.arn
+    SESSION_COOKIE_SECRET         = aws_ssm_parameter.session_cookie_secret.arn
     POMERIUM_GOOGLE_CLIENT_ID     = aws_ssm_parameter.pomerium_google_client_id.arn
     POMERIUM_GOOGLE_CLIENT_SECRET = aws_ssm_parameter.pomerium_google_client_secret.arn
     POMERIUM_VERIFY_IMAGE         = "${var.pomerium_verify_image}:${var.pomerium_verify_image_tag}"

@@ -21,6 +21,11 @@ resource "aws_ecs_service" "pomerium_sso_proxy" {
     subnets         = var.vpc_private_subnet_ids
   }
 
+  service_connect_configuration {
+    enabled   = true
+    namespace = aws_service_discovery_http_namespace.internal_mesh.arn
+  }
+
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
@@ -40,15 +45,15 @@ data "template_file" "pomerium_sso_proxy_container_definition" {
   template = file("container-definitions/pomerium_sso_proxy.json.tmpl")
 
   vars = {
-    AUTHENTICATE_SERVICE_URL      = "https://auth.${var.domain_name}"
+    AUTHENTICATE_SERVICE_URL      = "https://auth.${var.security_tools_domain_name}"
     AWS_LOGS_GROUP                = aws_cloudwatch_log_group.pomerium_sso_proxy.name
     AWS_LOGS_REGION               = var.region
     AWS_LOGS_STREAM_PREFIX        = "${local.pomerium_sso_proxy_service_name}-task"
-    COOKIE_DOMAIN                 = var.domain_name
+    COOKIE_DOMAIN                 = var.security_tools_domain_name
     COOKIE_EXPIRE                 = var.session_cookie_expires_in
     ROUTES_FILE                   = base64encode(data.template_file.pomerium_sso_proxy_routes_policy.rendered)
-    POMERIUM_CLIENT_ID            = aws_ssm_parameter.pomerium_client_id.arn
-    POMERIUM_CLIENT_SECRET        = aws_ssm_parameter.pomerium_client_secret.arn
+    SESSION_KEY                   = aws_ssm_parameter.session_key.arn
+    SESSION_COOKIE_SECRET         = aws_ssm_parameter.session_cookie_secret.arn
     POMERIUM_GOOGLE_CLIENT_ID     = aws_ssm_parameter.pomerium_google_client_id.arn
     POMERIUM_GOOGLE_CLIENT_SECRET = aws_ssm_parameter.pomerium_google_client_secret.arn
     POMERIUM_IMAGE                = "${var.pomerium_image}:${var.pomerium_image_tag}"

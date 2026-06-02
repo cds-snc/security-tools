@@ -34,7 +34,7 @@ resource "aws_lb_target_group" "sso_proxy" {
   vpc_id               = var.security_tools_vpc_id
 
   health_check {
-    protocol            = "HTTP"
+    protocol            = "HTTPS"
     path                = "/ping"
     port                = "traffic-port"
     timeout             = 10
@@ -84,7 +84,7 @@ resource "aws_lb_listener" "https" {
   port            = 443
   protocol        = "HTTPS"
   ssl_policy      = "ELBSecurityPolicy-FS-1-2-Res-2020-10"
-  certificate_arn = aws_acm_certificate.internal_domain.arn
+  certificate_arn = var.hosted_zone_certificate_arn
 
   default_action {
     type             = "forward"
@@ -100,5 +100,5 @@ resource "aws_lb_listener" "https" {
 
 resource "aws_lb_listener_certificate" "https_sni" {
   listener_arn    = aws_lb_listener.https.arn
-  certificate_arn = aws_acm_certificate.internal_domain.arn
+  certificate_arn = var.hosted_zone_certificate_arn
 }
