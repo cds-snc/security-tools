@@ -23,7 +23,7 @@ resource "aws_ecs_service" "pomerium_sso_proxy" {
 
   service_connect_configuration {
     enabled   = true
-    namespace = aws_service_discovery_http_namespace.internal_mesh.arn
+    namespace = var.service_discovery_namespace_arn
   }
 
   tags = {

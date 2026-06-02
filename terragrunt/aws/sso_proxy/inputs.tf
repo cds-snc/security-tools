@@ -13,6 +13,11 @@ variable "hosted_zone_certificate_arn" {
   type        = string
 }
 
+variable "service_discovery_namespace_arn" {
+  description = "(Required) The ARN of the ECS Service Connect HTTP namespace for internal service discovery"
+  type        = string
+}
+
 variable "pomerium_client_id" {
   description = "The pomerium client id"
   type        = string
