@@ -37,3 +37,13 @@ output "vpc_public_subnet_ids" {
   description = "The public subnet IDs for the VPC"
   value       = module.vpc.public_subnet_ids
 }
+
+output "service_discovery_namespace_arn" {
+  description = "ARN for the ECS Service Connect HTTP namespace"
+  value       = aws_service_discovery_http_namespace.internal_mesh.arn
+}
+
+output "service_discovery_namespace_id" {
+  description = "ID for the ECS Service Connect HTTP namespace"
+  value       = aws_service_discovery_http_namespace.internal_mesh.id
+}
