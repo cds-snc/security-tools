@@ -15,7 +15,7 @@ resource "aws_lb" "cartography" {
   }
 
   drop_invalid_header_fields = true
-  enable_deletion_protection = true
+  enable_deletion_protection = false
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
