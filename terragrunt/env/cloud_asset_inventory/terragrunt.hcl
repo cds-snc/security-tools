@@ -15,12 +15,13 @@ dependency "base" {
   mock_outputs_allowed_terraform_commands = ["init", "fmt", "validate", "plan", "show"]
   mock_outputs_merge_with_state           = true
   mock_outputs = {
-    hosted_zone_id           = "1234567890"
-    security_tools_vpc_id    = "vpc-1234567890"
-    vpc_private_subnet_cidrs = ["10.0.0.0/24", "10.0.1.0/24"]
-    vpc_public_subnet_cidrs  = ["10.0.2.0/24", "10.0.3.0/24"]
-    vpc_private_subnet_ids   = ["subnet-1234567890", "subnet-0987654321"]
-    vpc_public_subnet_ids    = ["subnet-1122334455", "subnet-5544332211"]
+    hosted_zone_id                  = "1234567890"
+    security_tools_vpc_id           = "vpc-1234567890"
+    vpc_private_subnet_cidrs        = ["10.0.0.0/24", "10.0.1.0/24"]
+    vpc_public_subnet_cidrs         = ["10.0.2.0/24", "10.0.3.0/24"]
+    vpc_private_subnet_ids          = ["subnet-1234567890", "subnet-0987654321"]
+    vpc_public_subnet_ids           = ["subnet-1122334455", "subnet-5544332211"]
+    service_discovery_namespace_arn = "arn:aws:servicediscovery:ca-central-1:123456789012:namespace/ns-1234567890"
   }
 }
 
@@ -33,6 +34,7 @@ inputs = {
   neo4j_password                                  = "neo4j-password"
   password_change_id                              = "change-me-to-trigger-password-change"
   cloud_asset_inventory_vpc_peering_connection_id = "pcx-0771c54d393000439"
+  service_discovery_namespace_arn                 = dependency.base.outputs.service_discovery_namespace_arn
   security_tools_vpc_id                           = dependency.base.outputs.security_tools_vpc_id
   vpc_private_subnet_cidrs                        = dependency.base.outputs.vpc_private_subnet_cidrs
   vpc_public_subnet_cidrs                         = dependency.base.outputs.vpc_public_subnet_cidrs
