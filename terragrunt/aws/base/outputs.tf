@@ -3,6 +3,11 @@ output "hosted_zone_id" {
   value       = aws_route53_zone.base_hosted_zone.id
 }
 
+output "hosted_zone_certificate_arn" {
+  description = "ACM certificate ARN for the hosted zone"
+  value       = aws_acm_certificate.base_hosted_zone.arn
+}
+
 output "security_tools_vpc_id" {
   description = "The VPC ID for the security tools"
   value       = module.vpc.vpc_id

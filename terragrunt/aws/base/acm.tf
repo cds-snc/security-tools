@@ -1,7 +1,5 @@
 
 resource "aws_acm_certificate" "base_hosted_zone" {
-  provider = aws.us-east-1
-
   domain_name               = var.domain_name
   subject_alternative_names = ["*.${var.domain_name}"]
   validation_method         = "DNS"
@@ -36,7 +34,6 @@ resource "aws_route53_record" "base_hosted_zone" {
 }
 
 resource "aws_acm_certificate_validation" "base_hosted_zone" {
-  provider                = aws.us-east-1
   certificate_arn         = aws_acm_certificate.base_hosted_zone.arn
   validation_record_fqdns = [for record in aws_route53_record.base_hosted_zone : record.fqdn]
 }
