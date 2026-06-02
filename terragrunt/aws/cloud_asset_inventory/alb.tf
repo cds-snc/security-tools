@@ -32,6 +32,16 @@ resource "aws_lb_target_group" "neo4j" {
   deregistration_delay = 30
   vpc_id               = var.security_tools_vpc_id
 
+  health_check {
+    enabled             = true
+    healthy_threshold   = 3
+    unhealthy_threshold = 2
+    timeout             = 10
+    interval            = 30
+    port                = "7474"
+    protocol            = "TCP"
+  }
+
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
@@ -46,6 +56,16 @@ resource "aws_lb_target_group" "bolt" {
   target_type          = "ip"
   deregistration_delay = 30
   vpc_id               = var.security_tools_vpc_id
+
+  health_check {
+    enabled             = true
+    healthy_threshold   = 3
+    unhealthy_threshold = 2
+    timeout             = 10
+    interval            = 30
+    port                = "7687"
+    protocol            = "TCP"
+  }
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value

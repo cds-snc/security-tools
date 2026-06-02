@@ -114,6 +114,48 @@ data "aws_iam_policy_document" "cartography_policies" {
       aws_ssm_parameter.shared_key.arn,
     ]
   }
+
+  statement {
+
+    effect = "Allow"
+
+    actions = [
+      "elasticfilesystem:DescribeAccessPoints",
+      "elasticfilesystem:DescribeMountTargets",
+      "elasticfilesystem:DescribeFileSystemPolicy",
+      "elasticfilesystem:DescribeFileSystems",
+    ]
+    resources = [
+      aws_efs_file_system.neo4j.arn,
+    ]
+  }
+
+  statement {
+
+    effect = "Allow"
+
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+    ]
+    resources = [
+      "${aws_cloudwatch_log_group.cartography.arn}:*",
+      "${aws_cloudwatch_log_group.neo4j.arn}:*",
+    ]
+  }
+
+  statement {
+
+    effect = "Allow"
+
+    actions = [
+      "iam:PassRole",
+    ]
+    resources = [
+      aws_iam_role.cartography_container_execution_role.arn,
+      aws_iam_role.cartography_task_execution_role.arn,
+    ]
+  }
 }
 
 resource "aws_iam_policy" "cartography_policies" {

@@ -4,12 +4,15 @@ locals {
 }
 
 resource "aws_ecs_service" "neo4j" {
-  name                              = local.neo4j_service_name
-  cluster                           = aws_ecs_cluster.cloud_asset_discovery.id
-  task_definition                   = aws_ecs_task_definition.neo4j.arn
-  desired_count                     = 1
-  launch_type                       = "FARGATE"
-  health_check_grace_period_seconds = 600
+  name                               = local.neo4j_service_name
+  cluster                            = aws_ecs_cluster.cloud_asset_discovery.id
+  task_definition                    = aws_ecs_task_definition.neo4j.arn
+  desired_count                      = 1
+  launch_type                        = "FARGATE"
+  platform_version                   = "1.4.0"
+  deployment_minimum_healthy_percent = 0
+  deployment_maximum_percent         = 100
+  health_check_grace_period_seconds  = 600
 
   load_balancer {
     target_group_arn = aws_lb_target_group.neo4j.arn
