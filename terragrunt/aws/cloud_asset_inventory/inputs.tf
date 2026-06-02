@@ -13,6 +13,11 @@ variable "cloud_asset_inventory_vpc_peering_connection_id" {
   type        = string
 }
 
+variable "service_discovery_namespace_arn" {
+  description = "(Required) The ARN of the ECS Service Connect HTTP namespace for internal service discovery"
+  type        = string
+}
+
 variable "customer_id" {
   description = "(Required) Azure log workspace customer ID"
   sensitive   = true

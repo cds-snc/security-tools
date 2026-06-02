@@ -31,6 +31,29 @@ resource "aws_ecs_service" "neo4j" {
     subnets         = var.vpc_private_subnet_ids
   }
 
+  service_connect_configuration {
+    enabled   = true
+    namespace = var.service_discovery_namespace_arn
+
+    service {
+      client_alias {
+        port     = 7474
+        dns_name = "neo4j-ui.internal.mesh"
+      }
+      discovery_name = "neo4j-ui"
+      port_name      = "neo4j-http"
+    }
+
+    service {
+      client_alias {
+        port     = 7687
+        dns_name = "neo4j-bolt.internal.mesh"
+      }
+      discovery_name = "neo4j-bolt"
+      port_name      = "neo4j-bolt"
+    }
+  }
+
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
@@ -67,8 +90,12 @@ resource "aws_ecs_task_definition" "neo4j" {
   volume {
     name = local.efs_volume_name
     efs_volume_configuration {
-      file_system_id     = aws_efs_file_system.neo4j.id
-      transit_encryption = "ENABLED"
+      file_system_id          = aws_efs_file_system.neo4j.id
+      transit_encryption      = "ENABLED"
+      transit_encryption_port = 3049
+      authorization_config {
+        access_point_id = aws_efs_access_point.neo4j.id
+      }
     }
   }
 
