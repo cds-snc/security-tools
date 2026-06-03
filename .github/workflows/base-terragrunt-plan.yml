@@ -55,7 +55,7 @@ jobs:
 
       - name: Terragrunt plan base
         if: ${{ steps.filter.outputs.base == 'true' || steps.filter.outputs.common == 'true' }}
-        uses: cds-snc/terraform-plan@39b0058bcf977fbd8b067b84d5a9f6165e356c32 # v3.7.0
+        uses: cds-snc/terraform-plan@529b272050a8f718d14c59e62b59c124eead7efc # v5.0.4
         with:
           directory: "terragrunt/env/base"
           comment-delete: "true"
