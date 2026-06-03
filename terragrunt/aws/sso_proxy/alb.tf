@@ -10,7 +10,7 @@ resource "aws_lb" "pomerium" {
   subnets            = var.vpc_public_subnet_ids
 
   drop_invalid_header_fields = true
-  enable_deletion_protection = false
+  enable_deletion_protection = true
 
   access_logs {
     bucket  = var.cbs_satellite_bucket_name
