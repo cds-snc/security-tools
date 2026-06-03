@@ -55,7 +55,7 @@ jobs:
       - name: configure aws credentials using OIDC
         uses: aws-actions/configure-aws-credentials@e7f100cf4c008499ea8adda475de1042d6975c7b # v6.2.0
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/gh_plan_role
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/security-tools-plan
           role-session-name: TFPlan
           aws-region: ${{ env.AWS_REGION }}
 
