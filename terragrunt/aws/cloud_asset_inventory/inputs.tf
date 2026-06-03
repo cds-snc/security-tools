@@ -6,6 +6,7 @@ variable "cartography_image" {
 variable "cartography_image_tag" {
   description = "(Required) The cartography image tag to use"
   type        = string
+  default     = "latest"
 }
 
 variable "cloud_asset_inventory_vpc_peering_connection_id" {
@@ -32,6 +33,7 @@ variable "neo4j_image" {
 variable "neo4j_image_tag" {
   description = "(Required) The neo4j image tag to use"
   type        = string
+  default     = "latest"
 }
 
 variable "neo4j_password" {
