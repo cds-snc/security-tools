@@ -61,7 +61,7 @@ resource "aws_iam_role_policy_attachment" "cartography_policies" {
   policy_arn = aws_iam_policy.cartography_policies.arn
 }
 
-data "aws_iam_policy_document" "cartography_policies" {
+data "aws_iam_policy_document" "cartography_global_read_only" {
   statement {
 
     effect = "Allow"
@@ -98,6 +98,10 @@ data "aws_iam_policy_document" "cartography_policies" {
     ]
   }
 
+}
+
+data "aws_iam_policy_document" "cartography_constrained" {
+
   statement {
 
     effect = "Allow"
@@ -109,7 +113,6 @@ data "aws_iam_policy_document" "cartography_policies" {
     resources = [
       aws_ssm_parameter.neo4j_auth.arn,
       aws_ssm_parameter.neo4j_password.arn,
-      # aws_ssm_parameter.asset_inventory_account_list.arn,
       aws_ssm_parameter.customer_id.arn,
       aws_ssm_parameter.shared_key.arn,
     ]
@@ -156,6 +159,14 @@ data "aws_iam_policy_document" "cartography_policies" {
       aws_iam_role.cartography_task_execution_role.arn,
     ]
   }
+}
+
+
+data "aws_iam_policy_document" "cartography_policies" {
+  source_policy_documents = [
+    data.aws_iam_policy_document.cartography_global_read_only.json,
+    data.aws_iam_policy_document.cartography_constrained.json,
+  ]
 }
 
 resource "aws_iam_policy" "cartography_policies" {
