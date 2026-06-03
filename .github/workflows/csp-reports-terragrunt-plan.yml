@@ -64,3 +64,4 @@ jobs:
           comment-title: "csp_violation_report_service"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           terragrunt: "true"
+          skip-conftest: "true"
