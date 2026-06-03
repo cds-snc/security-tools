@@ -41,6 +41,7 @@ jobs:
               - 'terragrunt/aws/csp_violation_report_service/**'
               - 'terragrunt/env/csp_violation_report_service/**'
             common:
+              - '.github/workflows/csp-reports-terragrunt-apply.yml'
               - '.github/workflows/csp-reports-terragrunt-plan.yml'
               - 'terragrunt/env/common/**'
               - 'terragrunt/env/terragrunt.hcl'
@@ -61,4 +62,3 @@ jobs:
           comment-title: "csp_violation_report_service"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
           terragrunt: "true"
-          skip-conftest: "true"

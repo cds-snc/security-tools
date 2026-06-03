@@ -39,6 +39,7 @@ jobs:
               - 'terragrunt/aws/generate_sbom/**'
               - 'terragrunt/env/generate_sbom/**'
             common:
+              - '.github/workflows/generate-sbom-terragrunt-apply.yml'
               - '.github/workflows/generate-sbom-terragrunt-plan.yml'
               - 'terragrunt/env/common/**'
               - 'terragrunt/env/terragrunt.hcl'
