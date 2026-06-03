@@ -61,9 +61,10 @@ resource "aws_iam_role_policy_attachment" "cartography_policies" {
   policy_arn = aws_iam_policy.cartography_policies.arn
 }
 
+#checkov:skip=CKV_AWS_356: Skip IAM policy with wildcard resource, required for ECR GetAuthorizationToken action.
 data "aws_iam_policy_document" "cartography_global_read_only" {
-  #checkov:skip=CKV_AWS_111: Skip IAM policy write access without constraints.
 
+  #checkov:skip=CKV_AWS_111: Skip IAM policy write access without constraints.
   statement {
 
     effect = "Allow"
@@ -85,6 +86,7 @@ data "aws_iam_policy_document" "cartography_global_read_only" {
     ]
   }
 
+  #checkov:skip=CKV_AWS_107: Required for ECS task image pulls from ECR; GetAuthorizationToken only supports resource "*".
   statement {
 
     effect = "Allow"
