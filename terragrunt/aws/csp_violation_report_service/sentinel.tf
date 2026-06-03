@@ -11,6 +11,12 @@ module "sentinel_forwarder" {
   cloudwatch_log_arns = [
     local.csp_reports_log_group_arn
   ]
+
+  tags = {
+    (var.billing_tag_key) = var.billing_tag_value
+    Terraform             = true
+    Product               = "${var.product_name}-${var.tool_name}"
+  }
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "csp_report" {
