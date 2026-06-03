@@ -25,6 +25,12 @@ resource "aws_cloudwatch_metric_alarm" "csp_report_error" {
 
   alarm_actions = [local.sns_alarm_topic_arn]
   ok_actions    = [local.sns_alarm_topic_arn]
+
+  tags = {
+    (var.billing_tag_key) = var.billing_tag_value
+    Terraform             = true
+    Product               = "${var.product_name}-${var.tool_name}"
+  }
 }
 
 

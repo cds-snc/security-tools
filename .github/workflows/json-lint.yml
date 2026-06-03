@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
       - name: Lint JSON
-        run: find . -name "*.json" -exec cat {} \; | jq .
+        run: find . -not -path '*/.terragrunt-cache/*' -name "*.json" -exec cat {} \; | jq .
 
       - name: Lint JSON templates
-        run: find . -name "*.json.tmpl" -exec cat {} \; | sed "s/\${[^}]*}//g" | jq . # remove ${} placeholders
+        run: find . -not -path '*/.terragrunt-cache/*' -name "*.json.tmpl" -exec cat {} \; | sed "s/\${[^}]*}//g" | jq .

@@ -1,0 +1,57 @@
+[
+  {
+    "name": "${CARTOGRAPHY_SERVICE_NAME}",
+    "environment": [
+      {
+        "name": "AWS_CONFIG_FILE",
+        "value": "/config/role_config"
+      },
+      {
+        "name": "NEO4J_URI",
+        "value": "bolt://neo4j-bolt.internal.mesh:7687"
+      },
+      {
+        "name": "NEO4J_USER",
+        "value": "neo4j"
+      },
+      {
+        "name": "AWS_BEST_EFFORT_MODE",
+        "value": "true"
+      }
+    ],
+    "essential": true,
+    "image": "${CARTOGRAPHY_IMAGE}",
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${AWS_LOGS_GROUP}",
+        "awslogs-region": "${AWS_LOGS_REGION}",
+        "awslogs-stream-prefix": "${AWS_LOGS_STREAM_PREFIX}"
+      }
+    },
+    "portMappings": [
+      {
+        "hostPort": 443,
+        "ContainerPort": 443,
+        "Protocol": "tcp"
+      }
+    ],
+    "command": [
+      "cartography",
+      "--neo4j-uri",
+      "bolt://neo4j.internal.local:7687",
+      "--neo4j-user",
+      "neo4j",
+      "--neo4j-password-env-var",
+      "NEO4J_SECRETS_PASSWORD",
+      "--aws-sync-all-profiles",
+      "--aws-best-effort-mode"
+    ],
+    "secrets": [
+      {
+        "name": "NEO4J_SECRETS_PASSWORD",
+        "valueFrom": "${NEO4J_SECRETS_PASSWORD}"
+      }
+    ]
+  }
+]

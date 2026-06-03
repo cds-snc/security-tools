@@ -18,6 +18,8 @@ resource "aws_lambda_function_url" "csp_reports" {
 }
 
 resource "aws_lambda_permission" "csp_reports_invoke_function_url" {
+  #checkov:skip=CKV_AWS_149: Allowing public access to Lambda Function URL is intentional for this use case
+  #checkov:skip=CKV_AWS_301: Allowing public access to Lambda Function URL is intentional for this use case
   statement_id           = "AllowInvokeFunctionUrl"
   action                 = "lambda:InvokeFunctionUrl"
   function_name          = module.csp_reports.function_name
@@ -26,6 +28,8 @@ resource "aws_lambda_permission" "csp_reports_invoke_function_url" {
 }
 
 resource "aws_lambda_permission" "csp_reports_invoke_function" {
+  #checkov:skip=CKV_AWS_301: Allowing public access to Lambda Function URL is intentional for this use case
+  #checkov:skip=CKV_AWS_149: Allowing public access to Lambda Function is intentional for this use case
   statement_id  = "AllowInvokeFunction"
   action        = "lambda:InvokeFunction"
   function_name = module.csp_reports.function_name

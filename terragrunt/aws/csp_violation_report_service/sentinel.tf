@@ -11,6 +11,7 @@ module "sentinel_forwarder" {
   cloudwatch_log_arns = [
     local.csp_reports_log_group_arn
   ]
+
 }
 
 resource "aws_cloudwatch_log_subscription_filter" "csp_report" {

@@ -1,7 +1,7 @@
 .PHONY: fmt checkov install lint test fmt-ci lint-ci build install-dev
 fmt:
 	terraform fmt -recursive aws &&\
-	terragrunt hclfmt
+	terragrunt hcl fmt
 
 checkov:
 	checkov --directory=aws

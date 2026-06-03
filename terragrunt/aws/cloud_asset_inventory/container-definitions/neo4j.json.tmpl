@@ -1,0 +1,91 @@
+[
+  {
+    "name": "neo4j",
+    "environment": [
+      {
+        "name": "NEO4J_server_memory_pagecache_size",
+        "value": "4G"
+      },
+      {
+        "name": "NEO4J_server_memory_heap_initial__size",
+        "value": "4G"
+      },
+      {
+        "name": "NEO4J_server_memory_heap_max__size",
+        "value": "4G"
+      },
+      {
+        "name": "NEO4J_ACCEPT_LICENSE_AGREEMENT",
+        "value": "yes"
+      },
+      {
+        "name": "NEO4J_server_http_advertised__address",
+        "value": "neo4j.security.cdssandbox.xyz:443"
+      },
+      {
+        "name": "NEO4J_server_bolt_advertised__address",
+        "value": "bolt.security.cdssandbox.xyz:443"
+      }
+    ],
+    "essential": true,
+    "image": "${NEO4J_IMAGE}",
+    "mountPoints": [
+      {
+        "sourceVolume": "${EFS_VOLUME_NAME}",
+        "containerPath": "/var/lib/neo4j/data",
+        "readOnly": false
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${AWS_LOGS_GROUP}",
+        "awslogs-region": "${AWS_LOGS_REGION}",
+        "awslogs-stream-prefix": "${AWS_LOGS_STREAM_PREFIX}"
+      }
+    },
+    "ulimits": [
+      {
+        "name": "nofile",
+        "softLimit": 400000,
+        "hardLimit": 400000
+      }
+    ],
+    "portMappings": [
+      {
+        "name": "neo4j-http",
+        "hostPort": 7474,
+        "containerPort": 7474,
+        "protocol": "tcp"
+      },
+      {
+        "name": "neo4j-https",
+        "hostPort": 7473,
+        "containerPort": 7473,
+        "protocol": "tcp"
+      },
+      {
+        "name": "neo4j-bolt",
+        "hostPort": 7687,
+        "containerPort": 7687,
+        "protocol": "tcp"
+      }
+    ],
+    "secrets": [
+      {
+        "name": "NEO4J_AUTH",
+        "valueFrom": "${NEO4J_AUTH}"
+      }
+    ],
+    "healthCheck": {
+      "command": [
+        "CMD-SHELL",
+        "wget --no-verbose http://localhost:7474 || exit 1"
+      ],
+      "interval": 30,
+      "timeout": 10,
+      "retries": 3,
+      "startPeriod": 60
+    }
+  }
+]
