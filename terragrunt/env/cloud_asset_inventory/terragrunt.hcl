@@ -22,15 +22,17 @@ dependency "base" {
     vpc_private_subnet_ids          = ["subnet-1234567890", "subnet-0987654321"]
     vpc_public_subnet_ids           = ["subnet-1122334455", "subnet-5544332211"]
     service_discovery_namespace_arn = "arn:aws:servicediscovery:ca-central-1:123456789012:namespace/ns-1234567890"
+    cartography_repository_url     = "123456789012.dkr.ecr.ca-central-1.amazonaws.com/cartography"
+    neo4j_repository_url           = "123456789012.dkr.ecr.ca-central-1.amazonaws.com/neo4j"
   }
 }
 
 inputs = {
   tool_name                                       = "cloud-asset-inventory"
-  cartography_image                               = "ghcr.io/cartography-cncf/cartography"
-  cartography_image_tag                           = "0.136@sha256:bf34b2ca0aac8831c4fa859f51be3c26f2364e09d831ce8ed00ae42ff141e7c4"
-  neo4j_image                                     = "neo4j"
-  neo4j_image_tag                                 = "5-community@sha256:0b5d3ab6ec1b866890dbfb53bf4fe1cf039f9e03c96165599a403005b7e7bcc3"
+  cartography_image                               = dependency.base.outputs.cartography_repository_url
+  cartography_image_tag                           = "latest"
+  neo4j_image                                     = dependency.base.outputs.neo4j_repository_url
+  neo4j_image_tag                                 = "latest"
   neo4j_password                                  = "neo4j-password"
   password_change_id                              = "change-me-to-trigger-password-change"
   cloud_asset_inventory_vpc_peering_connection_id = "pcx-0771c54d393000439"
