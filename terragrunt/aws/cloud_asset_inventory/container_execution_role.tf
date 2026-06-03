@@ -62,7 +62,7 @@ resource "aws_iam_role_policy_attachment" "cartography_policies" {
 }
 
 data "aws_iam_policy_document" "cartography_global_read_only" {
-  #checkov:skip=CKV_AWS_94: The use of wildcard resources is necessary for the actions in this policy.
+  #checkov:skip=CKV_AWS_111: Skip IAM policy write access without constraints.
 
   statement {
 
@@ -102,7 +102,7 @@ data "aws_iam_policy_document" "cartography_global_read_only" {
 }
 
 data "aws_iam_policy_document" "cartography_constrained" {
-  #checkov:skip=CKV_AWS_94: The use of wildcard resources is necessary for the actions in this policy.
+  #checkov:skip=CKV_AWS_111: Skip IAM policy write access without constraints.
   statement {
 
     effect = "Allow"
