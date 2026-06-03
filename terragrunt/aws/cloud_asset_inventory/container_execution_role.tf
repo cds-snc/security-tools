@@ -100,7 +100,7 @@ data "aws_iam_policy_document" "cartography_global_read_only" {
 }
 
 data "aws_iam_policy_document" "cartography_constrained" {
-
+  #checkov:skip=CKV_AWS_94: The use of wildcard resources is necessary for the actions in this policy.
   statement {
 
     effect = "Allow"
