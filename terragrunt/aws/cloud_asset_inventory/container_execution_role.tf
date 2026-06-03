@@ -89,7 +89,6 @@ data "aws_iam_policy_document" "cartography_global_read_only" {
 
     actions = [
       "ecr:GetAuthorizationToken",
-      "ecr:BatchCheckLayerAvailability",
       "ecr:GetDownloadUrlForLayer",
       "ecr:BatchGetImage",
     ]
@@ -101,6 +100,18 @@ data "aws_iam_policy_document" "cartography_global_read_only" {
 }
 
 data "aws_iam_policy_document" "cartography_constrained" {
+
+  statement {
+
+    effect = "Allow"
+
+    actions = [
+      "ecr:BatchCheckLayerAvailability",
+    ]
+    resources = [
+      "*"
+    ]
+  }
 
   statement {
 
