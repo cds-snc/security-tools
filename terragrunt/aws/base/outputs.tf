@@ -13,6 +13,16 @@ output "security_tools_vpc_id" {
   value       = module.vpc.vpc_id
 }
 
+output "service_discovery_namespace_arn" {
+  description = "ARN for the ECS Service Connect HTTP namespace"
+  value       = aws_service_discovery_http_namespace.internal_mesh.arn
+}
+
+output "service_discovery_namespace_id" {
+  description = "ID for the ECS Service Connect HTTP namespace"
+  value       = aws_service_discovery_http_namespace.internal_mesh.id
+}
+
 output "vpc_main_nacl_id" {
   description = "The VPC main network ACL ID"
   value       = module.vpc.main_nacl_id
@@ -38,12 +48,26 @@ output "vpc_public_subnet_ids" {
   value       = module.vpc.public_subnet_ids
 }
 
-output "service_discovery_namespace_arn" {
-  description = "ARN for the ECS Service Connect HTTP namespace"
-  value       = aws_service_discovery_http_namespace.internal_mesh.arn
+# ----------------------------------------------------------------#
+# ECR Repository URLs
+# ----------------------------------------------------------------#
+
+output "cartography_repository_url" {
+  description = "ECR repository URL for Cartography"
+  value       = aws_ecr_repository.cartography.repository_url
 }
 
-output "service_discovery_namespace_id" {
-  description = "ID for the ECS Service Connect HTTP namespace"
-  value       = aws_service_discovery_http_namespace.internal_mesh.id
+output "neo4j_repository_url" {
+  description = "ECR repository URL for Neo4j"
+  value       = aws_ecr_repository.neo4j.repository_url
+}
+
+output "pomerium_sso_proxy_repository_url" {
+  description = "ECR repository URL for Pomerium SSO Proxy"
+  value       = aws_ecr_repository.sso_proxy_pomerium.repository_url
+}
+
+output "pomerium_sso_proxy_auth_repository_url" {
+  description = "ECR repository URL for Pomerium SSO Proxy Auth"
+  value       = aws_ecr_repository.sso_proxy_verify.repository_url
 }
