@@ -14,10 +14,6 @@ env:
   CONFTEST_VERSION: 0.68.2
   TERRAFORM_VERSION: 1.15.5
   TERRAGRUNT_VERSION: 1.0.6
-  CARTOGRAPHY_IMAGE: "ghcr.io/cartography-cncf/cartography"
-  CARTOGRAPHY_IMAGE_TAG: "0.136@sha256:bf34b2ca0aac8831c4fa859f51be3c26f2364e09d831ce8ed00ae42ff141e7c4"
-  NEO4J_IMAGE: "neo4j"
-  NEO4J_IMAGE_TAG: "5-community@sha256:0b5d3ab6ec1b866890dbfb53bf4fe1cf039f9e03c96165599a403005b7e7bcc3"
   TF_INPUT: false
   TF_VAR_customer_id: ${{ secrets.TF_VARS_LOG_ANALYTICS_CUSTOMER_ID }}
   TF_VAR_neo4j_password: ${{ secrets.TF_VARS_NEO4J_SECRETS_PASSWORD }}
