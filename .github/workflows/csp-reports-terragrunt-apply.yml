@@ -60,4 +60,4 @@ jobs:
       - name: Terragrunt apply csp reports
         if: ${{ steps.filter.outputs.csp_violation_report_service == 'true' || steps.filter.outputs.common == 'true' }}
         working-directory: "terragrunt/env/csp_violation_report_service"
-        run: terragrunt apply --terragrunt-non-interactive -auto-approve
+        run: terragrunt run --non-interactive -- apply -auto-approve

@@ -53,4 +53,4 @@ jobs:
       - name: Terragrunt apply generate SBOM
         if: ${{ steps.filter.outputs.generate_sbom == 'true' || steps.filter.outputs.common == 'true' }}
         working-directory: "terragrunt/env/generate_sbom"
-        run: terragrunt apply --terragrunt-non-interactive -auto-approve
+        run: terragrunt run --non-interactive -- apply -auto-approve

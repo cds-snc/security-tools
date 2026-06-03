@@ -63,4 +63,4 @@ jobs:
       - name: Terragrunt apply sso proxy
         if: ${{ steps.filter.outputs.sso_proxy == 'true' || steps.filter.outputs.common == 'true' }}
         working-directory: "terragrunt/env/sso_proxy"
-        run: terragrunt apply --terragrunt-non-interactive -auto-approve
+        run: terragrunt run --non-interactive -- apply -auto-approve
