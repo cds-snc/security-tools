@@ -47,7 +47,7 @@ jobs:
               - 'terragrunt/env/terragrunt.hcl'
 
       - name: configure aws credentials using OIDC
-        uses: aws-actions/configure-aws-credentials@ffc08eae7350b1061d7de219e2135c75561fb680 # master
+        uses: aws-actions/configure-aws-credentials@e7f100cf4c008499ea8adda475de1042d6975c7b # v6.2.0
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/security-tools-plan
           role-session-name: TFPlan
