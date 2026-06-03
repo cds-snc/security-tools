@@ -42,6 +42,7 @@ jobs:
               - 'terragrunt/aws/cloud_asset_inventory/**'
               - 'terragrunt/env/cloud_asset_inventory/**'
             common:
+              - '.github/workflows/cloud-asset-inventory-terragrunt-apply.yml'
               - '.github/workflows/cloud-asset-inventory-terragrunt-plan.yml'
               - 'terragrunt/env/common/**'
               - 'terragrunt/env/terragrunt.hcl'

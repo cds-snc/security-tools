@@ -45,6 +45,7 @@ jobs:
               - 'terragrunt/aws/sso_proxy/**'
               - 'terragrunt/env/sso_proxy/**'
             common:
+              - '.github/workflows/sso-proxy-terragrunt-apply.yml'
               - '.github/workflows/sso-proxy-terragrunt-plan.yml'
               - 'terragrunt/env/common/**'
               - 'terragrunt/env/terragrunt.hcl'
