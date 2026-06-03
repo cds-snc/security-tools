@@ -35,10 +35,6 @@ resource "aws_ecs_service" "pomerium_sso_proxy" {
 
 data "template_file" "pomerium_sso_proxy_routes_policy" {
   template = file("configs/routes.yml.tmpl")
-
-  vars = {
-    CLOUD_ASSET_INVENTORY_LOAD_BALANCER_DNS = var.cloud_asset_inventory_load_balancer_dns
-  }
 }
 
 data "template_file" "pomerium_sso_proxy_container_definition" {

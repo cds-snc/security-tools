@@ -1,8 +1,3 @@
-variable "cloud_asset_inventory_load_balancer_dns" {
-  description = "DNS name for Cloud Asset Inventory Load Balancer"
-  type        = string
-}
-
 variable "hosted_zone_id" {
   description = "(Required) The Route53 hosted zone ID for the security tools domain"
   type        = string
