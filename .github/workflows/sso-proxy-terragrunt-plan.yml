@@ -67,4 +67,6 @@ jobs:
           comment-delete: "true"
           comment-title: "sso_proxy"
           github-token: "${{ secrets.GITHUB_TOKEN }}"
+          skip-fmt: "true"
           terragrunt: "true"
+          terragrunt-plan: "hcl format --check"
