@@ -24,7 +24,8 @@ resource "aws_lambda_permission" "csp_reports_invoke_function_url" {
   action                 = "lambda:InvokeFunctionUrl"
   function_name          = module.csp_reports.function_name
   function_url_auth_type = "NONE"
-  principal              = "*"
+  principal              = "cloudfront.amazonaws.com"
+  source_arn             = aws_cloudfront_distribution.csp_reports.arn
 }
 
 resource "aws_lambda_permission" "csp_reports_invoke_function" {
@@ -33,5 +34,6 @@ resource "aws_lambda_permission" "csp_reports_invoke_function" {
   statement_id  = "AllowInvokeFunction"
   action        = "lambda:InvokeFunction"
   function_name = module.csp_reports.function_name
-  principal     = "*"
+  principal     = "cloudfront.amazonaws.com"
+  source_arn    = aws_cloudfront_distribution.csp_reports.arn
 }
