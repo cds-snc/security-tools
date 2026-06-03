@@ -22,8 +22,8 @@ dependency "base" {
     vpc_private_subnet_ids          = ["subnet-1234567890", "subnet-0987654321"]
     vpc_public_subnet_ids           = ["subnet-1122334455", "subnet-5544332211"]
     service_discovery_namespace_arn = "arn:aws:servicediscovery:ca-central-1:123456789012:namespace/ns-1234567890"
-    cartography_repository_url     = "123456789012.dkr.ecr.ca-central-1.amazonaws.com/cartography"
-    neo4j_repository_url           = "123456789012.dkr.ecr.ca-central-1.amazonaws.com/neo4j"
+    cartography_repository_url      = "123456789012.dkr.ecr.ca-central-1.amazonaws.com/cartography"
+    neo4j_repository_url            = "123456789012.dkr.ecr.ca-central-1.amazonaws.com/neo4j"
   }
 }
 
