@@ -36,6 +36,7 @@ inputs = {
   neo4j_password                                  = "neo4j-password"
   password_change_id                              = "change-me-to-trigger-password-change"
   cloud_asset_inventory_vpc_peering_connection_id = "pcx-0771c54d393000439"
+  organization_management_account_id              = "0123456789012"
   service_discovery_namespace_arn                 = dependency.base.outputs.service_discovery_namespace_arn
   security_tools_vpc_id                           = dependency.base.outputs.security_tools_vpc_id
   vpc_private_subnet_cidrs                        = dependency.base.outputs.vpc_private_subnet_cidrs
