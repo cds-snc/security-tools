@@ -14,6 +14,29 @@ variable "cloud_asset_inventory_vpc_peering_connection_id" {
   type        = string
 }
 
+variable "organization_management_account_id" {
+  description = "(Required) AWS Organizations management account ID. Cartography assumes a role here to enumerate the account list and sync the org hierarchy."
+  type        = string
+}
+
+variable "organization_account_list_role_name" {
+  description = "Name of the role in the management account that Cartography assumes to list org accounts and sync the Organizations hierarchy. Must be created in the management account (cds-aws-lz/org_account)."
+  type        = string
+  default     = "secopsAssetInventoryOrgAccountListRole"
+}
+
+variable "cartography_spoke_role_name" {
+  description = "Name of the read-only role (SecurityAudit) Cartography assumes in each member account. Must be created in every member account (aft-global-customizations)."
+  type        = string
+  default     = "secopsAssetInventorySecurityAuditRole"
+}
+
+variable "aws_cli_image" {
+  description = "Image for the init container that generates the per-account AWS config from AWS Organizations."
+  type        = string
+  default     = "public.ecr.aws/aws-cli/aws-cli:latest"
+}
+
 variable "service_discovery_namespace_arn" {
   description = "(Required) The ARN of the ECS Service Connect HTTP namespace for internal service discovery"
   type        = string
