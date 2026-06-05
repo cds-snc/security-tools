@@ -21,7 +21,7 @@ data "template_file" "cartography_container_definition" {
     MGMT_ACCOUNT_ID            = var.organization_management_account_id
     SPOKE_ROLE_NAME            = var.cartography_spoke_role_name
     REGION                     = var.region
-    NEO4J_BOLT_URI = "bolt://${aws_lb.cartography.dns_name}:7687"
+    NEO4J_BOLT_URI             = "bolt://${aws_lb.cartography.dns_name}:7687"
   }
 }
 
