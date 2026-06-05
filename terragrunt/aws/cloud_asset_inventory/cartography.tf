@@ -9,14 +9,13 @@ data "template_file" "cartography_container_definition" {
     AWS_LOGS_GROUP           = aws_cloudwatch_log_group.cartography.name
     AWS_LOGS_REGION          = var.region
     AWS_LOGS_STREAM_PREFIX   = "${local.cartography_service_name}-task"
-    AWS_CLI_IMAGE            = var.aws_cli_image
     CARTOGRAPHY_IMAGE        = "${var.cartography_image}:${var.cartography_image_tag}"
     CARTOGRAPHY_SERVICE_NAME = local.cartography_service_name
     NEO4J_SECRETS_PASSWORD   = aws_ssm_parameter.neo4j_password.arn
 
-    # The init container's discovery logic lives in a standalone, 
-    # shellcheck-linted file (generate-config.sh)
-    GENERATE_CONFIG_SCRIPT_B64 = base64encode(file("container-definitions/generate-config.sh"))
+    # The init container's discovery logic is a standalone boto3 script
+    # (generate_config.py) that runs in the cartography image (no extra image).
+    GENERATE_CONFIG_SCRIPT_B64 = base64encode(file("container-definitions/generate_config.py"))
     ORG_LIST_ROLE_ARN          = local.organization_account_list_role_arn
     MGMT_ACCOUNT_ID            = var.organization_management_account_id
     SPOKE_ROLE_NAME            = var.cartography_spoke_role_name
