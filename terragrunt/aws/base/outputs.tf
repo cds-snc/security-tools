@@ -66,8 +66,3 @@ output "pomerium_sso_proxy_repository_url" {
   description = "ECR repository URL for Pomerium SSO Proxy"
   value       = aws_ecr_repository.sso_proxy_pomerium.repository_url
 }
-
-output "pomerium_sso_proxy_auth_repository_url" {
-  description = "ECR repository URL for Pomerium SSO Proxy Auth"
-  value       = aws_ecr_repository.sso_proxy_verify.repository_url
-}

@@ -33,10 +33,25 @@
       {
         "name": "COOKIE_DOMAIN",
         "value": "${COOKIE_DOMAIN}"
+      },
+      {
+        "name": "DATABROKER_STORAGE_TYPE",
+        "value": "${DATABROKER_STORAGE_TYPE}"
+      },
+      {
+        "name": "DATABROKER_STORAGE_CONNECTION_STRING",
+        "value": "${DATABROKER_STORAGE_CONNECTION}"
       }
     ],
     "essential": true,
     "image": "${POMERIUM_IMAGE}",
+    "mountPoints": [
+      {
+        "sourceVolume": "${DATABROKER_VOLUME_NAME}",
+        "containerPath": "${DATABROKER_MOUNT_PATH}",
+        "readOnly": false
+      }
+    ],
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
