@@ -69,23 +69,6 @@ resource "aws_security_group" "pomerium" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  ingress {
-    description = "Access from proxy to pomerium auth"
-    from_port   = 8000
-    to_port     = 8000
-    protocol    = "tcp"
-    self        = true
-  }
-
-  egress {
-    description = "Allow API outbound connections to the proxy"
-    from_port   = 8000
-    to_port     = 8000
-    protocol    = "TCP"
-    cidr_blocks = var.vpc_private_subnet_cidrs
-    self        = true
-  }
-
   egress {
     description = "Outbound access to neo4j http"
     from_port   = 7474
@@ -117,6 +100,24 @@ resource "aws_security_group" "pomerium" {
     description = "Outbound access to dependency track api"
     from_port   = 8081
     to_port     = 8081
+    protocol    = "tcp"
+    cidr_blocks = var.vpc_private_subnet_cidrs
+    self        = true
+  }
+
+  ingress {
+    description = "NFS access for the databroker EFS volume"
+    from_port   = 2049
+    to_port     = 2049
+    protocol    = "tcp"
+    cidr_blocks = var.vpc_private_subnet_cidrs
+    self        = true
+  }
+
+  egress {
+    description = "NFS access for the databroker EFS volume"
+    from_port   = 2049
+    to_port     = 2049
     protocol    = "tcp"
     cidr_blocks = var.vpc_private_subnet_cidrs
     self        = true

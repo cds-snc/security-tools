@@ -25,7 +25,6 @@ dependency "base" {
     vpc_public_subnet_ids                  = ["subnet-1122334455", "subnet-5544332211"]
     service_discovery_namespace_arn        = "arn:aws:servicediscovery:ca-central-1:123456789012:namespace/ns-1234567890"
     pomerium_sso_proxy_repository_url      = "123456789.012.dkr.ecr.ca-central-1.amazonaws.com/pomerium-sso-proxy"
-    pomerium_sso_proxy_auth_repository_url = "123456789.012.dkr.ecr.ca-central-1.amazonaws.com/pomerium-sso-proxy-auth"
   }
 
 }
@@ -38,8 +37,6 @@ inputs = {
   security_tools_domain_name      = "security.cdssandbox.xyz"
   pomerium_image                  = dependency.base.outputs.pomerium_sso_proxy_repository_url
   pomerium_image_tag              = "latest"
-  pomerium_verify_image           = dependency.base.outputs.pomerium_sso_proxy_auth_repository_url
-  pomerium_verify_image_tag       = "latest"
   session_cookie_expires_in       = "8h"
   security_tools_vpc_id           = dependency.base.outputs.security_tools_vpc_id
   vpc_main_nacl_id                = dependency.base.outputs.vpc_main_nacl_id
