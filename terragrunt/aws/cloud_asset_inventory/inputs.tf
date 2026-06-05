@@ -31,12 +31,6 @@ variable "cartography_spoke_role_name" {
   default     = "secopsAssetInventorySecurityAuditRole"
 }
 
-variable "aws_cli_image" {
-  description = "Image for the init container that generates the per-account AWS config from AWS Organizations."
-  type        = string
-  default     = "public.ecr.aws/aws-cli/aws-cli:latest"
-}
-
 variable "service_discovery_namespace_arn" {
   description = "(Required) The ARN of the ECS Service Connect HTTP namespace for internal service discovery"
   type        = string

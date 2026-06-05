@@ -1,10 +1,11 @@
 [
   {
     "name": "cartography-config-init",
-    "image": "${AWS_CLI_IMAGE}",
+    "image": "${CARTOGRAPHY_IMAGE}",
     "essential": false,
-    "entryPoint": ["/bin/sh", "-c"],
-    "command": ["echo ${GENERATE_CONFIG_SCRIPT_B64} | base64 -d | /bin/sh"],
+    "user": "0",
+    "entryPoint": ["python3", "-c"],
+    "command": ["import base64; exec(base64.b64decode('${GENERATE_CONFIG_SCRIPT_B64}').decode())"],
     "environment": [
       {
         "name": "ORG_LIST_ROLE_ARN",
@@ -21,6 +22,10 @@
       {
         "name": "AWS_REGION",
         "value": "${REGION}"
+      },
+      {
+        "name": "PYTHONUSERBASE",
+        "value": "/var/cartography/.local"
       }
     ],
     "mountPoints": [
@@ -75,7 +80,6 @@
       }
     ],
     "command": [
-      "cartography",
       "--neo4j-uri",
       "${NEO4J_BOLT_URI}",
       "--neo4j-user",
