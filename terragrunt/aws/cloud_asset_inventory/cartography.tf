@@ -9,9 +9,19 @@ data "template_file" "cartography_container_definition" {
     AWS_LOGS_GROUP           = aws_cloudwatch_log_group.cartography.name
     AWS_LOGS_REGION          = var.region
     AWS_LOGS_STREAM_PREFIX   = "${local.cartography_service_name}-task"
+    AWS_CLI_IMAGE            = var.aws_cli_image
     CARTOGRAPHY_IMAGE        = "${var.cartography_image}:${var.cartography_image_tag}"
     CARTOGRAPHY_SERVICE_NAME = local.cartography_service_name
     NEO4J_SECRETS_PASSWORD   = aws_ssm_parameter.neo4j_password.arn
+
+    # The init container's discovery logic lives in a standalone, 
+    # shellcheck-linted file (generate-config.sh)
+    GENERATE_CONFIG_SCRIPT_B64 = base64encode(file("container-definitions/generate-config.sh"))
+    ORG_LIST_ROLE_ARN          = local.organization_account_list_role_arn
+    MGMT_ACCOUNT_ID            = var.organization_management_account_id
+    SPOKE_ROLE_NAME            = var.cartography_spoke_role_name
+    REGION                     = var.region
+    NEO4J_BOLT_URI = "bolt://${aws_lb.cartography.dns_name}:7687"
   }
 }
 
@@ -27,6 +37,12 @@ resource "aws_ecs_task_definition" "cartography" {
   task_role_arn      = aws_iam_role.cartography_task_execution_role.arn
 
   container_definitions = data.template_file.cartography_container_definition.rendered
+
+  # Ephemeral volume shared between the init container (writes the generated AWS
+  # config) and the cartography container (reads it). Lives for the task lifetime.
+  volume {
+    name = "cartography-config"
+  }
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
