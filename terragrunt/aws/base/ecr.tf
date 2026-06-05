@@ -88,23 +88,3 @@ resource "aws_ecr_repository" "sso_proxy_pomerium" {
     Product               = var.product_name
   }
 }
-
-
-resource "aws_ecr_repository" "sso_proxy_verify" {
-  name                 = "${var.product_name}/sso_proxy_verify"
-  image_tag_mutability = "MUTABLE"
-
-  encryption_configuration {
-    encryption_type = "KMS"
-  }
-
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-
-  tags = {
-    (var.billing_tag_key) = var.billing_tag_value
-    Terraform             = true
-    Product               = var.product_name
-  }
-}
