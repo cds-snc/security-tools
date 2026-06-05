@@ -1,0 +1,20 @@
+[
+  {
+    "source": "pomerium/pomerium:sha-593eb81@sha256:bd7068164645c8a1a122f60a4c75359ddf726d981461d20efb5b74ad10cc7ad8",
+    "version": "v0.32.8 — Docker tag sha-593eb81 is the GitHub release commit short-sha",
+    "repo": "sso_proxy_pomerium",
+    "tag": "latest"
+  },
+  {
+    "source": "neo4j:5-community@sha256:0b5d3ab6ec1b866890dbfb53bf4fe1cf039f9e03c96165599a403005b7e7bcc3",
+    "version": "5.26.26 Community Edition",
+    "repo": "cloud_asset_inventory/neo4j",
+    "tag": "latest"
+  },
+  {
+    "source": "ghcr.io/cartography-cncf/cartography:0.136@sha256:bf34b2ca0aac8831c4fa859f51be3c26f2364e09d831ce8ed00ae42ff141e7c4",
+    "version": "0.136",
+    "repo": "cloud_asset_inventory/cartography",
+    "tag": "latest"
+  }
+]

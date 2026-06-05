@@ -1,0 +1,89 @@
+name: Mirror third-party images to ECR
+
+# Mirrors third-party container images (Pomerium, Neo4j, Cartography) from their
+# upstream registries into our ECR, by digest, preserving the original manifest.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "images/mirror.json"
+      - ".github/workflows/mirror-ecr-images.yml"
+
+env:
+  AWS_REGION: ca-central-1
+  REGISTRY: ${{ secrets.AWS_ACCOUNT }}.dkr.ecr.ca-central-1.amazonaws.com/security-tools
+
+permissions:
+  id-token: write
+  contents: read
+  security-events: write
+
+jobs:
+  load-manifest:
+    runs-on: ubuntu-latest
+    outputs:
+      images: ${{ steps.read.outputs.images }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Read mirror manifest
+        id: read
+        run: echo "images=$(jq -c . images/mirror.json)" >> "$GITHUB_OUTPUT"
+
+  mirror:
+    needs: load-manifest
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        entry: ${{ fromJSON(needs.load-manifest.outputs.images) }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/security-tools-apply
+          role-session-name: ECRMirror
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@183a1442edf41672e66566b7fc560e297a290896 # v2.1.1
+
+      - name: Install crane
+        env:
+          CRANE_VERSION: v0.21.6
+          CRANE_SHA256: 7ebbdcd05b652345c1f5105f8475e518534b90d66f3bdb50017be63f426ea435
+        run: |
+          set -euo pipefail
+          curl -fsSL --retry 5 --retry-all-errors -o crane.tar.gz \
+            "https://github.com/google/go-containerregistry/releases/download/${CRANE_VERSION}/go-containerregistry_Linux_x86_64.tar.gz"
+          echo "${CRANE_SHA256}  crane.tar.gz" | sha256sum -c -
+          tar xzf crane.tar.gz crane
+          sudo mv crane /usr/local/bin/crane
+          crane version
+
+      - name: Mirror image (manifest-preserving, by digest)
+        run: |
+          set -euo pipefail
+          crane copy \
+            "${{ matrix.entry.source }}" \
+            "${REGISTRY}/${{ matrix.entry.repo }}:${{ matrix.entry.tag }}"
+
+      - name: Trivy vulnerability scan
+        uses: cds-snc/security-tools/.github/actions/docker-scan@837a88b6337d4842543184c8eac97a8adac8f302 # v4.0.3
+        env:
+          TRIVY_DB_REPOSITORY: ${{ vars.TRIVY_DB_REPOSITORY }}
+        with:
+          docker_image: "${{ env.REGISTRY }}/${{ matrix.entry.repo }}:${{ matrix.entry.tag }}"
+          dockerfile_path: "images/mirror.json"
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Logout of Amazon ECR
+        run: docker logout ${{ steps.login-ecr.outputs.registry }}
