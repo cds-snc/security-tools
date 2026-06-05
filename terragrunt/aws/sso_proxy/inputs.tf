@@ -47,16 +47,6 @@ variable "pomerium_google_client_secret" {
   sensitive   = true
 }
 
-variable "pomerium_verify_image" {
-  description = "The pomerium verify image to use for the sso proxy"
-  type        = string
-}
-
-variable "pomerium_verify_image_tag" {
-  description = "The pomerium verify image tag to use"
-  type        = string
-}
-
 variable "security_tools_vpc_id" {
   description = "(Required) The VPC ID for the security tools"
   type        = string
