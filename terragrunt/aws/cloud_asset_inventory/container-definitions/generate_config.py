@@ -16,10 +16,21 @@ Required environment:
   AWS_REGION         - region for the generated profiles
   CONFIG_PATH        - output path (default /config/role_config)
 """
+import glob
 import os
 import sys
 
-import boto3
+# boto3 ships inside the cartography image's uv-managed tool environment, not on
+# the system python3's path. Add that environment's site-packages (resolved with
+# globs so we don't hardcode the python version or uv's internal layout) so this
+# script can import boto3 without needing a separate image.
+for _pattern in (
+    "/var/cartography/.local/share/uv/tools/*/lib/python*/site-packages",
+    "/var/cartography/.local/lib/python*/site-packages",
+):
+    sys.path[:0] = glob.glob(_pattern)
+
+import boto3  # noqa: E402  (imported after the sys.path bootstrap above)
 
 
 def require(name):
