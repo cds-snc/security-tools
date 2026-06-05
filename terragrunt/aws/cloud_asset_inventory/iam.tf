@@ -4,7 +4,9 @@
 ###
 
 locals {
-  asset_inventory_admin_role = "secopsAssetInventoryCartographyRole"
+  asset_inventory_admin_role         = "secopsAssetInventoryCartographyRole"
+  organization_account_list_role_arn = "arn:aws:iam::${var.organization_management_account_id}:role/${var.organization_account_list_role_name}"
+  cartography_spoke_role_arn         = "arn:aws:iam::*:role/${var.cartography_spoke_role_name}"
 }
 
 data "aws_organizations_organization" "current" {}
@@ -61,6 +63,7 @@ resource "aws_iam_role_policy_attachment" "cartography_task_execution_policies" 
 }
 
 data "aws_iam_policy_document" "cartography_task_execution_policies" {
+  # Assume the read-only audit role in every member account (restricted to this org).
   statement {
 
     effect = "Allow"
@@ -68,13 +71,35 @@ data "aws_iam_policy_document" "cartography_task_execution_policies" {
     actions = [
       "sts:AssumeRole",
     ]
-    resources = ["arn:aws:iam::*:role/secopsAssetInventorySecurityAuditRole"]
+    resources = [local.cartography_spoke_role_arn]
 
     condition {
       test     = "StringEquals"
       variable = "aws:PrincipalOrgID"
       values   = [data.aws_organizations_organization.current.id]
     }
+  }
+
+  # Assume the management-account role to enumerate accounts and sync the org hierarchy.
+  statement {
+
+    effect = "Allow"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+    resources = [local.organization_account_list_role_arn]
+  }
+
+  # Cartography enumerates the regions in use across accounts (hub-role requirement).
+  statement {
+
+    effect = "Allow"
+
+    actions = [
+      "ec2:DescribeRegions",
+    ]
+    resources = ["*"]
   }
 }
 
@@ -149,33 +174,4 @@ data "aws_iam_policy_document" "write_waf_logs" {
       "arn:aws:s3:::${var.cbs_satellite_bucket_name}/*"
     ]
   }
-}
-
-
-### Org Acccount List Org ID
-
-resource "aws_iam_role" "list_accounts_in_org" {
-  name = "ListAccountsInOrg"
-
-  assume_role_policy = data.aws_iam_policy_document.list_accounts_in_org.json
-}
-
-data "aws_iam_policy_document" "list_accounts_in_org" {
-  statement {
-    effect = "Allow"
-    principals {
-      type        = "Service"
-      identifiers = ["states.amazonaws.com"]
-    }
-    actions = ["sts:AssumeRole"]
-  }
-}
-
-data "aws_iam_policy" "AWSLambdaRole" {
-  arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaRole"
-}
-
-resource "aws_iam_role_policy_attachment" "list_accounts_in_org" {
-  role       = aws_iam_role.list_accounts_in_org.name
-  policy_arn = data.aws_iam_policy.AWSLambdaRole.arn
 }

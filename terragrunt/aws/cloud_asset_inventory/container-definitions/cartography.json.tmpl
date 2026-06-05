@@ -1,45 +1,83 @@
 [
   {
+    "name": "cartography-config-init",
+    "image": "${AWS_CLI_IMAGE}",
+    "essential": false,
+    "entryPoint": ["/bin/sh", "-c"],
+    "command": ["echo ${GENERATE_CONFIG_SCRIPT_B64} | base64 -d | /bin/sh"],
+    "environment": [
+      {
+        "name": "ORG_LIST_ROLE_ARN",
+        "value": "${ORG_LIST_ROLE_ARN}"
+      },
+      {
+        "name": "MGMT_ACCOUNT_ID",
+        "value": "${MGMT_ACCOUNT_ID}"
+      },
+      {
+        "name": "SPOKE_ROLE_NAME",
+        "value": "${SPOKE_ROLE_NAME}"
+      },
+      {
+        "name": "AWS_REGION",
+        "value": "${REGION}"
+      }
+    ],
+    "mountPoints": [
+      {
+        "sourceVolume": "cartography-config",
+        "containerPath": "/config",
+        "readOnly": false
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${AWS_LOGS_GROUP}",
+        "awslogs-region": "${AWS_LOGS_REGION}",
+        "awslogs-stream-prefix": "${AWS_LOGS_STREAM_PREFIX}-init"
+      }
+    }
+  },
+  {
     "name": "${CARTOGRAPHY_SERVICE_NAME}",
+    "image": "${CARTOGRAPHY_IMAGE}",
+    "essential": true,
+    "dependsOn": [
+      {
+        "containerName": "cartography-config-init",
+        "condition": "SUCCESS"
+      }
+    ],
     "environment": [
       {
         "name": "AWS_CONFIG_FILE",
         "value": "/config/role_config"
       },
       {
+        "name": "AWS_STS_REGIONAL_ENDPOINTS",
+        "value": "regional"
+      },
+      {
         "name": "NEO4J_URI",
-        "value": "bolt://neo4j-bolt.internal.mesh:7687"
+        "value": "${NEO4J_BOLT_URI}"
       },
       {
         "name": "NEO4J_USER",
         "value": "neo4j"
-      },
-      {
-        "name": "AWS_BEST_EFFORT_MODE",
-        "value": "true"
       }
     ],
-    "essential": true,
-    "image": "${CARTOGRAPHY_IMAGE}",
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-group": "${AWS_LOGS_GROUP}",
-        "awslogs-region": "${AWS_LOGS_REGION}",
-        "awslogs-stream-prefix": "${AWS_LOGS_STREAM_PREFIX}"
-      }
-    },
-    "portMappings": [
+    "mountPoints": [
       {
-        "hostPort": 443,
-        "ContainerPort": 443,
-        "Protocol": "tcp"
+        "sourceVolume": "cartography-config",
+        "containerPath": "/config",
+        "readOnly": true
       }
     ],
     "command": [
       "cartography",
       "--neo4j-uri",
-      "bolt://neo4j.internal.local:7687",
+      "${NEO4J_BOLT_URI}",
       "--neo4j-user",
       "neo4j",
       "--neo4j-password-env-var",
@@ -52,6 +90,14 @@
         "name": "NEO4J_SECRETS_PASSWORD",
         "valueFrom": "${NEO4J_SECRETS_PASSWORD}"
       }
-    ]
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${AWS_LOGS_GROUP}",
+        "awslogs-region": "${AWS_LOGS_REGION}",
+        "awslogs-stream-prefix": "${AWS_LOGS_STREAM_PREFIX}"
+      }
+    }
   }
 ]
