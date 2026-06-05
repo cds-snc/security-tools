@@ -74,6 +74,21 @@ data "aws_iam_policy_document" "pomerium_policies" {
       aws_ssm_parameter.pomerium_client_secret.arn,
     ]
   }
+
+  statement {
+
+    effect = "Allow"
+
+    actions = [
+      "elasticfilesystem:DescribeAccessPoints",
+      "elasticfilesystem:DescribeMountTargets",
+      "elasticfilesystem:DescribeFileSystemPolicy",
+      "elasticfilesystem:DescribeFileSystems",
+    ]
+    resources = [
+      aws_efs_file_system.databroker.arn,
+    ]
+  }
 }
 
 resource "aws_iam_policy" "pomerium_policies" {
