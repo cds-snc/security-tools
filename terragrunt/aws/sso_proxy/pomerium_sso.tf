@@ -10,10 +10,6 @@ resource "aws_ecs_service" "pomerium_sso_proxy" {
   launch_type                       = "FARGATE"
   health_check_grace_period_seconds = 600
 
-  # The databroker EFS volume is single-writer; the old task must stop before the new one starts.
-  deployment_minimum_healthy_percent = 0
-  deployment_maximum_percent         = 100
-
   load_balancer {
     target_group_arn = aws_lb_target_group.sso_proxy.arn
     container_name   = "pomerium_sso_proxy"
@@ -51,10 +47,6 @@ data "template_file" "pomerium_sso_proxy_container_definition" {
     AWS_LOGS_STREAM_PREFIX        = "${local.pomerium_sso_proxy_service_name}-task"
     COOKIE_DOMAIN                 = var.security_tools_domain_name
     COOKIE_EXPIRE                 = var.session_cookie_expires_in
-    DATABROKER_STORAGE_TYPE       = "file"
-    DATABROKER_STORAGE_CONNECTION = "file://${local.databroker_mount_path}"
-    DATABROKER_MOUNT_PATH         = local.databroker_mount_path
-    DATABROKER_VOLUME_NAME        = local.databroker_efs_volume_name
     ROUTES_FILE                   = base64encode(data.template_file.pomerium_sso_proxy_routes_policy.rendered)
     SESSION_KEY                   = aws_ssm_parameter.session_key.arn
     SESSION_COOKIE_SECRET         = aws_ssm_parameter.session_cookie_secret.arn
@@ -76,18 +68,6 @@ resource "aws_ecs_task_definition" "pomerium_sso_proxy" {
   task_role_arn      = aws_iam_role.pomerium_task_execution_role.arn
 
   container_definitions = data.template_file.pomerium_sso_proxy_container_definition.rendered
-
-  volume {
-    name = local.databroker_efs_volume_name
-    efs_volume_configuration {
-      file_system_id          = aws_efs_file_system.databroker.id
-      transit_encryption      = "ENABLED"
-      transit_encryption_port = 3049
-      authorization_config {
-        access_point_id = aws_efs_access_point.databroker.id
-      }
-    }
-  }
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value

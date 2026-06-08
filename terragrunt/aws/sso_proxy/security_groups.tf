@@ -105,24 +105,6 @@ resource "aws_security_group" "pomerium" {
     self        = true
   }
 
-  ingress {
-    description = "NFS access for the databroker EFS volume"
-    from_port   = 2049
-    to_port     = 2049
-    protocol    = "tcp"
-    cidr_blocks = var.vpc_private_subnet_cidrs
-    self        = true
-  }
-
-  egress {
-    description = "NFS access for the databroker EFS volume"
-    from_port   = 2049
-    to_port     = 2049
-    protocol    = "tcp"
-    cidr_blocks = var.vpc_private_subnet_cidrs
-    self        = true
-  }
-
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
