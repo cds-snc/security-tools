@@ -37,7 +37,7 @@ data "aws_iam_policy_document" "sentinel_forward_s3_readonly" {
       "s3:ListBucketVersions",
     ]
     resources = [
-      aws_s3_bucket.sentinel_exports.arn,
+      module.sentinel_exports.s3_bucket_arn,
     ]
   }
 
@@ -49,7 +49,7 @@ data "aws_iam_policy_document" "sentinel_forward_s3_readonly" {
       "s3:GetObjectVersion",
     ]
     resources = [
-      "${aws_s3_bucket.sentinel_exports.arn}/*",
+      "${module.sentinel_exports.s3_bucket_arn}/*",
     ]
   }
 }
@@ -171,7 +171,7 @@ data "aws_iam_policy_document" "cartography_task_execution_policies" {
       "s3:PutObject",
     ]
     resources = [
-      "${aws_s3_bucket.sentinel_exports.arn}/*",
+      "${module.sentinel_exports.s3_bucket_arn}/*",
     ]
   }
 }

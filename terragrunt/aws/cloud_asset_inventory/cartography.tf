@@ -25,7 +25,7 @@ data "template_file" "cartography_container_definition" {
     # Finalizer container: after the scan, exports nodes + relationships in
     # chunked files and writes run manifests consumed by the forwarding workflow.
     EXPORT_SCRIPT_B64           = base64encode(file("container-definitions/export_to_s3.py"))
-    EXPORT_BUCKET               = aws_s3_bucket.sentinel_exports.id
+    EXPORT_BUCKET               = module.sentinel_exports.s3_bucket_id
     EXPORT_PREFIX               = "sentinel-exports"
     EXPORT_RUN_PREFIX           = "runs"
     EXPORT_MAX_RECORDS_PER_FILE = 2000
