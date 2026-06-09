@@ -7,9 +7,69 @@ locals {
   asset_inventory_admin_role         = "secopsAssetInventoryCartographyRole"
   organization_account_list_role_arn = "arn:aws:iam::${var.organization_management_account_id}:role/${var.organization_account_list_role_name}"
   cartography_spoke_role_arn         = "arn:aws:iam::*:role/${var.cartography_spoke_role_name}"
+  sentinel_forward_oidc_role_name    = "sentinel-forwarder-s3-readonly"
 }
 
 data "aws_organizations_organization" "current" {}
+
+module "sentinel_forward_oidc_role" {
+  source = "github.com/cds-snc/terraform-modules//gh_oidc_role?ref=v11.3.0"
+
+  billing_tag_key   = var.billing_tag_key
+  billing_tag_value = var.billing_tag_value
+
+  roles = [
+    {
+      name      = local.sentinel_forward_oidc_role_name
+      repo_name = "security-tools"
+      claim     = "ref:refs/heads/main"
+    }
+  ]
+}
+
+data "aws_iam_policy_document" "sentinel_forward_s3_readonly" {
+  statement {
+    sid    = "ListAndDescribeSentinelExportsBucket"
+    effect = "Allow"
+    actions = [
+      "s3:GetBucketLocation",
+      "s3:ListBucket",
+      "s3:ListBucketVersions",
+    ]
+    resources = [
+      aws_s3_bucket.sentinel_exports.arn,
+    ]
+  }
+
+  statement {
+    sid    = "ReadSentinelExportsObjects"
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:GetObjectVersion",
+    ]
+    resources = [
+      "${aws_s3_bucket.sentinel_exports.arn}/*",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "sentinel_forward_s3_readonly" {
+  name   = "${var.product_name}-${var.tool_name}-SentinelForwardS3ReadOnly"
+  path   = "/"
+  policy = data.aws_iam_policy_document.sentinel_forward_s3_readonly.json
+
+  tags = {
+    (var.billing_tag_key) = var.billing_tag_value
+    Terraform             = true
+    Product               = "${var.product_name}-${var.tool_name}"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "sentinel_forward_s3_readonly" {
+  role       = module.sentinel_forward_oidc_role.roles[local.sentinel_forward_oidc_role_name].name
+  policy_arn = aws_iam_policy.sentinel_forward_s3_readonly.arn
+}
 
 resource "aws_iam_role" "cartography_task_execution_role" {
   name               = local.asset_inventory_admin_role
@@ -100,6 +160,19 @@ data "aws_iam_policy_document" "cartography_task_execution_policies" {
       "ec2:DescribeRegions",
     ]
     resources = ["*"]
+  }
+
+  # The finalizer container writes the curated security exports to S3.
+  statement {
+
+    effect = "Allow"
+
+    actions = [
+      "s3:PutObject",
+    ]
+    resources = [
+      "${aws_s3_bucket.sentinel_exports.arn}/*",
+    ]
   }
 }
 
