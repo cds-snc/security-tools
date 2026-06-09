@@ -9,8 +9,8 @@ name: Forward cartography exports to Sentinel
 #     DCR streams exist (transformKql: "source");
 #     see terragrunt/aws/cloud_asset_inventory/sentinel-forwarding.md.
 #   - Azure AD app with a federated credential trusting this repo, and these repo
-#     secrets set: SENTINEL_DCE_ENDPOINT, SENTINEL_DCR_RULE_ID, AZURE_CLIENT_ID,
-#     AZURE_TENANT_ID.
+#     secrets set: SENTINEL_DCE_ENDPOINT, SENTINEL_NODE_DCR_RULE_ID,
+#     SENTINEL_REL_DCR_RULE_ID, AZURE_CLIENT_ID, AZURE_TENANT_ID.
 #   - The AWS OIDC role can read export objects (s3:GetObject on the bucket).
 #   - Slack webhook secret for stale-export alerts:
 #     SLACK_NOTIFY_WEBHOOK.
@@ -23,9 +23,18 @@ on:
 
 env:
   AWS_REGION: ca-central-1
+  AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT }}
   EXPORT_BUCKET: security-tools-cloud-asset-inventory-sentinel-exports
   EXPORT_PREFIX: sentinel-exports
   EXPORT_MAX_AGE_HOURS: "24"
+  SENTINEL_DCE_ENDPOINT: ${{ secrets.SENTINEL_DCE_ENDPOINT }}
+  SENTINEL_NODE_DCR_RULE_ID: ${{ secrets.SENTINEL_NODE_DCR_RULE_ID }}
+  SENTINEL_REL_DCR_RULE_ID: ${{ secrets.SENTINEL_REL_DCR_RULE_ID }}
+  SLACK_NOTIFY_WEBHOOK: ${{ secrets.SLACK_NOTIFY_WEBHOOK }}
+  SENTINEL_NODE_AZURE_CLIENT_ID: ${{ secrets.SENTINEL_V2_AZURE_CLIENT_ID }}
+  SENTINEL_NODE_AZURE_TENANT_ID: ${{ secrets.SENTINEL_V2_AZURE_TENANT_ID }}
+  SENTINEL_REL_AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+  SENTINEL_REL_AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
 
 permissions:
   id-token: write # OIDC to AWS (read S3) and Azure (the action)
@@ -46,7 +55,7 @@ jobs:
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/sentinel-forwarder-s3-readonly
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/sentinel-forwarder-s3-readonly
           role-session-name: SentinelForward
           aws-region: ${{ env.AWS_REGION }}
 
@@ -120,7 +129,7 @@ jobs:
     steps:
       - name: Notify Slack about stale or missing export
         env:
-          SLACK_NOTIFY_WEBHOOK: ${{ secrets.SLACK_NOTIFY_WEBHOOK }}
+          SLACK_NOTIFY_WEBHOOK: ${{ env.SLACK_NOTIFY_WEBHOOK }}
           REPO_NAME: ${{ github.repository }}
           WORKFLOW_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           GENERATED_AT: ${{ needs.prepare.outputs.generated_at }}
@@ -148,7 +157,7 @@ jobs:
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/sentinel-forwarder-s3-readonly
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/sentinel-forwarder-s3-readonly
           role-session-name: SentinelForwardNodes
           aws-region: ${{ env.AWS_REGION }}
 
@@ -159,11 +168,11 @@ jobs:
         uses: cds-snc/sentinel-forward-data-action@2b0831903177e4ba07c850c71ab2645f72cab269
         with:
           file_name: payload.json
-          dce_endpoint: ${{ secrets.SENTINEL_DCE_ENDPOINT }}
-          dcr_rule_id: ${{ secrets.SENTINEL_DCR_RULE_ID }}
+          dce_endpoint: ${{ env.SENTINEL_DCE_ENDPOINT }}
+          dcr_rule_id: ${{ env.SENTINEL_NODE_DCR_RULE_ID }}
           stream_name: Custom-Cartography_Nodes_CL
-          azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+          azure_client_id: ${{ env.SENTINEL_NODE_AZURE_CLIENT_ID }}
+          azure_tenant_id: ${{ env.SENTINEL_NODE_AZURE_TENANT_ID }}
 
   forward-relationships:
     needs: prepare
@@ -177,7 +186,7 @@ jobs:
       - name: Configure AWS credentials using OIDC
         uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4.3.1
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/sentinel-forwarder-s3-readonly
+          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT_ID }}:role/sentinel-forwarder-s3-readonly
           role-session-name: SentinelForwardRels
           aws-region: ${{ env.AWS_REGION }}
 
@@ -188,8 +197,8 @@ jobs:
         uses: cds-snc/sentinel-forward-data-action@2b0831903177e4ba07c850c71ab2645f72cab269
         with:
           file_name: payload.json
-          dce_endpoint: ${{ secrets.SENTINEL_DCE_ENDPOINT }}
-          dcr_rule_id: ${{ secrets.SENTINEL_DCR_RULE_ID }}
+          dce_endpoint: ${{ env.SENTINEL_DCE_ENDPOINT }}
+          dcr_rule_id: ${{ env.SENTINEL_REL_DCR_RULE_ID }}
           stream_name: Custom-Cartography_Relationships_CL
-          azure_client_id: ${{ secrets.AZURE_CLIENT_ID }}
-          azure_tenant_id: ${{ secrets.AZURE_TENANT_ID }}
+          azure_client_id: ${{ env.SENTINEL_REL_AZURE_CLIENT_ID }}
+          azure_tenant_id: ${{ env.SENTINEL_REL_AZURE_TENANT_ID }}
