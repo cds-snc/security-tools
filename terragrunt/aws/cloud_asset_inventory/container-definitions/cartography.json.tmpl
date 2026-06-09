@@ -4,8 +4,13 @@
     "image": "${CARTOGRAPHY_IMAGE}",
     "essential": false,
     "user": "0",
-    "entryPoint": ["python3", "-c"],
-    "command": ["import base64; exec(base64.b64decode('${GENERATE_CONFIG_SCRIPT_B64}').decode())"],
+    "entryPoint": [
+      "python3",
+      "-c"
+    ],
+    "command": [
+      "import base64; exec(base64.b64decode('${GENERATE_CONFIG_SCRIPT_B64}').decode())"
+    ],
     "environment": [
       {
         "name": "ORG_LIST_ROLE_ARN",
@@ -43,7 +48,7 @@
   {
     "name": "${CARTOGRAPHY_SERVICE_NAME}",
     "image": "${CARTOGRAPHY_IMAGE}",
-    "essential": true,
+    "essential": false,
     "dependsOn": [
       {
         "containerName": "cartography-config-init",
@@ -97,6 +102,68 @@
         "awslogs-group": "${AWS_LOGS_GROUP}",
         "awslogs-region": "${AWS_LOGS_REGION}",
         "awslogs-stream-prefix": "${AWS_LOGS_STREAM_PREFIX}"
+      }
+    }
+  },
+  {
+    "name": "cartography-sentinel-export",
+    "image": "${CARTOGRAPHY_IMAGE}",
+    "essential": true,
+    "dependsOn": [
+      {
+        "containerName": "${CARTOGRAPHY_SERVICE_NAME}",
+        "condition": "SUCCESS"
+      }
+    ],
+    "entryPoint": [
+      "python3",
+      "-c"
+    ],
+    "command": [
+      "import base64; exec(base64.b64decode('${EXPORT_SCRIPT_B64}').decode())"
+    ],
+    "environment": [
+      {
+        "name": "NEO4J_URI",
+        "value": "${NEO4J_BOLT_URI}"
+      },
+      {
+        "name": "NEO4J_USER",
+        "value": "neo4j"
+      },
+      {
+        "name": "EXPORT_BUCKET",
+        "value": "${EXPORT_BUCKET}"
+      },
+      {
+        "name": "EXPORT_PREFIX",
+        "value": "${EXPORT_PREFIX}"
+      },
+      {
+        "name": "EXPORT_RUN_PREFIX",
+        "value": "${EXPORT_RUN_PREFIX}"
+      },
+      {
+        "name": "EXPORT_MAX_RECORDS_PER_FILE",
+        "value": "${EXPORT_MAX_RECORDS_PER_FILE}"
+      },
+      {
+        "name": "AWS_DEFAULT_REGION",
+        "value": "${AWS_LOGS_REGION}"
+      }
+    ],
+    "secrets": [
+      {
+        "name": "NEO4J_SECRETS_PASSWORD",
+        "valueFrom": "${NEO4J_SECRETS_PASSWORD}"
+      }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${AWS_LOGS_GROUP}",
+        "awslogs-region": "${AWS_LOGS_REGION}",
+        "awslogs-stream-prefix": "${AWS_LOGS_STREAM_PREFIX}-export"
       }
     }
   }
