@@ -34,7 +34,7 @@ resource "aws_lb_target_group" "sso_proxy" {
   vpc_id               = var.security_tools_vpc_id
 
   health_check {
-    protocol            = "HTTPS"
+    protocol            = "HTTP"
     path                = "/ping"
     port                = "traffic-port"
     timeout             = 10
