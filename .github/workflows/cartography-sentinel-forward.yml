@@ -29,12 +29,14 @@ env:
   EXPORT_MAX_AGE_HOURS: "24"
   SENTINEL_DCE_ENDPOINT: ${{ secrets.SENTINEL_DCE_ENDPOINT }}
   SENTINEL_NODE_DCR_RULE_ID: ${{ secrets.SENTINEL_NODE_DCR_RULE_ID }}
+  SENTINEL_NODE_STREAM_NAME: ${{ secrets.SENTINEL_NODE_STREAM_NAME }}
   SENTINEL_REL_DCR_RULE_ID: ${{ secrets.SENTINEL_REL_DCR_RULE_ID }}
+  SENTINEL_REL_STREAM_NAME: ${{ secrets.SENTINEL_REL_STREAM_NAME }}
   SLACK_NOTIFY_WEBHOOK: ${{ secrets.SLACK_NOTIFY_WEBHOOK }}
   SENTINEL_NODE_AZURE_CLIENT_ID: ${{ secrets.SENTINEL_V2_AZURE_CLIENT_ID }}
   SENTINEL_NODE_AZURE_TENANT_ID: ${{ secrets.SENTINEL_V2_AZURE_TENANT_ID }}
-  SENTINEL_REL_AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-  SENTINEL_REL_AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+  SENTINEL_REL_AZURE_CLIENT_ID: ${{ secrets.SENTINEL_V2_AZURE_CLIENT_ID }}
+  SENTINEL_REL_AZURE_TENANT_ID: ${{ secrets.SENTINEL_V2_AZURE_TENANT_ID }}
 
 permissions:
   id-token: write # OIDC to AWS (read S3) and Azure (the action)
@@ -170,7 +172,7 @@ jobs:
           file_name: payload.json
           dce_endpoint: ${{ env.SENTINEL_DCE_ENDPOINT }}
           dcr_rule_id: ${{ env.SENTINEL_NODE_DCR_RULE_ID }}
-          stream_name: Custom-Cartography_Nodes_CL
+          stream_name: ${{ env.SENTINEL_NODE_STREAM_NAME }}
           azure_client_id: ${{ env.SENTINEL_NODE_AZURE_CLIENT_ID }}
           azure_tenant_id: ${{ env.SENTINEL_NODE_AZURE_TENANT_ID }}
 
@@ -199,6 +201,6 @@ jobs:
           file_name: payload.json
           dce_endpoint: ${{ env.SENTINEL_DCE_ENDPOINT }}
           dcr_rule_id: ${{ env.SENTINEL_REL_DCR_RULE_ID }}
-          stream_name: Custom-Cartography_Relationships_CL
+          stream_name: ${{ env.SENTINEL_REL_STREAM_NAME }}
           azure_client_id: ${{ env.SENTINEL_REL_AZURE_CLIENT_ID }}
           azure_tenant_id: ${{ env.SENTINEL_REL_AZURE_TENANT_ID }}
