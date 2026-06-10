@@ -21,6 +21,14 @@ data "template_file" "cartography_container_definition" {
     SPOKE_ROLE_NAME            = var.cartography_spoke_role_name
     REGION                     = var.region
     NEO4J_BOLT_URI             = "bolt://${aws_lb.cartography.dns_name}:7687"
+
+    # Finalizer container: after the scan, exports nodes + relationships in
+    # chunked files and writes run manifests consumed by the forwarding workflow.
+    EXPORT_SCRIPT_B64           = base64encode(file("container-definitions/export_to_s3.py"))
+    EXPORT_BUCKET               = module.sentinel_exports.s3_bucket_id
+    EXPORT_PREFIX               = "sentinel-exports"
+    EXPORT_RUN_PREFIX           = "runs"
+    EXPORT_MAX_RECORDS_PER_FILE = 2000
   }
 }
 
