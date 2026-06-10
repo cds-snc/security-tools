@@ -19,6 +19,7 @@ Required environment:
     EXPORT_RUN_PREFIX            - run folder namespace under EXPORT_PREFIX (default "runs")
     EXPORT_MAX_RECORDS_PER_FILE  - records per chunk file (default 2000)
 """
+
 import datetime
 import glob
 import json
@@ -75,7 +76,7 @@ def _chunked(iterable, chunk_size):
 def _node_rows(records, run_ts):
     for record in records:
         yield {
-            "TimeGenerated": run_ts,
+            "TimeExported": run_ts,
             "NodeLabels": record["labels"],
             "NodeId": record["element_id"],
             "Properties": record["properties"],
@@ -85,7 +86,7 @@ def _node_rows(records, run_ts):
 def _relationship_rows(records, run_ts):
     for record in records:
         yield {
-            "TimeGenerated": run_ts,
+            "TimeExported": run_ts,
             "RelType": record["rel_type"],
             "RelId": record["rel_id"],
             "StartNodeId": record["start_node_id"],
@@ -121,7 +122,9 @@ def _export_entity_chunks(entity_name, row_iter, chunk_size, sink_writer, base_p
     return artifacts, total
 
 
-def _manifest_dict(run_id, run_ts, base_prefix, node_artifacts, rel_artifacts, node_count, rel_count):
+def _manifest_dict(
+    run_id, run_ts, base_prefix, node_artifacts, rel_artifacts, node_count, rel_count
+):
     return {
         "RunId": run_id,
         "GeneratedAt": run_ts,
@@ -135,6 +138,16 @@ def _manifest_dict(run_id, run_ts, base_prefix, node_artifacts, rel_artifacts, n
             "Files": [{"Key": a.key, "Count": a.count} for a in rel_artifacts],
         },
     }
+
+
+def _sink_writer_factory(bucket, local_dir):
+    if bucket:
+        return lambda key, body: _write_bytes(bucket, key, body)
+    else:
+        return lambda key, body: _write_local(
+            os.path.join(local_dir, key),
+            body,
+        )
 
 
 def main():
@@ -157,13 +170,7 @@ def main():
     driver = GraphDatabase.driver(uri, auth=(user, password))
     try:
         with driver.session() as session:
-            if bucket:
-                sink_writer = lambda key, body: _write_bytes(bucket, key, body)
-            else:
-                sink_writer = lambda key, body: _write_local(
-                    os.path.join(local_dir, key),
-                    body,
-                )
+            sink_writer = _sink_writer_factory(bucket, local_dir)
 
             node_artifacts, node_count = _export_entity_chunks(
                 entity_name="nodes",
