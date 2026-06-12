@@ -1,7 +1,7 @@
 # S3 bucket holding the curated cartography security exports.
 
 module "sentinel_exports" {
-  source = "github.com/cds-snc/terraform-modules//S3?ref=v11.3.0"
+  source = "github.com/cds-snc/terraform-modules//S3?ref=v11.3.5"
 
   bucket_name       = "${var.product_name}-${var.tool_name}-sentinel-exports"
   billing_tag_key   = var.billing_tag_key
