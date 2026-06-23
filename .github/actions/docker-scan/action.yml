@@ -52,7 +52,8 @@ runs:
         cat trivy-results.sarif | \
           jq '.runs[].results[].locations[].physicalLocation.artifactLocation += {"uri": "${{ inputs.dockerfile_path }}","uriBaseId": "ROOTPATH"}' | \
           jq '.runs[].results[].locations[].physicalLocation.region += {"startLine": 1,"startColumn": 1,"endLine": 1,"endColumn": 1}' | \
-          jq '.runs[].results[] |= (if .ruleId then . + {partialFingerprints: {"primaryLocationLineHash": .ruleId}} else . end)' > sarif.tmp
+          jq '.runs[].results[] |= (if .ruleId then . + {partialFingerprints: {"primaryLocationLineHash": .ruleId}} else . end)' | \
+          jq '.runs |= map(.results |= (group_by(.ruleId) | map(.[0])))' > sarif.tmp
         mv sarif.tmp trivy-results.sarif
       shell: bash
 
