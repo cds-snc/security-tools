@@ -25,9 +25,9 @@ runs:
   steps:
     - name: Install Trivy
       env:
-        TRIVY_VERSION: "0.69.3"
-        TRIVY_SHA256_AMD64: "1816b632dfe529869c740c0913e36bd1629cb7688bd5634f4a858c1d57c88b75"
-        TRIVY_SHA256_ARM64: "7e3924a974e912e57b4a99f65ece7931f8079584dae12eb7845024f97087bdfd"
+        TRIVY_VERSION: "0.71.2"
+        TRIVY_SHA256_AMD64: "0510e71e2fd39bf863856d499c8dc19feb4e7336546394c502a8f5cc7ab27460"
+        TRIVY_SHA256_ARM64: "fe1c7106e15a5365d485b098a8c338f91e3b7ba71cb0e4963b98a3a098763cfc"
       run: |
         bash "${{ github.action_path }}/../../scripts/install_trivy.sh" \
           "${{ env.TRIVY_VERSION }}" \
