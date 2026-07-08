@@ -389,9 +389,9 @@ def set_control_profile_type(row):
     global CONTROL_PROFILE_TYPE
 
     for col in row:
-        if "Medium Profile" in col:
+        if "CCCS Medium" in col:
             CONTROL_PROFILE_TYPE = "CCCS Medium"
-        elif "Low Profile" in col:
+        elif "CCCS Low" in col:
             CONTROL_PROFILE_TYPE = "CCCS Low"
 
 
