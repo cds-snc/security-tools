@@ -59,7 +59,9 @@ LONG_CONTROL_FAMILY = {
     "RA" : "Risk Assessment (RA)",
     "SA" : "System and Services Acquisition (SA)",
     "SC" : "System and Communications Protection (SC)",
-    "SI" : "System and Information Integrity (SI)"
+    "SI" : "System and Information Integrity (SI)",
+    "SR" : "Supply Chain Risk Management (SR)",
+    "PT" : "Personal Information Handling and Transparency (PT)",
 }
 
 
