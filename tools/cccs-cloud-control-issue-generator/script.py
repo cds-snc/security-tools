@@ -72,15 +72,17 @@ class Header(Enum):
     CONTROL_TITLE = 3
     CONTROL_DEFINITION = 4
     SUPPLEMENTAL_GUIDANCE = 5
-    CCCS_MEDIUM_PROFILE_FOR_CLOUD = 6
-    CSP_FULL_STACK = 7
-    CSP_STACKED_PAAS = 8
-    CSP_STACKED_SAAS = 9
-    CLIENT_IAAS_PAAS = 10
-    CLIENT_SAAS = 11
-    CDS_SUPP_ATTR_ORG_LEVEL_CTL = 12
-    CDS_SUPP_ATTR_SYS_LEVEL_CTR = 13
-    CDS_SUPP_ATTR_PRIORITY = 14
+    REFERENCES = 6
+    RELATED_CONTROLS = 7
+    CCCS_MEDIUM_PROFILE_FOR_CLOUD = 8
+    CSP_FULL_STACK = 9
+    CSP_STACKED_PAAS = 10
+    CSP_STACKED_SAAS = 11
+    CLIENT_IAAS_PAAS = 12
+    CLIENT_SAAS = 13
+    CDS_SUPP_ATTR_ORG_LEVEL_CTL = 14
+    CDS_SUPP_ATTR_SYS_LEVEL_CTR = 15
+    CDS_SUPP_ATTR_PRIORITY = 16
 
 
 """
@@ -255,6 +257,14 @@ def get_body(row):
     if row[Header.SUPPLEMENTAL_GUIDANCE.value]:
         body += "## Supplemental Guidance\n{}\n\n".format(
             row[Header.SUPPLEMENTAL_GUIDANCE.value]
+        )
+    if row[Header.REFERENCES.value]:
+        body += "## References\n{}\n\n".format(
+            row[Header.REFERENCES.value]
+        )
+    if row[Header.RELATED_CONTROLS.value]:
+        body += "## Related Controls\n{}\n\n".format(
+            row[Header.RELATED_CONTROLS.value]
         )
 
     body += "# Control Management\n"
