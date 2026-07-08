@@ -352,6 +352,9 @@ def get_labels(row):
         labels.append("IaaS/PaaS")
     if is_attribute_set(row, Header.CLIENT_SAAS.value):
         labels.append("SaaS")
+    
+    if row[Header.CDS_SUPP_ATTR_PRIORITY.value]:
+        labels.append("Priority: {}".format(row[Header.CDS_SUPP_ATTR_PRIORITY.value].strip()))
 
     return labels
 
