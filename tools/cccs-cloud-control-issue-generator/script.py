@@ -363,10 +363,12 @@ def get_title(row):
     """
     Get title for issue.
     """
-    title = "{}: {}".format(
-        get_control_id(row),
-        string.capwords(row[Header.CONTROL_TITLE.value]),
-    )
+    default_title = row[Header.CONTROL_NAME.value]
+    
+    if row[Header.CONTROL_TITLE.value]:
+        default_title = row[Header.CONTROL_TITLE.value]
+    
+    title = "{}: {}".format(get_control_id(row), string.capwords(default_title))
 
     return title
 
