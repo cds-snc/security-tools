@@ -59,7 +59,9 @@ LONG_CONTROL_FAMILY = {
     "RA" : "Risk Assessment (RA)",
     "SA" : "System and Services Acquisition (SA)",
     "SC" : "System and Communications Protection (SC)",
-    "SI" : "System and Information Integrity (SI)"
+    "SI" : "System and Information Integrity (SI)",
+    "SR" : "Supply Chain Risk Management (SR)",
+    "PT" : "Personal Information Handling and Transparency (PT)",
 }
 
 
@@ -70,15 +72,17 @@ class Header(Enum):
     CONTROL_TITLE = 3
     CONTROL_DEFINITION = 4
     SUPPLEMENTAL_GUIDANCE = 5
-    CCCS_MEDIUM_PROFILE_FOR_CLOUD = 6
-    CSP_FULL_STACK = 7
-    CSP_STACKED_PAAS = 8
-    CSP_STACKED_SAAS = 9
-    CLIENT_IAAS_PAAS = 10
-    CLIENT_SAAS = 11
-    CDS_SUPP_ATTR_ORG_LEVEL_CTL = 12
-    CDS_SUPP_ATTR_SYS_LEVEL_CTR = 13
-    CDS_SUPP_ATTR_PRIORITY = 14
+    REFERENCES = 6
+    RELATED_CONTROLS = 7
+    CCCS_MEDIUM_PROFILE_FOR_CLOUD = 8
+    CSP_FULL_STACK = 9
+    CSP_STACKED_PAAS = 10
+    CSP_STACKED_SAAS = 11
+    CLIENT_IAAS_PAAS = 12
+    CLIENT_SAAS = 13
+    CDS_SUPP_ATTR_ORG_LEVEL_CTL = 14
+    CDS_SUPP_ATTR_SYS_LEVEL_CTR = 15
+    CDS_SUPP_ATTR_PRIORITY = 16
 
 
 """
@@ -254,6 +258,14 @@ def get_body(row):
         body += "## Supplemental Guidance\n{}\n\n".format(
             row[Header.SUPPLEMENTAL_GUIDANCE.value]
         )
+    if row[Header.REFERENCES.value]:
+        body += "## References\n{}\n\n".format(
+            row[Header.REFERENCES.value]
+        )
+    if row[Header.RELATED_CONTROLS.value]:
+        body += "## Related Controls\n{}\n\n".format(
+            row[Header.RELATED_CONTROLS.value]
+        )
 
     body += "# Control Management\n"
     body += "## Assignment\n"
@@ -350,6 +362,9 @@ def get_labels(row):
         labels.append("IaaS/PaaS")
     if is_attribute_set(row, Header.CLIENT_SAAS.value):
         labels.append("SaaS")
+    
+    if row[Header.CDS_SUPP_ATTR_PRIORITY.value]:
+        labels.append("Priority: {}".format(row[Header.CDS_SUPP_ATTR_PRIORITY.value].strip()))
 
     return labels
 
@@ -358,10 +373,12 @@ def get_title(row):
     """
     Get title for issue.
     """
-    title = "{}: {}".format(
-        get_control_id(row),
-        string.capwords(row[Header.CONTROL_TITLE.value]),
-    )
+    default_title = row[Header.CONTROL_NAME.value]
+    
+    if row[Header.CONTROL_TITLE.value]:
+        default_title = row[Header.CONTROL_TITLE.value]
+    
+    title = "{}: {}".format(get_control_id(row), string.capwords(default_title))
 
     return title
 
