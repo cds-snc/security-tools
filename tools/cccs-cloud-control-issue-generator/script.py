@@ -364,7 +364,9 @@ def get_labels(row):
         labels.append("SaaS")
     
     if row[Header.CDS_SUPP_ATTR_PRIORITY.value]:
-        labels.append("Priority: {}".format(row[Header.CDS_SUPP_ATTR_PRIORITY.value].strip()))
+        labels.append("Priority: {}".format(row[Header.CDS_SUPP_ATTR_PRIORITY.value].strip().upper()))
+
+    logging.debug("labels: {}".format(labels))
 
     return labels
 
