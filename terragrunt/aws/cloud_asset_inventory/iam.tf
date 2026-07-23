@@ -13,7 +13,7 @@ locals {
 data "aws_organizations_organization" "current" {}
 
 module "sentinel_forward_oidc_role" {
-  source = "github.com/cds-snc/terraform-modules//gh_oidc_role?ref=v11.3.0"
+  source = "github.com/cds-snc/terraform-modules//gh_oidc_role?ref=v11.4.4"
 
   billing_tag_key   = var.billing_tag_key
   billing_tag_value = var.billing_tag_value
