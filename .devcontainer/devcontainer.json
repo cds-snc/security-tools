@@ -1,6 +1,6 @@
 {
   "name": "Security Tools Dev Container",
-  "image": "mcr.microsoft.com/devcontainers/python:3-3.14-bookworm@sha256:52cfd0e889dfd0c84fd828b45c967714b7b93bc1a881748f4eea2f90ccadc544",
+  "image": "mcr.microsoft.com/devcontainers/python:3-3.14-bookworm@sha256:0fdcf958b64fd9ffe19972b4afb1337d1c57596442fb2424130bae8e093b9fcc",
   "remoteEnv": {
     "PATH": "/home/vscode/.local/bin:${containerEnv:PATH}"
   },
