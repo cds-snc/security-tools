@@ -115,7 +115,7 @@ def main():
                 if not is_attribute_set(control, Header.CDS_SUPP_ATTR_SYS_LEVEL_CTR.value):
                     continue
             elif CONTROLS_FILTER.upper() == CONTROLS_FILTER_ORG:
-                if not is_attribute_set(control, Header.CDS_SUPP_ATTR_SYS_LEVEL_CTR.value):
+                if not is_attribute_set(control, Header.CDS_SUPP_ATTR_ORG_LEVEL_CTL.value):
                     continue
 
         issues_url = get_issues_url()
