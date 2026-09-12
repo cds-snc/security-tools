@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "github.com/cds-snc/terraform-modules//vpc?ref=v11.4.5"
+  source = "github.com/cds-snc/terraform-modules//vpc?ref=v11.4.7"
   name   = "${var.product_name}-${var.tool_name}"
 
   availability_zones = 3
