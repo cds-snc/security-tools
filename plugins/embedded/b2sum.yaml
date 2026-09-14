@@ -1,0 +1,18 @@
+plugin:
+  plugin_schema_version: "1.0"
+  name: "b2sum Crypto Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "hash_utility"
+  description: "Coreutils BLAKE2b hash utility - internal implementation (blake2b_init)"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+
+detection:
+  methods:
+    - type: binary
+      paths:
+        - "/bin/b2sum"
+        - "/usr/bin/b2sum"
+      required: true
+      confidence: 0.98

@@ -1,0 +1,81 @@
+# CouchDB TLS Scanner Plugin
+# CBOM Generator v1.3 - Plugin Schema v1.0
+
+plugin:
+  plugin_schema_version: "1.0"
+  name: "CouchDB TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "database"
+  description: "Detects CouchDB instances and extracts SSL/TLS configuration"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/bin/couchdb"
+        - "/opt/couchdb/bin/couchdb"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "couchdb"
+        - "beam.smp"
+      command_patterns:
+        - ".*couchdb.*"
+
+      exclude_patterns:
+        - ".*rabbitmq.*"
+    - type: port
+      ports: [5984, 6984]
+      protocol: "tcp"
+      check_ssl: true
+
+    - type: config_file
+      paths:
+        - "/etc/couchdb/local.ini"
+        - "/opt/couchdb/etc/local.ini"
+      required: false
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "couchdb"
+      server_packages:
+        - "couchdb"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/local.ini"
+      parser: "ini"
+      encoding: "utf-8"
+      crypto_directives:
+        - key: "cert_file"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.path"
+          optional: true
+
+        - key: "key_file"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.path"
+          optional: true
+
+        - key: "cacert_file"
+          type: "path"
+          resolve: true
+          maps_to: "ca_certificate.path"
+          optional: true
+
+        - key: "tls_versions"
+          type: "string_list"
+          separator: ","
+          maps_to: "protocol.tls_versions"
+          optional: true

@@ -1,0 +1,87 @@
+# plugins/haproxy.yaml
+plugin:
+  plugin_schema_version: "1.0"
+  name: "HAProxy SSL/TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "load_balancer"
+  description: "Detects HAProxy instances and extracts SSL/TLS configuration"
+  priority: 50
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/haproxy"
+        - "/usr/local/sbin/haproxy"
+      required: true
+      confidence: 0.95
+
+    # Method 2: Detect by process
+    - type: process
+      names:
+        - "haproxy"
+
+    # Method 3: Detect by port
+      ports: [80, 443, 8080, 8443, 1936]
+      protocol: "tcp"
+      check_ssl: true
+      validate_process: true
+      expected_processes:
+        - "haproxy"
+
+    - type: config_file
+      paths:
+        - "/etc/haproxy/haproxy.cfg"
+        - "/usr/local/etc/haproxy/haproxy.cfg"
+      required: false
+
+    # Method 5: Detect by systemd
+    - type: systemd
+      service_names:
+        - "haproxy.service"
+
+    # Method 6: Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "haproxy"
+      server_packages:
+        - "haproxy"
+      confidence: 0.90
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/haproxy.cfg"
+      parser: "custom"
+      crypto_directives:
+        # Frontend SSL bindings
+        - key: "bind.*ssl"
+          type: "string"
+          pattern: "bind\\s+[^\\s]+\\s+ssl\\s+crt\\s+([^\\s]+)"
+          capture_group: 1
+          maps_to: "certificate.path"
+          resolve: true
+
+        - key: "ssl-default-bind-ciphers"
+          type: "string"
+          maps_to: "cipher_suites"
+
+        - key: "ssl-default-bind-options"
+          type: "string"
+          maps_to: "protocol.options"
+
+        - key: "tune.ssl.default-dh-param"
+          type: "integer"
+          maps_to: "protocol.dh_param_size"
+
+        # Backend SSL connections
+        - key: "server.*ssl"
+          type: "string"
+          pattern: "server\\s+\\S+\\s+\\S+\\s+.*ssl"
+          maps_to: "backend.tls_enabled"
+
+        - key: "ca-file"
+          type: "path"
+          resolve: true
+          maps_to: "ca_cert.path"

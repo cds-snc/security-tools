@@ -1,0 +1,105 @@
+# plugins/embedded/bluez.yaml
+# bluez - Bluetooth Stack with BLE Security
+plugin:
+  plugin_schema_version: "1.0"
+  name: "bluez Bluetooth Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "wireless"
+  description: "Detects bluez Bluetooth stack and extracts BLE pairing/encryption configuration"
+  priority: 55
+
+detection:
+  methods:
+    # ONLY binary detection - prevents false positives in cross-arch scanning
+    - type: binary
+      paths:
+        - "/usr/libexec/bluetooth/bluetoothd"
+        - "/usr/sbin/bluetoothd"
+        - "/usr/lib/bluetooth/bluetoothd"
+        - "/lib/bluetooth/bluetoothd"
+      required: true
+      confidence: 0.95
+
+
+config_extraction:
+  files:
+    # Main Configuration
+    - path: "/etc/bluetooth/main.conf"
+      parser: "ini"
+      crypto_directives:
+        # Security Level
+        - key: "Security"
+          type: "string"
+          maps_to: "bluetooth.security_level"
+          description: "SECURITY_LOW, SECURITY_MEDIUM, SECURITY_HIGH"
+
+        # Pairable
+        - key: "Pairable"
+          type: "boolean"
+          maps_to: "bluetooth.pairable"
+
+        - key: "PairableTimeout"
+          type: "integer"
+          maps_to: "bluetooth.pairable_timeout"
+
+        # MITM Protection
+        - key: "MITM"
+          type: "boolean"
+          maps_to: "bluetooth.mitm"
+          description: "Man-In-The-Middle protection"
+
+        # LE Privacy
+        - key: "Privacy"
+          type: "string"
+          maps_to: "bluetooth.le_privacy"
+          description: "off, device, network"
+
+        # Key Distribution
+        - key: "KeyDist"
+          type: "string"
+          maps_to: "bluetooth.key_distribution"
+          description: "EncKey, IdKey, SignKey"
+
+        # Bonding
+        - key: "JustWorksRepairing"
+          type: "string"
+          maps_to: "bluetooth.just_works_repairing"
+
+        # LE Secure Connections
+        - key: "ControllerMode"
+          type: "string"
+          maps_to: "bluetooth.controller_mode"
+          description: "dual, bredr, le"
+
+    # Stored Pairing Keys
+    - path: "/var/lib/bluetooth"
+      parser: "custom"
+      crypto_directives:
+        # Long-Term Keys (LTK)
+        - key: "ltk_files"
+          type: "path"
+          resolve: true
+          maps_to: "key.ble_ltk_files"
+          description: "BLE Long-Term Key storage"
+
+        # Identity Resolving Keys (IRK)
+        - key: "irk_files"
+          type: "path"
+          resolve: true
+          maps_to: "key.ble_irk_files"
+          description: "BLE Identity Resolving Keys"
+
+        # Connection Signature Resolving Keys (CSRK)
+        - key: "csrk_files"
+          type: "path"
+          resolve: true
+          maps_to: "key.ble_csrk_files"
+          description: "Connection Signature Resolving Keys"
+
+        # Link Keys (Classic Bluetooth)
+        - key: "link_key_files"
+          type: "path"
+          resolve: true
+          maps_to: "key.bt_link_keys"
+          description: "Classic Bluetooth link keys"

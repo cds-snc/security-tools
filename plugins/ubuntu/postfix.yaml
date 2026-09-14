@@ -1,0 +1,119 @@
+# plugins/postfix.yaml
+plugin:
+  plugin_schema_version: "1.0"
+  name: "Postfix TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "mail_server"
+  description: "Detects Postfix mail server and extracts TLS configuration"
+  priority: 50
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/postfix"
+        - "/usr/lib/postfix/sbin/master"
+      required: true
+      confidence: 0.95
+
+    # Method 2: Detect by process
+    - type: process
+      names:
+        - "master"
+        - "postfix"
+      command_line_patterns:
+        - "/usr/lib/postfix"
+
+    # Method 3: Detect by port
+      ports: [25, 465, 587]
+      protocol: "tcp"
+      check_ssl: true
+      description: "25=SMTP, 465=SMTPS, 587=Submission"
+
+    - type: config_file
+      paths:
+        - "/etc/postfix/main.cf"
+      required: false
+
+    # Method 5: Detect by systemd
+    - type: systemd
+      service_names:
+        - "postfix.service"
+
+    # Method 6: Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "postfix"
+      server_packages:
+        - "postfix"
+      confidence: 0.90
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/main.cf"
+      parser: "ini"
+      crypto_directives:
+        # SMTP TLS (outbound)
+        - key: "smtp_tls_security_level"
+          type: "string"
+          maps_to: "smtp.tls_security_level"
+
+        - key: "smtp_tls_cert_file"
+          type: "path"
+          resolve: true
+          maps_to: "smtp.certificate.path"
+
+        - key: "smtp_tls_key_file"
+          type: "path"
+          resolve: true
+          maps_to: "smtp.private_key.path"
+
+        - key: "smtp_tls_CAfile"
+          type: "path"
+          resolve: true
+          maps_to: "smtp.ca_cert.path"
+
+        - key: "smtp_tls_protocols"
+          type: "string_list"
+          separator: ","
+          maps_to: "smtp.protocol.versions"
+
+        - key: "smtp_tls_ciphers"
+          type: "string"
+          maps_to: "cipher_suites"
+
+        - key: "smtp_tls_mandatory_ciphers"
+          type: "string"
+          maps_to: "cipher_suites"
+
+        # SMTPD TLS (inbound)
+        - key: "smtpd_tls_security_level"
+          type: "string"
+          maps_to: "smtpd.tls_security_level"
+
+        - key: "smtpd_tls_cert_file"
+          type: "path"
+          resolve: true
+          maps_to: "smtpd.certificate.path"
+
+        - key: "smtpd_tls_key_file"
+          type: "path"
+          resolve: true
+          maps_to: "smtpd.private_key.path"
+
+        - key: "smtpd_tls_CAfile"
+          type: "path"
+          resolve: true
+          maps_to: "smtpd.ca_cert.path"
+
+        - key: "smtpd_tls_protocols"
+          type: "string_list"
+          separator: ","
+          maps_to: "smtpd.protocol.versions"
+
+        - key: "smtpd_tls_mandatory_protocols"
+          type: "string_list"
+          separator: ","
+          maps_to: "smtpd.protocol.mandatory_versions"

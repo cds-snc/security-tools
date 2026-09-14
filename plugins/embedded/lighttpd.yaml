@@ -1,0 +1,163 @@
+# plugins/embedded/lighttpd.yaml
+# lighttpd - Lightweight Web Server for Embedded Systems
+plugin:
+  plugin_schema_version: "1.0"
+  name: "lighttpd Web Server Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "web_server"
+  description: "Detects lighttpd instances and extracts TLS/SSL configuration"
+  priority: 75
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/lighttpd"
+        - "/usr/local/sbin/lighttpd"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "lighttpd"
+        - "lighttpd-angel"
+
+    - type: port
+      ports: [80, 443]
+      protocol: "tcp"
+      check_ssl: true
+
+    - type: config_file
+      paths:
+        - "/etc/lighttpd/lighttpd.conf"
+        - "/etc/lighttpd/conf.d/ssl.conf"
+        - "/usr/local/etc/lighttpd/lighttpd.conf"
+      required: false
+
+    - type: systemd
+      service_names:
+        - "lighttpd.service"
+
+    - type: package
+      package_names:
+        - "lighttpd"
+        - "lighttpd-mod-openssl"
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "lighttpd"
+      server_packages:
+        - "lighttpd"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/lighttpd.conf"
+      parser: "custom"
+      crypto_directives:
+        # SSL Engine
+        - key: "ssl.engine"
+          type: "string"
+          maps_to: "service.ssl_enabled"
+          description: "enable or disable"
+
+        # Certificate and Key
+        - key: "ssl.pemfile"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.pem_file"
+          description: "Combined cert+key PEM file"
+
+        - key: "ssl.ca-file"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.ca_file"
+
+        - key: "ssl.privkey"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.key_file"
+
+        # DH Parameters
+        - key: "ssl.dh-file"
+          type: "path"
+          resolve: true
+          maps_to: "key.dh_params_file"
+
+        # Cipher Suite
+        - key: "ssl.cipher-list"
+          type: "string"
+          maps_to: "cipher_suites"
+          description: "OpenSSL cipher list format"
+
+        - key: "ssl.honor-cipher-order"
+          type: "string"
+          maps_to: "protocol.honor_cipher_order"
+          description: "enable or disable"
+
+        # Protocol Versions
+        - key: "ssl.use-sslv2"
+          type: "string"
+          maps_to: "protocol.sslv2"
+          description: "DEPRECATED - enable or disable"
+
+        - key: "ssl.use-sslv3"
+          type: "string"
+          maps_to: "protocol.sslv3"
+          description: "WEAK - enable or disable"
+
+        - key: "ssl.openssl.ssl-conf-cmd"
+          type: "string_list"
+          maps_to: "protocol.ssl_conf_cmd"
+          description: "OpenSSL config commands"
+
+        # Minimum TLS Version (modern)
+        - key: "ssl.min-protocol-version"
+          type: "string"
+          maps_to: "protocol.min_version"
+          description: "TLSv1.0, TLSv1.1, TLSv1.2, TLSv1.3"
+
+        # Maximum TLS Version
+        - key: "ssl.max-protocol-version"
+          type: "string"
+          maps_to: "protocol.max_version"
+
+        # Elliptic Curves
+        - key: "ssl.ec-curve"
+          type: "string"
+          maps_to: "protocol.ec_curve"
+          description: "secp256r1, secp384r1, X25519"
+
+        # Session Cache
+        - key: "ssl.stek-file"
+          type: "path"
+          resolve: true
+          maps_to: "service.session_ticket_key_file"
+
+        # OCSP Stapling
+        - key: "ssl.stapling-file"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.ocsp_stapling_file"
+
+        # ALPN
+        - key: "ssl.acme-tls-1"
+          type: "string"
+          maps_to: "protocol.acme_tls_alpn"
+
+        # Client Certificate Verification
+        - key: "ssl.verifyclient.activate"
+          type: "string"
+          maps_to: "service.client_cert_verify"
+
+        - key: "ssl.verifyclient.enforce"
+          type: "string"
+          maps_to: "service.client_cert_enforce"
+
+        - key: "ssl.verifyclient.username"
+          type: "string"
+          maps_to: "service.client_cert_username_source"

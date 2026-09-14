@@ -1,0 +1,68 @@
+# plugins/embedded/dbus.yaml
+# dbus - D-Bus Message Bus (IPC with Authentication)
+plugin:
+  plugin_schema_version: "1.0"
+  name: "D-Bus IPC Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "ipc"
+  description: "Detects D-Bus instances and extracts authentication configuration"
+  priority: 40
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/bin/dbus-daemon"
+        - "/usr/local/bin/dbus-daemon"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "dbus-daemon"
+
+    - type: config_file
+      paths:
+        - "/etc/dbus-1/system.conf"
+        - "/usr/share/dbus-1/system.conf"
+      required: false
+
+    - type: systemd
+      service_names:
+        - "dbus.service"
+
+    - type: package
+      package_names:
+        - "dbus"
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "dbus"
+      server_packages:
+        - "dbus"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    # System Configuration
+    - path: "/etc/dbus-1/system.conf"
+      parser: "custom"
+      crypto_directives:
+        # Authentication Mechanisms
+        - key: "auth"
+          type: "string"
+          maps_to: "ipc.auth_mechanism"
+          description: "EXTERNAL, DBUS_COOKIE_SHA1, ANONYMOUS"
+
+        # Policy
+        - key: "policy"
+          type: "string"
+          maps_to: "ipc.policy"
+          description: "Access control policies"
+
+        # Note: D-Bus uses UNIX domain sockets, no TLS
+        # Authentication via DBUS_COOKIE_SHA1 or EXTERNAL (UID)

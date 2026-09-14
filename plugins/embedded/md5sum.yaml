@@ -1,0 +1,18 @@
+plugin:
+  plugin_schema_version: "1.0"
+  name: "md5sum Crypto Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "hash_utility"
+  description: "Coreutils/BusyBox MD5 hash utility - internal implementation (md5_init_ctx)"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+
+detection:
+  methods:
+    - type: binary
+      paths:
+        - "/bin/md5sum"
+        - "/usr/bin/md5sum"
+      required: true
+      confidence: 0.98

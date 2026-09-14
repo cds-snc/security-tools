@@ -1,0 +1,77 @@
+# plugins/activemq.yaml
+plugin:
+  plugin_schema_version: "1.0"
+  name: "ActiveMQ TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "message_broker"
+  description: "Detects ActiveMQ instances and extracts TLS configuration"
+  priority: 50
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/opt/activemq/bin/activemq"
+        - "/usr/share/activemq/bin/activemq"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "java"
+
+    - type: port
+      ports: [61616]
+      protocol: "tcp"
+      check_ssl: true
+
+    - type: config_file
+      paths:
+        - "/etc/activemq/config"
+        - "/etc/activemq/activemq.conf"
+        - "/opt/activemq/conf/config"
+      required: false
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "activemq"
+      server_packages:
+        - "activemq"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/activemq.xml"
+      parser: "custom"  # ActiveMQ uses XML, treat as custom for now
+      crypto_directives:
+        - key: "ssl.enabled"
+          type: "boolean"
+          maps_to: "service.tls_enabled"
+
+        - key: "ssl.certificate"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.path"
+
+        - key: "ssl.key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.path"
+
+        - key: "ssl.ca_cert"
+          type: "path"
+          resolve: true
+          maps_to: "ca_cert.path"
+
+        - key: "ssl.protocols"
+          type: "string"
+          maps_to: "protocol.min_version"
+
+        - key: "ssl.ciphers"
+          type: "string_list"
+          separator: ":"
+          maps_to: "cipher_suites"

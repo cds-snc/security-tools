@@ -1,0 +1,80 @@
+# plugins/containerd.yaml
+plugin:
+  plugin_schema_version: "1.0"
+  name: "containerd TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "container"
+  description: "Detects containerd instances and extracts TLS configuration"
+  priority: 50
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/bin/containerd"
+        - "/usr/local/bin/containerd"
+      required: true
+      confidence: 0.95
+
+    # Method 2: Detect by process
+    - type: process
+      names:
+        - "containerd"
+
+    # Method 3: Detect by port
+      ports: [10010]
+      protocol: "tcp"
+      check_ssl: true
+
+    # Method 4: Detect by config file
+    - type: config_file
+      paths:
+        - "/etc/containerd/config.toml"
+        - "/etc/containerd/config"
+        - "/opt/containerd/conf/config.toml"
+      required: false
+
+    # Method 5: Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "containerd"
+        - "containerd.io"
+      server_packages:
+        - "containerd"
+        - "containerd.io"
+      confidence: 0.90
+
+config_extraction:
+  files:
+    - path: "/etc/containerd/config.toml"
+      parser: "ini"  # TOML is INI-compatible for basic parsing
+      crypto_directives:
+        - key: "ssl.enabled"
+          type: "boolean"
+          maps_to: "service.tls_enabled"
+
+        - key: "ssl.certificate"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.path"
+
+        - key: "ssl.key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.path"
+
+        - key: "ssl.ca_cert"
+          type: "path"
+          resolve: true
+          maps_to: "ca_cert.path"
+
+        - key: "ssl.protocols"
+          type: "string"
+          maps_to: "protocol.min_version"
+
+        - key: "ssl.ciphers"
+          type: "string_list"
+          separator: ":"
+          maps_to: "cipher_suites"

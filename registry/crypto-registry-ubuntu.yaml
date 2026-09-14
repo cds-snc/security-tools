@@ -1,0 +1,390 @@
+# =====================================================================
+#  Ubuntu Crypto Registry
+#  NOTE:
+#    - "algorithms" lists are REPRESENTATIVE, not exhaustive.
+#    - pkg_patterns should match dpkg names; soname_patterns should be
+#      broadly versionless to survive Ubuntu package evolution.
+# =====================================================================
+
+version: 1
+
+crypto_libraries:
+
+  # ------------------------------------------------------------
+  # OpenSSL
+  # ------------------------------------------------------------
+  - id: openssl
+    pkg_patterns:
+      - libssl
+      - libssl3
+      - libssl-dev
+      - libcrypto3
+    soname_patterns:
+      - libssl.so
+      - libcrypto.so
+    algorithms:
+      - RSA
+      - ECDSA
+      - AES
+      - ChaCha20-Poly1305
+      - SHA-256
+      - X25519
+      - P-256
+      - P-384
+
+  # ------------------------------------------------------------
+  # libgcrypt (GnuPG crypto core)
+  # ------------------------------------------------------------
+  - id: libgcrypt
+    pkg_patterns:
+      - libgcrypt
+      - libgcrypt20
+      - libgcrypt20-dev
+    soname_patterns:
+      - libgcrypt.so
+    algorithms:
+      - RSA
+      - DSA
+      - ECDSA
+      - AES
+      - Twofish
+      - SHA-256
+
+  # ------------------------------------------------------------
+  # libsodium (modern crypto)
+  # ------------------------------------------------------------
+  - id: libsodium
+    pkg_patterns:
+      - libsodium
+      - libsodium-dev
+    soname_patterns:
+      - libsodium.so
+    algorithms:
+      - X25519
+      - Ed25519
+      - ChaCha20-Poly1305
+      - BLAKE2b
+
+  # ------------------------------------------------------------
+  # Nettle / Hogweed
+  # ------------------------------------------------------------
+  - id: nettle
+    pkg_patterns:
+      - libnettle
+      - libhogweed
+    soname_patterns:
+      - libnettle.so
+      - libhogweed.so
+    algorithms:
+      - RSA
+      - ECDSA
+      - AES
+      - ChaCha20
+      - SHA-256
+
+  # ------------------------------------------------------------
+  # Kerberos family (GSSAPI / Krb5 / k5crypto)
+  # ------------------------------------------------------------
+  - id: krb5
+    pkg_patterns:
+      - libgssapi-krb5
+      - libkrb5
+      - libk5crypto
+      - libgssapi-krb5-2
+      - libkrb5-3
+      - libk5crypto3
+    soname_patterns:
+      - libgssapi_krb5.so
+      - libkrb5.so
+      - libk5crypto.so
+    algorithms:
+      - AES
+      - SHA-1
+      - SHA-256
+      - RSA
+
+  # ------------------------------------------------------------
+  # GnuTLS
+  # ------------------------------------------------------------
+  - id: gnutls
+    pkg_patterns:
+      - libgnutls
+      - libgnutls30
+      - libgnutls30t64     # Ubuntu 24.04+
+      - libgnutls-openssl27
+    soname_patterns:
+      - libgnutls.so
+      - libgnutls.so.30
+    algorithms:
+      - TLS-1.2
+      - TLS-1.3
+      - AES-GCM
+      - ChaCha20-Poly1305
+      - ECDSA
+
+  # ------------------------------------------------------------
+  # NSS (Network Security Services)
+  # ------------------------------------------------------------
+  - id: nss
+    pkg_patterns:
+      - libnss3
+      - libnss3-dev
+      - libnss3-tools
+    soname_patterns:
+      - libnss3.so
+      - libnssutil3.so
+      - libsmime3.so
+    algorithms:
+      - RSA
+      - ECDSA
+      - AES-GCM
+      - ChaCha20-Poly1305
+
+  # ------------------------------------------------------------
+  # BoringSSL
+  # (rare on Ubuntu, but included for completeness)
+  # NOTE: BoringSSL uses unique soname, NOT libcrypto.so/libssl.so
+  #       which would conflict with OpenSSL detection
+  # ------------------------------------------------------------
+  - id: boringssl
+    pkg_patterns:
+      - libboringssl
+      - libboringssl-dev
+    soname_patterns:
+      - libboringssl.so
+    algorithms:
+      - TLS-1.3
+      - AES-GCM
+      - ChaCha20-Poly1305
+      - X25519
+
+  # ------------------------------------------------------------
+  # LibreSSL
+  # NOTE: LibreSSL uses libtls.so as unique identifier
+  #       Do NOT use libcrypto.so which conflicts with OpenSSL
+  # ------------------------------------------------------------
+  - id: libressl
+    pkg_patterns:
+      - libressl
+      - libressl-dev
+    soname_patterns:
+      - libtls.so
+    algorithms:
+      - TLS-1.3
+      - AES-GCM
+      - RSA
+
+  # ------------------------------------------------------------
+  # mbedTLS
+  # ------------------------------------------------------------
+  - id: mbedtls
+    pkg_patterns:
+      - libmbedtls
+      - libmbedtls-dev
+    soname_patterns:
+      - libmbedtls.so
+    algorithms:
+      - TLS-1.2
+      - AES-GCM
+      - SHA-256
+
+  # ------------------------------------------------------------
+  # wolfSSL (lightweight TLS lib)
+  # ------------------------------------------------------------
+  - id: wolfssl
+    pkg_patterns:
+      - wolfssl
+      - libwolfssl
+      - libwolfssl-dev
+      - libwolfssl*t64
+    soname_patterns:
+      - libwolfssl.so
+    algorithms:
+      - TLS-1.3
+      - AES-GCM
+      - ChaCha20-Poly1305
+      - ECDSA
+      - SHA-256
+
+  # ------------------------------------------------------------
+  # Crypto++ (cryptopp)
+  # ------------------------------------------------------------
+  - id: cryptopp
+    pkg_patterns:
+      - libcrypto++
+      - libcrypto++-dev
+      - libcrypto++-utils
+    soname_patterns:
+      - libcrypto++.so
+    algorithms:
+      - RSA
+      - AES
+      - ChaCha20-Poly1305
+      - SHA-256
+      - ECDSA
+
+  # ------------------------------------------------------------
+  # SRTP crypto (VoIP/WebRTC)
+  # ------------------------------------------------------------
+  - id: libsrtp
+    pkg_patterns:
+      - libsrtp
+      - libsrtp2
+      - libsrtp2-1
+      - libsrtp2-dev
+    soname_patterns:
+      - libsrtp.so
+      - libsrtp2.so
+    algorithms:
+      - AES-128-CTR
+      - AES-256-CTR
+      - HMAC-SHA1
+
+  # ------------------------------------------------------------
+  # Argon2 (password hashing / KDF)
+  # ------------------------------------------------------------
+  - id: argon2
+    pkg_patterns:
+      - libargon2
+      - libargon2-1
+      - libargon2-dev
+    soname_patterns:
+      - libargon2.so
+    algorithms:
+      - Argon2id
+
+  # ------------------------------------------------------------
+  # Bouncy Castle (JVM crypto provider)
+  # ------------------------------------------------------------
+  - id: bouncycastle
+    pkg_patterns:
+      - libbcprov-java
+      - libbouncycastle-java
+    soname_patterns:
+      - bcprov
+    algorithms:
+      - RSA
+      - ECDSA
+      - AES
+      - ChaCha20-Poly1305
+      - SHA-256
+
+  # ------------------------------------------------------------
+  # liboqs - Open Quantum Safe (PQC library)
+  # https://openquantumsafe.org/liboqs/
+  # ------------------------------------------------------------
+  - id: liboqs
+    pkg_patterns:
+      - liboqs
+      - liboqs-dev
+    soname_patterns:
+      - liboqs.so
+    algorithms:
+      # NIST finalized KEMs (ML-KEM / Kyber)
+      - ML-KEM-512
+      - ML-KEM-768
+      - ML-KEM-1024
+      # NIST finalized signatures (ML-DSA / Dilithium)
+      - ML-DSA-44
+      - ML-DSA-65
+      - ML-DSA-87
+      # Other PQC algorithms
+      - Falcon-512
+      - Falcon-1024
+      - SPHINCS+-SHA2-128f
+      - SPHINCS+-SHA2-192f
+      - SPHINCS+-SHA2-256f
+      - BIKE-L1
+      - BIKE-L3
+      - HQC-128
+      - HQC-192
+      - Classic-McEliece-348864
+
+
+# =====================================================================
+# Embedded Crypto Providers (apps that implement crypto internally)
+# =====================================================================
+
+embedded_crypto_apps:
+
+  # OpenSSH internal crypto engine
+  - provider_id: openssh_internal
+    binary_names:
+      - ssh
+      - sshd
+      - ssh-keygen
+    package_names:
+      - openssh-server
+      - openssh-client
+    algorithms:
+      - chacha20-poly1305@openssh.com
+      - aes128-ctr
+      - aes256-ctr
+      - curve25519-sha256
+      - ssh-ed25519
+      - sntrup761x25519-sha512@openssh.com
+
+  # WireGuard
+  - provider_id: wireguard_internal
+    binary_names:
+      - wireguard-go
+    algorithms:
+      - ChaCha20
+      - Poly1305
+      - BLAKE2s
+      - Curve25519
+
+  # age (modern file encryption)
+  - provider_id: age_internal
+    binary_names:
+      - age
+    algorithms:
+      - X25519
+      - ChaCha20-Poly1305
+      - HMAC-SHA256
+
+  # NGINX TLS frontend
+  - provider_id: nginx_internal
+    binary_names:
+      - nginx
+    package_names:
+      - nginx
+      - nginx-core
+    algorithms:
+      - TLS-1.2
+      - TLS-1.3
+      - AES-GCM
+      - ChaCha20-Poly1305
+
+  # Apache HTTPD (mod_ssl)
+  - provider_id: apache_httpd_internal
+    binary_names:
+      - apache2
+    package_names:
+      - apache2
+      - apache2-bin
+    algorithms:
+      - TLS-1.2
+      - TLS-1.3
+      - AES-GCM
+      - ChaCha20-Poly1305
+
+  # OpenVPN
+  - provider_id: openvpn_internal
+    binary_names:
+      - openvpn
+    algorithms:
+      - AES-GCM
+      - SHA-256
+      - TLS-1.2
+
+  # strongSwan IKEv2 / IPsec
+  - provider_id: strongswan_internal
+    binary_names:
+      - charon
+      - strongswan
+    algorithms:
+      - IKEv2
+      - AES-GCM
+      - SHA-256
+      - DH-Group14

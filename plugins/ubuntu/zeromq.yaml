@@ -1,0 +1,39 @@
+# plugins/zeromq.yaml
+plugin:
+  plugin_schema_version: "1.0"
+  name: "ZeroMQ TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "message_broker"
+  description: "Detects ZeroMQ instances and extracts TLS configuration"
+  priority: 50
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/local/bin/zeromq"
+        - "/opt/zeromq/bin/zeromq"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "zeromq"
+
+    - type: port
+      ports: [5555]
+      protocol: "tcp"
+      check_ssl: true
+
+    - type: config_file
+      paths:
+        - "/etc/zeromq/config"
+        - "/etc/zeromq/zeromq.conf"
+        - "/opt/zeromq/conf/config"
+      required: false
+
+# Note: libzmq5 is a LIBRARY, not a service. Library detection is handled
+# by the library scanner which correctly detects libzmq.so.5 as a library.
+# Package detection removed to prevent false positive application classification.

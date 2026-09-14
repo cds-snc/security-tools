@@ -1,0 +1,205 @@
+# plugins/embedded/strongswan.yaml
+# strongSwan IPsec VPN - Industrial/Enterprise VPN Gateway
+plugin:
+  plugin_schema_version: "1.0"
+  name: "strongSwan IPsec VPN Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "vpn"
+  description: "Detects strongSwan IPsec VPN instances and extracts IKEv1/IKEv2 crypto configuration"
+  priority: 85
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/charon"
+        - "/usr/lib/ipsec/charon"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "charon"
+        - "starter"
+        - "stroke"
+
+    - type: port
+      ports: [500, 4500]
+      protocol: "udp"
+      check_ssl: false
+
+    - type: config_file
+      paths:
+        - "/etc/ipsec.conf"
+        - "/etc/ipsec.d/certs"
+        - "/etc/strongswan/ipsec.conf"
+      required: false
+
+    - type: systemd
+      service_names:
+        - "strongswan.service"
+        - "strongswan-starter.service"
+        - "ipsec.service"
+
+    - type: package
+      package_names:
+        - "strongswan"
+        - "strongswan-starter"
+        - "libstrongswan"
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "strongswan"
+      server_packages:
+        - "strongswan"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/ipsec.conf"
+      parser: "ini"
+      crypto_directives:
+        # Key Exchange Version
+        - key: "keyexchange"
+          type: "string"
+          maps_to: "vpn.key_exchange"
+          description: "IKE version (ikev1, ikev2)"
+
+        # IKE Cipher Suites (Phase 1)
+        - key: "ike"
+          type: "string_list"
+          separator: ","
+          maps_to: "cipher_suites"
+          description: "IKE cipher suites (encryption-integrity-dhgroup)"
+
+        # ESP Cipher Suites (Phase 2)
+        - key: "esp"
+          type: "string_list"
+          separator: ","
+          maps_to: "cipher_suites"
+          description: "ESP cipher suites (encryption-integrity-dhgroup)"
+
+        # Authentication Method
+        - key: "auth"
+          type: "string"
+          maps_to: "vpn.auth_method"
+          description: "Authentication: preshared, pubkey, cert, eap"
+
+        # Authentication Hashes (Phase 1 & 2)
+        - key: "authby"
+          type: "string"
+          maps_to: "vpn.authby"
+          description: "Authentication by: secret, rsasig, ecdsasig, pubkey"
+
+        # Certificate Paths
+        - key: "leftcert"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.local_cert"
+
+        - key: "rightcert"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.remote_cert"
+
+        - key: "leftca"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.local_ca"
+
+        - key: "rightca"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.remote_ca"
+
+        # Identity
+        - key: "leftid"
+          type: "string"
+          maps_to: "vpn.local_id"
+
+        - key: "rightid"
+          type: "string"
+          maps_to: "vpn.remote_id"
+
+        # Pre-Shared Key Reference
+        - key: "psk"
+          type: "string"
+          maps_to: "vpn.psk_id"
+          description: "PSK identifier (not actual key)"
+
+        # Diffie-Hellman Groups
+        - key: "dh_group"
+          type: "string"
+          maps_to: "vpn.dh_group"
+          description: "DH group: modp768-8192, ecp256-521"
+
+        # IKEv2 Specific
+        - key: "keyingtries"
+          type: "integer"
+          maps_to: "vpn.keying_tries"
+
+        - key: "rekeytime"
+          type: "string"
+          maps_to: "vpn.rekey_time"
+
+        - key: "margintime"
+          type: "string"
+          maps_to: "vpn.margin_time"
+
+        # EAP Configuration
+        - key: "eap_identity"
+          type: "string"
+          maps_to: "vpn.eap_identity"
+
+        - key: "leftauth"
+          type: "string"
+          maps_to: "vpn.local_auth"
+          description: "Local auth: psk, pubkey, cert, eap-tls, eap-mschapv2"
+
+        - key: "rightauth"
+          type: "string"
+          maps_to: "vpn.remote_auth"
+          description: "Remote auth: psk, pubkey, cert, eap-tls, eap-radius"
+
+        # Weak Algorithm Detection
+        - key: "ike"
+          type: "string"
+          maps_to: "vpn.ike_suite_full"
+          description: "Full IKE suite for weakness analysis"
+
+        - key: "esp"
+          type: "string"
+          maps_to: "vpn.esp_suite_full"
+          description: "Full ESP suite for weakness analysis"
+
+    # Certificate Directory Scan
+    - path: "/etc/ipsec.d/certs"
+      parser: "custom"
+      crypto_directives:
+        - key: "cert_files"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.cert_dir"
+          description: "X.509 certificates directory"
+
+    - path: "/etc/ipsec.d/private"
+      parser: "custom"
+      crypto_directives:
+        - key: "key_files"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.key_dir"
+          description: "Private keys directory"
+
+    - path: "/etc/ipsec.d/cacerts"
+      parser: "custom"
+      crypto_directives:
+        - key: "ca_files"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.ca_dir"
+          description: "CA certificates directory"

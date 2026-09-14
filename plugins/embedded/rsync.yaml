@@ -1,0 +1,23 @@
+plugin:
+  plugin_schema_version: "1.0"
+  name: "rsync Crypto Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "file_sync"
+  description: "rsync file synchronization - internal MD4/MD5/rolling checksums for delta transfer (md4_init)"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+
+detection:
+  methods:
+    - type: binary
+      paths:
+        - "/usr/bin/rsync"        # Standard location
+        - "/bin/rsync"            # Alternative location
+      required: true
+      confidence: 0.95
+
+    - type: package
+      package_names:
+        - "rsync"
+      confidence: 0.90

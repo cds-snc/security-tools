@@ -1,0 +1,50 @@
+# plugins/embedded/openplc.yaml
+# OpenPLC - Open-source Programmable Logic Controller Runtime
+plugin:
+  plugin_schema_version: "1.0"
+  name: "OpenPLC Runtime Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "industrial"
+  description: "Detects OpenPLC PLC runtime and extracts web interface HTTPS configuration"
+  priority: 35
+
+detection:
+  methods:
+    # ONLY binary detection - prevents false positives when OpenPLC is not installed
+    - type: binary
+      paths:
+        - "/opt/openplc/bin/openplc"
+        - "/usr/local/bin/openplc"
+        - "/usr/bin/openplc"
+      required: true
+      confidence: 0.95
+
+
+config_extraction:
+  files:
+    # Web Server Configuration (Python Flask)
+    - path: "${DETECTED_CONFIG_DIR}/webserver/config.py"
+      parser: "custom"
+      crypto_directives:
+        # HTTPS Configuration
+        - key: "ssl_context"
+          type: "string"
+          maps_to: "service.ssl_context"
+          description: "SSL context configuration"
+
+        - key: "certfile"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.web_cert"
+
+        - key: "keyfile"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.web_key"
+
+        # Secret Key
+        - key: "SECRET_KEY"
+          type: "string"
+          maps_to: "service.flask_secret_key_id"
+          description: "Flask secret key identifier"

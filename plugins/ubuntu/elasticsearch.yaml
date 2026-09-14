@@ -1,0 +1,93 @@
+# plugins/elasticsearch.yaml
+plugin:
+  plugin_schema_version: "1.0"
+  name: "Elasticsearch TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "database"
+  description: "Detects Elasticsearch instances and extracts TLS configuration"
+  priority: 50
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/share/elasticsearch/bin/elasticsearch"
+        - "/opt/elasticsearch/bin/elasticsearch"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "elasticsearch"
+        - "java"
+      command_line_patterns:
+        - "elasticsearch"
+
+    - type: port
+      ports: [9200, 9300]
+      protocol: "tcp"
+      check_ssl: true
+      description: "9200=HTTP, 9300=transport"
+
+    - type: config_file
+      paths:
+        - "/etc/elasticsearch/elasticsearch.yml"
+        - "/opt/elasticsearch/config/elasticsearch.yml"
+        - "/usr/share/elasticsearch/config/elasticsearch.yml"
+      required: false
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "elasticsearch"
+      server_packages:
+        - "elasticsearch"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/elasticsearch.yml"
+      parser: "yaml"
+      crypto_directives:
+        # Transport SSL
+        - key: "xpack.security.transport.ssl.enabled"
+          type: "boolean"
+          maps_to: "transport.tls_enabled"
+
+        - key: "xpack.security.transport.ssl.certificate"
+          type: "path"
+          resolve: true
+          maps_to: "transport.certificate.path"
+
+        - key: "xpack.security.transport.ssl.key"
+          type: "path"
+          resolve: true
+          maps_to: "transport.private_key.path"
+
+        - key: "xpack.security.transport.ssl.certificate_authorities"
+          type: "path"
+          resolve: true
+          maps_to: "transport.ca_cert.path"
+
+        # HTTP SSL
+        - key: "xpack.security.http.ssl.enabled"
+          type: "boolean"
+          maps_to: "http.tls_enabled"
+
+        - key: "xpack.security.http.ssl.certificate"
+          type: "path"
+          resolve: true
+          maps_to: "http.certificate.path"
+
+        - key: "xpack.security.http.ssl.key"
+          type: "path"
+          resolve: true
+          maps_to: "http.private_key.path"
+
+        - key: "xpack.security.http.ssl.cipher_suites"
+          type: "string_list"
+          separator: ","
+          maps_to: "cipher_suites"

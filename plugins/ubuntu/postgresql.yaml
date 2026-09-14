@@ -1,0 +1,133 @@
+# PostgreSQL SSL/TLS Scanner Plugin
+# CBOM Generator v1.3 - Plugin Schema v1.0
+
+plugin:
+  plugin_schema_version: "1.0"
+  name: "PostgreSQL SSL/TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "database"
+  description: "Detects PostgreSQL instances and extracts SSL/TLS configuration"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phase 1: False Positive Elimination)
+    # Supports glob patterns for version-specific paths
+    - type: binary
+      paths:
+        - "/usr/lib/postgresql/*/bin/postgres"
+        - "/usr/bin/postgres"
+        - "/usr/local/pgsql/bin/postgres"
+      required: true
+      confidence: 0.95
+
+    # Method 2: Detect by process name
+    - type: process
+      names:
+        - "postgres"
+        - "postmaster"
+      command_patterns:
+        - ".*postgresql\\.conf.*"
+        - ".*-D.*data.*"
+
+    # Method 3: Detect by listening port
+    - type: port
+      ports: [5432, 5433, 55432]
+      protocol: "tcp"
+      check_ssl: true
+      validate_process: true
+      expected_processes:
+        - "postgres"
+
+    # Method 4: Detect by config file presence
+    - type: config_file
+      paths:
+        - "/etc/postgresql/*/main/postgresql.conf"
+        - "/var/lib/postgresql/*/data/postgresql.conf"
+        - "/usr/local/pgsql/data/postgresql.conf"
+      required: false
+
+    # Method 5: Detect by package (Phase 2: Server/Exclude Validation)
+    - type: package
+      package_names:
+        - "postgresql"
+        - "postgresql-14"
+        - "postgresql-15"
+        - "postgresql-16"
+        - "postgresql-common"
+      server_packages:
+        - "postgresql"
+        - "postgresql-14"
+        - "postgresql-15"
+        - "postgresql-16"
+      exclude_packages:
+        - "postgresql-client"
+        - "postgresql-client-14"
+        - "postgresql-client-15"
+        - "postgresql-common"
+      confidence: 0.90
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/postgresql.conf"
+      parser: "ini"
+      encoding: "utf-8"
+      crypto_directives:
+        # SSL/TLS enablement
+        - key: "ssl"
+          type: "boolean"
+          default: "false"
+          maps_to: "service.tls_enabled"
+          optional: false
+
+        # Certificate file path
+        - key: "ssl_cert_file"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.path"
+          optional: true
+
+        # Private key file path
+        - key: "ssl_key_file"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.path"
+          optional: true
+
+        # CA certificate file
+        - key: "ssl_ca_file"
+          type: "path"
+          resolve: true
+          maps_to: "ca_certificate.path"
+          optional: true
+
+        # Minimum TLS protocol version
+        - key: "ssl_min_protocol_version"
+          type: "string"
+          enum: ["TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3"]
+          default: "TLSv1.2"
+          maps_to: "protocol.min_version"
+          optional: true
+
+        # Maximum TLS protocol version
+        - key: "ssl_max_protocol_version"
+          type: "string"
+          enum: ["TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3"]
+          maps_to: "protocol.max_version"
+          optional: true
+
+        # Cipher suites
+        - key: "ssl_ciphers"
+          type: "string_list"
+          separator: ":"
+          maps_to: "cipher_suites"
+          optional: true
+
+        # Prefer server ciphers
+        - key: "ssl_prefer_server_ciphers"
+          type: "boolean"
+          default: "true"
+          maps_to: "protocol.server_cipher_preference"
+          optional: true
