@@ -1,0 +1,23 @@
+plugin:
+  plugin_schema_version: "1.0"
+  name: "git Crypto Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "version_control"
+  description: "Git version control - internal SHA-1/SHA-256 for object hashing (git_sha256_update)"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+
+detection:
+  methods:
+    - type: binary
+      paths:
+        - "/usr/bin/git"          # Standard location
+        - "/bin/git"              # Alternative location
+      required: true
+      confidence: 0.95
+
+    - type: package
+      package_names:
+        - "git"
+      confidence: 0.90

@@ -1,0 +1,61 @@
+# plugins/docker.yaml
+plugin:
+  plugin_schema_version: "1.0"
+  name: "Docker TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "container"
+  description: "Detects Docker daemon and extracts TLS configuration"
+  priority: 50
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/bin/dockerd"
+        - "/usr/local/bin/dockerd"
+      required: true
+      confidence: 0.95
+
+    # Method 2: Detect by process
+    - type: process
+      names:
+        - "dockerd"
+        - "docker"
+
+    # Method 3: Detect by port
+      ports: [2375, 2376, 2377]
+      protocol: "tcp"
+      check_ssl: true
+      validate_process: true
+      expected_processes:
+        - "dockerd"
+      description: "2375=HTTP, 2376=HTTPS, 2377=Swarm"
+
+    - type: config_file
+      paths:
+        - "/etc/docker/daemon.json"
+        - "/var/lib/docker/daemon.json"
+      required: false
+
+    # Method 5: Detect by systemd
+    - type: systemd
+      service_names:
+        - "docker.service"
+
+    # Method 6: Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "docker-ce"
+        - "docker.io"
+        - "docker-engine"
+      server_packages:
+        - "docker-ce"
+        - "docker.io"
+        - "docker-engine"
+      exclude_packages:
+        - "docker-ce-cli"
+      confidence: 0.90
+
+# config_extraction removed - daemon.json typically doesn't exist unless TLS configured

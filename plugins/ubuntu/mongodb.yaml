@@ -1,0 +1,126 @@
+# MongoDB TLS Scanner Plugin
+# CBOM Generator v1.3 - Plugin Schema v1.0
+
+plugin:
+  plugin_schema_version: "1.0"
+  name: "MongoDB TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "database"
+  description: "Detects MongoDB instances and extracts TLS configuration"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/bin/mongod"
+        - "/usr/local/bin/mongod"
+        - "/opt/mongodb/bin/mongod"
+      required: true
+      confidence: 0.95
+
+    # Method 2: Detect by process name
+    - type: process
+      names:
+        - "mongod"
+        - "mongo"
+      command_patterns:
+        - ".*mongod\\.conf.*"
+        - ".*--config.*"
+
+    # Method 3: Detect by listening port
+    - type: port
+      ports: [27017, 27018, 27019]
+      protocol: "tcp"
+      check_ssl: true
+      validate_process: true
+      expected_processes:
+        - "mongod"
+
+    # Method 4: Detect by config file presence
+    - type: config_file
+      paths:
+        - "/etc/mongod.conf"
+        - "/etc/mongodb.conf"
+        - "/usr/local/etc/mongod.conf"
+      required: false
+
+    # Method 5: Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "mongodb-org-server"
+        - "mongodb-server"
+        - "mongodb-org"
+      server_packages:
+        - "mongodb-org-server"
+        - "mongodb-server"
+      exclude_packages:
+        - "mongodb-org-tools"
+        - "mongodb-clients"
+      confidence: 0.90
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/mongod.conf"
+      parser: "yaml"
+      encoding: "utf-8"
+      crypto_directives:
+        # TLS mode
+        - key: "net.ssl.mode"
+          type: "string"
+          enum: ["disabled", "allowSSL", "preferSSL", "requireSSL"]
+          default: "disabled"
+          maps_to: "service.tls_mode"
+          optional: false
+
+        # PEM key file (combined cert + key)
+        - key: "net.ssl.PEMKeyFile"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.path"
+          optional: true
+
+        # CA certificate file
+        - key: "net.ssl.CAFile"
+          type: "path"
+          resolve: true
+          maps_to: "ca_certificate.path"
+          optional: true
+
+        # Certificate revocation list
+        - key: "net.ssl.CRLFile"
+          type: "path"
+          resolve: true
+          maps_to: "ca_certificate.crl_path"
+          optional: true
+
+        # Allow invalid certificates
+        - key: "net.ssl.allowInvalidCertificates"
+          type: "boolean"
+          default: "false"
+          maps_to: "service.allow_invalid_certs"
+          optional: true
+
+        # Allow invalid hostnames
+        - key: "net.ssl.allowInvalidHostnames"
+          type: "boolean"
+          default: "false"
+          maps_to: "service.allow_invalid_hostnames"
+          optional: true
+
+        # Disable TLS versions
+        - key: "net.ssl.disabledProtocols"
+          type: "string_list"
+          separator: ","
+          maps_to: "protocol.disabled_versions"
+          optional: true
+
+        # FIPS mode
+        - key: "net.ssl.FIPSMode"
+          type: "boolean"
+          default: "false"
+          maps_to: "service.fips_mode"
+          optional: true

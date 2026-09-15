@@ -1,0 +1,129 @@
+# Nginx SSL/TLS Scanner Plugin
+# CBOM Generator v1.3 - Plugin Schema v1.0
+
+plugin:
+  plugin_schema_version: "1.0"
+  name: "Nginx SSL/TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "webserver"
+  description: "Detects Nginx instances and extracts SSL/TLS configuration"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phase 1: False Positive Elimination)
+    - type: binary
+      paths:
+        - "/usr/sbin/nginx"
+        - "/usr/local/nginx/sbin/nginx"
+        - "/opt/nginx/sbin/nginx"
+      required: true
+      confidence: 0.95
+
+    # Method 2: Detect by process name
+    - type: process
+      names:
+        - "nginx"
+      command_patterns:
+        - ".*nginx\\.conf.*"
+        - ".*master process.*"
+
+    # Method 3: Detect by listening port
+    - type: port
+      ports: [443, 8443]
+      protocol: "tcp"
+      check_ssl: true
+      validate_process: true
+      expected_processes:
+        - "nginx"
+
+    # Method 4: Detect by config file presence
+    - type: config_file
+      paths:
+        - "/etc/nginx/nginx.conf"
+        - "/usr/local/nginx/conf/nginx.conf"
+        - "/opt/nginx/conf/nginx.conf"
+      required: false
+
+    # Method 5: Detect by systemd
+    - type: systemd
+      service_names:
+        - "nginx.service"
+
+    # Method 6: Detect by package (Phase 2: Server/Exclude Validation)
+    - type: package
+      package_names:
+        - "nginx"
+        - "nginx-core"
+        - "nginx-full"
+        - "nginx-common"
+      server_packages:
+        - "nginx"
+        - "nginx-core"
+        - "nginx-full"
+      exclude_packages:
+        - "nginx-common"
+        - "nginx-doc"
+      confidence: 0.90
+
+config_extraction:
+  files:
+    # Production nginx SSL/TLS config path
+    - path: "/etc/nginx/nginx.conf"
+      parser: "nginx"
+      encoding: "utf-8"
+      crypto_directives:
+        # SSL certificate
+        - key: "ssl_certificate"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.path"
+          optional: true
+
+        # SSL certificate key
+        - key: "ssl_certificate_key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.path"
+          optional: true
+
+        # Trusted certificate (CA)
+        - key: "ssl_trusted_certificate"
+          type: "path"
+          resolve: true
+          maps_to: "ca_certificate.path"
+          optional: true
+
+        # SSL protocols
+        - key: "ssl_protocols"
+          type: "string"
+          maps_to: "protocol.min_version"
+          optional: true
+
+        # SSL ciphers
+        - key: "ssl_ciphers"
+          type: "string"
+          maps_to: "cipher_suites"
+          optional: true
+
+        # Prefer server ciphers
+        - key: "ssl_prefer_server_ciphers"
+          type: "boolean"
+          default: "off"
+          maps_to: "protocol.server_cipher_preference"
+          optional: true
+
+        # OCSP stapling
+        - key: "ssl_stapling"
+          type: "boolean"
+          default: "off"
+          maps_to: "service.ocsp_stapling"
+          optional: true
+
+        # Session cache
+        - key: "ssl_session_cache"
+          type: "string"
+          maps_to: "service.session_cache"
+          optional: true

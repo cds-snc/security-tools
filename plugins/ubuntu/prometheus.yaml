@@ -1,0 +1,77 @@
+# plugins/prometheus.yaml
+plugin:
+  plugin_schema_version: "1.0"
+  name: "Prometheus TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "monitoring"
+  description: "Detects Prometheus instances and extracts TLS configuration"
+  priority: 50
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/bin/prometheus"
+        - "/usr/local/bin/prometheus"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "prometheus"
+
+    - type: port
+      ports: [9090]
+      protocol: "tcp"
+      check_ssl: true
+
+    - type: config_file
+      paths:
+        - "/etc/prometheus/prometheus.yml"
+        - "/opt/prometheus/prometheus.yml"
+      required: false
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "prometheus"
+      server_packages:
+        - "prometheus"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/prometheus.yml"
+      parser: "yaml"
+      crypto_directives:
+        # Web TLS config
+        - key: "web.tls.cert_file"
+          type: "path"
+          resolve: true
+          maps_to: "web.certificate.path"
+
+        - key: "web.tls.key_file"
+          type: "path"
+          resolve: true
+          maps_to: "web.private_key.path"
+
+        - key: "web.tls.client_ca_file"
+          type: "path"
+          resolve: true
+          maps_to: "web.client_ca.path"
+
+        - key: "web.tls.min_version"
+          type: "string"
+          maps_to: "web.protocol.min_version"
+
+        - key: "web.tls.max_version"
+          type: "string"
+          maps_to: "web.protocol.max_version"
+
+        - key: "web.tls.cipher_suites"
+          type: "string_list"
+          separator: ","
+          maps_to: "cipher_suites"

@@ -1,0 +1,147 @@
+# plugins/embedded/systemd.yaml
+# systemd - Init System with Socket Activation and Service Security
+plugin:
+  plugin_schema_version: "1.0"
+  name: "systemd Init System Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "system"
+  description: "Detects systemd services with TLS/crypto configuration and socket activation"
+  priority: 70
+
+detection:
+  methods:
+    # ONLY binary detection - prevents false positives in cross-arch scanning
+    # systemd service detection uses host systemctl which is wrong for cross-arch
+    - type: binary
+      paths:
+        - "/lib/systemd/systemd"
+        - "/usr/lib/systemd/systemd"
+        - "/lib/systemd/systemd-journald"
+        - "/usr/lib/systemd/systemd-journald"
+        - "/lib/systemd/systemd-udevd"
+        - "/usr/lib/systemd/systemd-udevd"
+      required: true
+      confidence: 0.95
+
+
+config_extraction:
+  files:
+    # System Configuration
+    - path: "/etc/systemd/system.conf"
+      parser: "ini"
+      crypto_directives:
+        # Default Timeout
+        - key: "DefaultTimeoutStartSec"
+          type: "string"
+          maps_to: "system.timeout_start"
+
+        # Default Limit
+        - key: "DefaultLimitNOFILE"
+          type: "integer"
+          maps_to: "system.limit_nofile"
+
+    # Service Units with TLS/Crypto
+    - path: "/etc/systemd/system/*.service"
+      parser: "ini"
+      crypto_directives:
+        # ExecStart with Cert Paths
+        - key: "ExecStart"
+          type: "string"
+          maps_to: "service.exec_start"
+          description: "Look for --cert, --key, --ca in command line"
+
+        # ExecStartPre (cert generation/renewal)
+        - key: "ExecStartPre"
+          type: "string"
+          maps_to: "service.exec_start_pre"
+          description: "Certificate renewal hooks"
+
+        # Environment Variables
+        - key: "Environment"
+          type: "string"
+          maps_to: "service.environment"
+          description: "SSL_CERT_FILE, SSL_CERT_DIR variables"
+
+        # User/Group (crypto key access)
+        - key: "User"
+          type: "string"
+          maps_to: "service.user"
+
+        - key: "Group"
+          type: "string"
+          maps_to: "service.group"
+
+        # Security Hardening
+        - key: "PrivateNetwork"
+          type: "boolean"
+          maps_to: "security.private_network"
+
+        - key: "PrivateDevices"
+          type: "boolean"
+          maps_to: "security.private_devices"
+
+        - key: "ProtectSystem"
+          type: "string"
+          maps_to: "security.protect_system"
+
+        - key: "ProtectHome"
+          type: "string"
+          maps_to: "security.protect_home"
+
+        - key: "NoNewPrivileges"
+          type: "boolean"
+          maps_to: "security.no_new_privileges"
+
+        # Capabilities
+        - key: "CapabilityBoundingSet"
+          type: "string"
+          maps_to: "security.cap_bounding_set"
+
+        - key: "AmbientCapabilities"
+          type: "string"
+          maps_to: "security.ambient_capabilities"
+
+    # Socket Units (TLS socket activation)
+    - path: "/etc/systemd/system/*.socket"
+      parser: "ini"
+      crypto_directives:
+        # Listen Streams
+        - key: "ListenStream"
+          type: "string"
+          maps_to: "service.listen_stream"
+          description: "Socket address (may be HTTPS)"
+
+        - key: "ListenDatagram"
+          type: "string"
+          maps_to: "service.listen_datagram"
+
+        # Socket Service
+        - key: "Service"
+          type: "string"
+          maps_to: "service.socket_service"
+
+        # Accept
+        - key: "Accept"
+          type: "boolean"
+          maps_to: "service.socket_accept"
+
+    # Timer Units (cert renewal)
+    - path: "/etc/systemd/system/*.timer"
+      parser: "ini"
+      crypto_directives:
+        # OnCalendar (renewal schedule)
+        - key: "OnCalendar"
+          type: "string"
+          maps_to: "service.timer_calendar"
+          description: "Certificate renewal schedule"
+
+        # OnUnitActiveSec
+        - key: "OnUnitActiveSec"
+          type: "string"
+          maps_to: "service.timer_unit_active"
+
+        # Unit to Trigger
+        - key: "Unit"
+          type: "string"
+          maps_to: "service.timer_unit"

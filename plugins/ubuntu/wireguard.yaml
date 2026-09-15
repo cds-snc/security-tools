@@ -1,0 +1,75 @@
+# WireGuard VPN Scanner Plugin
+# CBOM Generator v1.3 - Plugin Schema v1.0
+
+plugin:
+  plugin_schema_version: "1.0"
+  name: "WireGuard VPN Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "vpn"
+  description: "Detects WireGuard VPN instances and extracts cryptographic configuration"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/bin/wg"
+        - "/usr/local/bin/wg"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "wg"
+        - "wg-quick"
+      command_patterns:
+        - ".*wireguard.*"
+
+    - type: config_file
+      paths:
+        - "/etc/wireguard/*.conf"
+        - "/etc/wireguard/wg0.conf"
+      required: false
+
+    - type: systemd
+      service_names:
+        - "wg-quick@*.service"
+        - "wireguard.service"
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "wireguard-tools"
+      server_packages:
+        - "wireguard-tools"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/wg0.conf"
+      parser: "ini"
+      encoding: "utf-8"
+      crypto_directives:
+        - key: "PrivateKey"
+          type: "string"
+          maps_to: "private_key.value"
+          optional: true
+
+        - key: "PublicKey"
+          type: "string"
+          maps_to: "public_key.value"
+          optional: true
+
+        - key: "PresharedKey"
+          type: "string"
+          maps_to: "service.preshared_key"
+          optional: true
+
+        - key: "Endpoint"
+          type: "string"
+          maps_to: "service.endpoint"
+          optional: true

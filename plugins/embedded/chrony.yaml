@@ -1,0 +1,137 @@
+# plugins/embedded/chrony.yaml
+# chrony - NTP Client/Server with NTS (Network Time Security)
+plugin:
+  plugin_schema_version: "1.0"
+  name: "chrony NTP Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "time_sync"
+  description: "Detects chrony NTP instances and extracts NTP authentication and NTS configuration"
+  priority: 60
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/chronyd"
+        - "/usr/local/sbin/chronyd"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "chronyd"
+
+    - type: port
+      ports: [123, 443]
+      protocol: "udp"
+      check_ssl: false
+
+    - type: config_file
+      paths:
+        - "/etc/chrony/chrony.conf"
+        - "/etc/chrony.conf"
+        - "/etc/chrony/chrony.keys"
+      required: false
+
+    - type: systemd
+      service_names:
+        - "chronyd.service"
+        - "chrony.service"
+
+    - type: package
+      package_names:
+        - "chrony"
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "chrony"
+      server_packages:
+        - "chrony"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    # Main Configuration
+    - path: "${DETECTED_CONFIG_DIR}/chrony.conf"
+      parser: "custom"
+      crypto_directives:
+        # NTP Servers with Keys
+        - key: "server"
+          type: "string"
+          maps_to: "ntp.server"
+          description: "server [addr] key [ID]"
+
+        - key: "pool"
+          type: "string"
+          maps_to: "ntp.pool"
+
+        # NTS (Network Time Security - RFC 8915)
+        - key: "server"
+          type: "string"
+          maps_to: "ntp.nts_server"
+          description: "server [addr] nts"
+
+        - key: "ntsserverkey"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.nts_server_key"
+
+        - key: "ntsservercert"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.nts_server_cert"
+
+        - key: "ntstrustedcerts"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.nts_trusted_certs"
+
+        - key: "ntsdumpdir"
+          type: "path"
+          resolve: true
+          maps_to: "ntp.nts_dump_dir"
+
+        # Legacy NTP Authentication
+        - key: "keyfile"
+          type: "path"
+          resolve: true
+          maps_to: "key.ntp_keyfile"
+          description: "Symmetric key file"
+
+        - key: "commandkey"
+          type: "integer"
+          maps_to: "ntp.command_key_id"
+
+        # Client Access Control with Keys
+        - key: "allow"
+          type: "string"
+          maps_to: "ntp.allow"
+          description: "allow [subnet] [key N]"
+
+        - key: "deny"
+          type: "string"
+          maps_to: "ntp.deny"
+
+    # Key File (Symmetric Keys)
+    - path: "/etc/chrony/chrony.keys"
+      parser: "custom"
+      crypto_directives:
+        # Key Format: <ID> <HASH> <KEY>
+        # Example: 1 MD5 HEX:1234567890ABCDEF
+        - key: "key_id"
+          type: "integer"
+          maps_to: "key.ntp_key_id"
+
+        - key: "key_hash"
+          type: "string"
+          maps_to: "key.ntp_hash_algorithm"
+          description: "MD5, SHA1, SHA256, SHA384, SHA512"
+
+        - key: "key_data"
+          type: "string"
+          maps_to: "key.ntp_key_data_id"
+          description: "Key identifier (not actual key)"

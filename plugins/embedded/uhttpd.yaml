@@ -1,0 +1,58 @@
+# plugins/embedded/uhttpd.yaml
+# uhttpd - OpenWrt Micro HTTP Server
+plugin:
+  plugin_schema_version: "1.0"
+  name: "uhttpd Micro HTTP Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "web_server"
+  description: "Detects uhttpd OpenWrt web server and extracts TLS configuration (UCI format)"
+  priority: 45
+
+detection:
+  methods:
+    # ONLY binary detection - prevents false positives when uhttpd is not installed
+    # Other methods (process, port, package) disabled to require binary existence
+    - type: binary
+      paths:
+        - "/usr/sbin/uhttpd"
+        - "/usr/local/sbin/uhttpd"
+        - "/sbin/uhttpd"
+        - "/usr/bin/uhttpd"
+      required: true
+      confidence: 0.95
+
+
+config_extraction:
+  files:
+    # UCI Configuration (OpenWrt)
+    - path: "/etc/config/uhttpd"
+      parser: "custom"
+      crypto_directives:
+        # TLS Certificate
+        - key: "cert"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.server_cert"
+          description: "UCI option cert"
+
+        # TLS Key
+        - key: "key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.server_key"
+          description: "UCI option key"
+
+        # Listen Ports
+        - key: "listen_http"
+          type: "string_list"
+          maps_to: "service.http_ports"
+
+        - key: "listen_https"
+          type: "string_list"
+          maps_to: "service.https_ports"
+
+        # Cipher Suite (if specified)
+        - key: "tls_ciphers"
+          type: "string"
+          maps_to: "cipher_suites"

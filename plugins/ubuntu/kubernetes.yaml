@@ -1,0 +1,87 @@
+# plugins/kubernetes.yaml
+plugin:
+  plugin_schema_version: "1.0"
+  name: "Kubernetes API Server TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "orchestration"
+  description: "Detects Kubernetes API server and extracts TLS configuration"
+  priority: 50
+
+detection:
+  methods:
+    - type: binary
+      paths:
+        - "/usr/local/bin/kube-apiserver"
+        - "/usr/bin/kube-apiserver"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "kube-apiserver"
+
+    - type: port
+      ports: [6443, 8080]
+      protocol: "tcp"
+      check_ssl: true
+      validate_process: true
+      expected_processes:
+        - "kube-apiserver"
+      description: "6443=HTTPS API, 8080=HTTP (insecure)"
+
+    - type: config_file
+      paths:
+        - "/etc/kubernetes/manifests/kube-apiserver.yaml"
+      required: false
+
+    - type: package
+      package_names:
+        - "kubernetes-master"
+        - "kube-apiserver"
+      server_packages:
+        - "kubernetes-master"
+        - "kube-apiserver"
+      confidence: 0.90
+
+config_extraction:
+  process_args:
+    crypto_directives:
+      - flag: "--tls-cert-file"
+        type: "path"
+        resolve: true
+        maps_to: "api_server.certificate.path"
+
+      - flag: "--tls-private-key-file"
+        type: "path"
+        resolve: true
+        maps_to: "api_server.private_key.path"
+
+      - flag: "--client-ca-file"
+        type: "path"
+        resolve: true
+        maps_to: "api_server.client_ca.path"
+
+      - flag: "--tls-cipher-suites"
+        type: "string_list"
+        separator: ","
+        maps_to: "cipher_suites"
+
+      - flag: "--tls-min-version"
+        type: "string"
+        maps_to: "api_server.protocol.min_version"
+
+      - flag: "--etcd-cafile"
+        type: "path"
+        resolve: true
+        maps_to: "etcd.ca_cert.path"
+
+      - flag: "--etcd-certfile"
+        type: "path"
+        resolve: true
+        maps_to: "etcd.certificate.path"
+
+      - flag: "--etcd-keyfile"
+        type: "path"
+        resolve: true
+        maps_to: "etcd.private_key.path"

@@ -1,0 +1,71 @@
+# plugins/embedded/avahi.yaml
+# avahi - mDNS/DNS-SD Service Discovery
+plugin:
+  plugin_schema_version: "1.0"
+  name: "avahi mDNS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "discovery"
+  description: "Detects avahi mDNS daemon (limited crypto - primarily for service enumeration)"
+  priority: 35
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/avahi-daemon"
+        - "/usr/local/sbin/avahi-daemon"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "avahi-daemon"
+
+    - type: port
+      ports: [5353]
+      protocol: "udp"
+      check_ssl: false
+
+    - type: config_file
+      paths:
+        - "/etc/avahi/avahi-daemon.conf"
+      required: false
+
+    - type: systemd
+      service_names:
+        - "avahi-daemon.service"
+
+    - type: package
+      package_names:
+        - "avahi-daemon"
+        - "avahi-utils"
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "avahi-daemon"
+      server_packages:
+        - "avahi-daemon"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    # Main Configuration
+    - path: "/etc/avahi/avahi-daemon.conf"
+      parser: "ini"
+      crypto_directives:
+        # Enable/Disable
+        - key: "enable-dbus"
+          type: "boolean"
+          maps_to: "service.dbus_enabled"
+
+        # Domain
+        - key: "domain-name"
+          type: "string"
+          maps_to: "service.domain_name"
+
+        # Note: avahi does not have native TLS support
+        # Included for service discovery purposes

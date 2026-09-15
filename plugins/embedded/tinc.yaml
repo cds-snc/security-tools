@@ -1,0 +1,131 @@
+# plugins/embedded/tinc.yaml
+# tinc - Mesh VPN with RSA Encryption
+plugin:
+  plugin_schema_version: "1.0"
+  name: "tinc Mesh VPN Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "vpn"
+  description: "Detects tinc mesh VPN instances and extracts RSA key and cipher configuration"
+  priority: 55
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/tincd"
+        - "/usr/local/sbin/tincd"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "tincd"
+
+    - type: port
+      ports: [655]
+      protocol: "tcp"
+      check_ssl: false
+
+    - type: config_file
+      paths:
+        - "/etc/tinc/*/tinc.conf"
+        - "/etc/tinc/*/hosts"
+      required: false
+
+    - type: systemd
+      service_names:
+        - "tinc.service"
+        - "tinc@*.service"
+
+    - type: package
+      package_names:
+        - "tinc"
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "tinc"
+      server_packages:
+        - "tinc"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    # Main Configuration
+    - path: "${DETECTED_CONFIG_DIR}/tinc.conf"
+      parser: "custom"
+      crypto_directives:
+        # Network Name
+        - key: "Name"
+          type: "string"
+          maps_to: "vpn.network_name"
+
+        # Encryption Cipher
+        - key: "Cipher"
+          type: "string"
+          maps_to: "cipher_suites"
+          description: "none, blowfish, aes-128-cbc, aes-256-cbc"
+
+        # Digest Algorithm
+        - key: "Digest"
+          type: "string"
+          maps_to: "vpn.digest"
+          description: "none, sha1, sha256, sha384, sha512"
+
+        # MAC Length
+        - key: "MACLength"
+          type: "integer"
+          maps_to: "vpn.mac_length"
+          description: "0-16 bytes"
+
+        # Compression
+        - key: "Compression"
+          type: "integer"
+          maps_to: "vpn.compression_level"
+          description: "0-11 (0=off, 11=max)"
+
+        # Private Key File
+        - key: "PrivateKeyFile"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.rsa_key"
+
+        # Mode
+        - key: "Mode"
+          type: "string"
+          maps_to: "vpn.mode"
+          description: "router, switch, hub"
+
+        # ConnectTo (Peer)
+        - key: "ConnectTo"
+          type: "string"
+          maps_to: "vpn.connect_to"
+
+    # Host Configuration Files (Contains Public Keys)
+    - path: "${DETECTED_CONFIG_DIR}/hosts"
+      parser: "custom"
+      crypto_directives:
+        # RSA Public Keys
+        - key: "rsa_public_keys"
+          type: "path"
+          resolve: true
+          maps_to: "key.host_public_keys"
+          description: "Host files with embedded RSA public keys"
+
+        # Subnet
+        - key: "Subnet"
+          type: "string"
+          maps_to: "vpn.host_subnet"
+
+        # Address
+        - key: "Address"
+          type: "string"
+          maps_to: "vpn.host_address"
+
+        # Port
+        - key: "Port"
+          type: "integer"
+          maps_to: "vpn.host_port"

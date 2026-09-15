@@ -1,0 +1,128 @@
+# plugins/embedded/NetworkManager.yaml
+# NetworkManager - Network Management Daemon
+plugin:
+  plugin_schema_version: "1.0"
+  name: "NetworkManager Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "network"
+  description: "Detects NetworkManager and extracts WiFi/VPN crypto configuration"
+  priority: 55
+
+detection:
+  methods:
+    # ONLY binary detection - prevents false positives in cross-arch scanning
+    # systemd/package detection uses host system info which is wrong for cross-arch
+    - type: binary
+      paths:
+        - "/usr/sbin/NetworkManager"
+        - "/usr/local/sbin/NetworkManager"
+        - "/sbin/NetworkManager"
+        - "/usr/libexec/NetworkManager"
+      required: true
+      confidence: 0.95
+
+
+config_extraction:
+  files:
+    # Main Configuration
+    - path: "/etc/NetworkManager/NetworkManager.conf"
+      parser: "ini"
+      crypto_directives:
+        # WiFi Backend
+        - key: "wifi.backend"
+          type: "string"
+          maps_to: "network.wifi_backend"
+          description: "wpa_supplicant, iwd"
+
+        # DNS
+        - key: "dns"
+          type: "string"
+          maps_to: "network.dns_mode"
+
+    # System Connections (WiFi/VPN)
+    - path: "/etc/NetworkManager/system-connections/*.nmconnection"
+      parser: "ini"
+      crypto_directives:
+        # WiFi Security
+        - key: "key-mgmt"
+          type: "string"
+          maps_to: "wifi.key_mgmt"
+          description: "none, wpa-psk, wpa-eap, sae"
+
+        - key: "auth-alg"
+          type: "string"
+          maps_to: "wifi.auth_alg"
+
+        - key: "pairwise"
+          type: "string"
+          maps_to: "wifi.pairwise"
+
+        - key: "group"
+          type: "string"
+          maps_to: "wifi.group"
+
+        # EAP Configuration
+        - key: "eap"
+          type: "string_list"
+          separator: ";"
+          maps_to: "wifi.eap_methods"
+
+        - key: "phase2-auth"
+          type: "string"
+          maps_to: "wifi.phase2_auth"
+
+        # Certificates
+        - key: "ca-cert"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.ca_cert"
+
+        - key: "client-cert"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.client_cert"
+
+        - key: "private-key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.client_key"
+
+        - key: "private-key-password"
+          type: "string"
+          maps_to: "private_key.password_id"
+
+        # VPN Configuration
+        - key: "vpn.service-type"
+          type: "string"
+          maps_to: "vpn.service_type"
+          description: "org.freedesktop.NetworkManager.openvpn, wireguard, strongswan"
+
+        - key: "vpn.ca"
+          type: "path"
+          resolve: true
+          maps_to: "vpn.ca_cert"
+
+        - key: "vpn.cert"
+          type: "path"
+          resolve: true
+          maps_to: "vpn.client_cert"
+
+        - key: "vpn.key"
+          type: "path"
+          resolve: true
+          maps_to: "vpn.client_key"
+
+        - key: "vpn.tls-cipher"
+          type: "string"
+          maps_to: "cipher_suites"
+
+        # WireGuard
+        - key: "private-key"
+          type: "string"
+          maps_to: "vpn.wireguard_private_key_id"
+          description: "WireGuard private key identifier"
+
+        - key: "peer-public-key"
+          type: "string"
+          maps_to: "vpn.wireguard_peer_public_key"
