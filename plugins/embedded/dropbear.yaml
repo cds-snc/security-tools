@@ -1,0 +1,130 @@
+# plugins/embedded/dropbear.yaml
+# Dropbear - Lightweight SSH Server for Embedded Systems
+plugin:
+  plugin_schema_version: "1.0"
+  name: "Dropbear SSH Server Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "remote_access"
+  description: "Detects Dropbear SSH instances and extracts host key configuration"
+  priority: 65
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/dropbear"
+        - "/usr/local/sbin/dropbear"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "dropbear"
+
+    - type: port
+      ports: [22]
+      protocol: "tcp"
+      check_ssl: true
+
+    - type: config_file
+      paths:
+        - "/etc/dropbear"
+        - "/etc/default/dropbear"
+        - "/var/lib/dropbear"
+      required: false
+
+    - type: systemd
+      service_names:
+        - "dropbear.service"
+        - "dropbear@.service"
+
+    - type: package
+      package_names:
+        - "dropbear"
+        - "dropbear-bin"
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "dropbear"
+      server_packages:
+        - "dropbear"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    # Dropbear Config (if exists, usually command-line args)
+    - path: "/etc/default/dropbear"
+      parser: "custom"
+      crypto_directives:
+        # Dropbear Options
+        - key: "DROPBEAR_OPTS"
+          type: "string"
+          maps_to: "service.dropbear_opts"
+          description: "Command-line options"
+
+        # Port
+        - key: "DROPBEAR_PORT"
+          type: "integer"
+          maps_to: "service.ssh_port"
+
+        # Banner
+        - key: "DROPBEAR_BANNER"
+          type: "path"
+          resolve: true
+          maps_to: "service.banner_file"
+
+    # Host Keys Directory
+    - path: "/etc/dropbear"
+      parser: "custom"
+      crypto_directives:
+        # RSA Host Key
+        - key: "dropbear_rsa_host_key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.rsa_host_key"
+          description: "RSA 1024-2048 bit"
+
+        # DSS Host Key (WEAK)
+        - key: "dropbear_dss_host_key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.dss_host_key"
+          description: "DSS 1024 bit (DEPRECATED)"
+
+        # ECDSA Host Key
+        - key: "dropbear_ecdsa_host_key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.ecdsa_host_key"
+          description: "ECDSA P-256/P-384/P-521"
+
+        # Ed25519 Host Key (MODERN)
+        - key: "dropbear_ed25519_host_key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.ed25519_host_key"
+          description: "Ed25519 (modern, secure)"
+
+    # Authorized Keys
+    - path: "/root/.ssh/authorized_keys"
+      parser: "custom"
+      crypto_directives:
+        - key: "authorized_keys"
+          type: "path"
+          resolve: true
+          maps_to: "key.authorized_keys"
+          description: "Root authorized_keys file"
+
+    # Alternative Dropbear Config Locations
+    - path: "/var/lib/dropbear"
+      parser: "custom"
+      crypto_directives:
+        - key: "host_keys"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.host_keys_dir"
+          description: "Alternative host keys location"

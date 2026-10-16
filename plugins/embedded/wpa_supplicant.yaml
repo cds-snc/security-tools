@@ -1,0 +1,195 @@
+# plugins/embedded/wpa_supplicant.yaml
+# wpa_supplicant - WiFi/802.1X Authentication with EAP-TLS
+plugin:
+  plugin_schema_version: "1.0"
+  name: "wpa_supplicant WiFi Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "wireless"
+  description: "Detects wpa_supplicant WiFi instances and extracts WPA/WPA2/WPA3 crypto configuration"
+  priority: 80
+
+detection:
+  methods:
+    # ONLY binary detection - prevents false positives in cross-arch scanning
+    # Package detection uses host package manager which is wrong for cross-arch
+    - type: binary
+      paths:
+        - "/usr/sbin/wpa_supplicant"
+        - "/usr/local/sbin/wpa_supplicant"
+        - "/sbin/wpa_supplicant"
+        - "/usr/bin/wpa_supplicant"
+      required: true
+      confidence: 0.95
+
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/wpa_supplicant.conf"
+      parser: "custom"
+      crypto_directives:
+        # Key Management
+        - key: "key_mgmt"
+          type: "string"
+          maps_to: "wifi.key_mgmt"
+          description: "NONE, WPA-PSK, WPA-EAP, SAE (WPA3), OWE, DPP"
+
+        # EAP Methods
+        - key: "eap"
+          type: "string_list"
+          separator: " "
+          maps_to: "wifi.eap_methods"
+          description: "TLS, TTLS, PEAP, PWD, FAST, SIM, AKA, LEAP"
+
+        # Pairwise Ciphers
+        - key: "pairwise"
+          type: "string_list"
+          separator: " "
+          maps_to: "cipher_suites"
+          description: "CCMP (AES), TKIP, NONE"
+
+        # Group Ciphers
+        - key: "group"
+          type: "string_list"
+          separator: " "
+          maps_to: "cipher_suites"
+          description: "CCMP, TKIP, WEP104, WEP40"
+
+        # WPA Protocols
+        - key: "proto"
+          type: "string"
+          maps_to: "wifi.protocols"
+          description: "RSN (WPA2), WPA, OSEN"
+
+        # EAP-TLS Certificates
+        - key: "ca_cert"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.ca_cert"
+
+        - key: "client_cert"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.client_cert"
+
+        - key: "private_key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.client_key"
+
+        - key: "private_key_passwd"
+          type: "string"
+          maps_to: "private_key.password_id"
+          description: "Password identifier (not actual password)"
+
+        # EAP-TLS Phase 2
+        - key: "ca_cert2"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.ca_cert_phase2"
+
+        - key: "client_cert2"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.client_cert_phase2"
+
+        - key: "private_key2"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.client_key_phase2"
+
+        # EAP-TTLS/PEAP Inner Auth
+        - key: "phase2"
+          type: "string"
+          maps_to: "wifi.phase2_auth"
+          description: "auth=MSCHAPV2, PAP, GTC, MD5"
+
+        # Identity
+        - key: "identity"
+          type: "string"
+          maps_to: "wifi.eap_identity"
+
+        - key: "anonymous_identity"
+          type: "string"
+          maps_to: "wifi.anonymous_identity"
+
+        # WPA3 SAE
+        - key: "sae_password"
+          type: "string"
+          maps_to: "wifi.sae_password_id"
+          description: "WPA3 SAE password identifier"
+
+        - key: "sae_password_id"
+          type: "string"
+          maps_to: "wifi.sae_pw_id"
+
+        # PMF (Protected Management Frames)
+        - key: "ieee80211w"
+          type: "integer"
+          maps_to: "wifi.pmf"
+          description: "0=disabled, 1=optional, 2=required (WPA3)"
+
+        # OWE (Opportunistic Wireless Encryption)
+        - key: "owe_group"
+          type: "integer"
+          maps_to: "wifi.owe_group"
+          description: "OWE DH group: 19 (256-bit), 20 (384-bit), 21 (521-bit)"
+
+        # DPP (Device Provisioning Protocol)
+        - key: "dpp_connector"
+          type: "string"
+          maps_to: "wifi.dpp_connector"
+
+        - key: "dpp_csign"
+          type: "string"
+          maps_to: "wifi.dpp_csign"
+
+        # PKCS#11 Support
+        - key: "pkcs11_engine_path"
+          type: "path"
+          resolve: true
+          maps_to: "wifi.pkcs11_engine"
+
+        - key: "pkcs11_module_path"
+          type: "path"
+          resolve: true
+          maps_to: "wifi.pkcs11_module"
+
+        # TLS Versions
+        - key: "tls_disable_tlsv1_0"
+          type: "boolean"
+          maps_to: "protocol.tls_v1_0_disabled"
+
+        - key: "tls_disable_tlsv1_1"
+          type: "boolean"
+          maps_to: "protocol.tls_v1_1_disabled"
+
+        - key: "tls_disable_tlsv1_2"
+          type: "boolean"
+          maps_to: "protocol.tls_v1_2_disabled"
+
+        - key: "tls_disable_tlsv1_3"
+          type: "boolean"
+          maps_to: "protocol.tls_v1_3_disabled"
+
+        # OpenSSL Ciphers
+        - key: "openssl_ciphers"
+          type: "string"
+          maps_to: "cipher_suites"
+          description: "OpenSSL cipher list"
+
+        # RADIUS Client Certificate
+        - key: "subject_match"
+          type: "string"
+          maps_to: "certificate.subject_match"
+          description: "Server cert subject validation"
+
+        - key: "altsubject_match"
+          type: "string"
+          maps_to: "certificate.altsubject_match"
+          description: "Server cert SAN validation"
+
+        - key: "domain_suffix_match"
+          type: "string"
+          maps_to: "certificate.domain_suffix_match"
+          description: "Server cert domain validation"

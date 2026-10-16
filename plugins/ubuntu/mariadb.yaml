@@ -1,0 +1,88 @@
+# MariaDB SSL/TLS Scanner Plugin
+# CBOM Generator v1.3 - Plugin Schema v1.0
+
+plugin:
+  plugin_schema_version: "1.0"
+  name: "MariaDB SSL/TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "database"
+  description: "Detects MariaDB instances and extracts SSL/TLS configuration"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/mariadbd"
+        - "/usr/bin/mariadbd"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "mariadbd"
+        - "mysqld"
+      command_patterns:
+        - ".*mariadb.*"
+        - ".*my\\.cnf.*"
+
+    - type: port
+      ports: [3306, 3307]
+      protocol: "tcp"
+      check_ssl: true
+
+    - type: config_file
+      paths:
+        - "/etc/mysql/mariadb.conf.d/50-server.cnf"
+        - "/etc/my.cnf"
+        - "/etc/mysql/my.cnf"
+      required: false
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "mariadb-server"
+      server_packages:
+        - "mariadb-server"
+      exclude_packages:
+        - "mariadb-common"
+        - "mariadb-client"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/my.cnf"
+      parser: "ini"
+      encoding: "utf-8"
+      crypto_directives:
+        - key: "ssl-cert"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.path"
+          optional: true
+
+        - key: "ssl-key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.path"
+          optional: true
+
+        - key: "ssl-ca"
+          type: "path"
+          resolve: true
+          maps_to: "ca_certificate.path"
+          optional: true
+
+        - key: "tls_version"
+          type: "string"
+          maps_to: "protocol.min_version"
+          optional: true
+
+        - key: "ssl-cipher"
+          type: "string"
+          maps_to: "cipher_suites"
+          optional: true

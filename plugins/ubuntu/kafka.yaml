@@ -1,0 +1,93 @@
+# Apache Kafka TLS Scanner Plugin
+# CBOM Generator v1.3 - Plugin Schema v1.0
+
+plugin:
+  plugin_schema_version: "1.0"
+  name: "Apache Kafka TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "message_queue"
+  description: "Detects Apache Kafka instances and extracts SSL/TLS configuration"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/opt/kafka/bin/kafka-server-start.sh"
+        - "/usr/local/kafka/bin/kafka-server-start.sh"
+      required: true
+      confidence: 0.95
+
+    # Method 2: Detect by process
+    - type: process
+      names:
+        - "java"
+      command_patterns:
+        - ".*kafka\\.Kafka.*"
+        - ".*kafka-server-start.*"
+
+      exclude_patterns:
+        - ".*elasticsearch.*"
+        - ".*cassandra.*"
+        - ".*neo4j.*"
+        - ".*tomcat.*"
+        - ".*jetty.*"
+    # Method 3: Detect by port
+      ports: [9092, 9093]
+      protocol: "tcp"
+      check_ssl: true
+
+    # Method 4: Detect by config file
+    - type: config_file
+      paths:
+        - "/etc/kafka/server.properties"
+        - "/opt/kafka/config/server.properties"
+      required: false
+
+    # Method 5: Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "kafka"
+        - "apache-kafka"
+      server_packages:
+        - "kafka"
+        - "apache-kafka"
+      confidence: 0.90
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/server.properties"
+      parser: "ini"
+      encoding: "utf-8"
+      crypto_directives:
+        - key: "ssl.keystore.location"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.keystore_path"
+          optional: true
+
+        - key: "ssl.truststore.location"
+          type: "path"
+          resolve: true
+          maps_to: "ca_certificate.truststore_path"
+          optional: true
+
+        - key: "ssl.enabled.protocols"
+          type: "string_list"
+          separator: ","
+          maps_to: "protocol.tls_versions"
+          optional: true
+
+        - key: "ssl.cipher.suites"
+          type: "string_list"
+          separator: ","
+          maps_to: "cipher_suites"
+          optional: true
+
+        - key: "ssl.client.auth"
+          type: "string"
+          maps_to: "service.client_auth"
+          optional: true

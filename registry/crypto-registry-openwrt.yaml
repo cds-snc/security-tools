@@ -1,0 +1,254 @@
+# =====================================================================
+#  OpenWrt Crypto Registry
+#  NOTE:
+#    - OpenWrt uses opkg package manager
+#    - Default TLS library changed to wolfSSL in October 2024
+#    - Previously mbedTLS was the default (OpenWrt 23.05 and earlier)
+#    - Focus: Router/networking applications (hostapd, dnsmasq, dropbear)
+# =====================================================================
+
+version: 1
+
+crypto_libraries:
+
+  # ------------------------------------------------------------
+  # wolfSSL (default TLS library since Oct 2024)
+  # ------------------------------------------------------------
+  - id: wolfssl
+    pkg_patterns:
+      - wolfssl
+      - libwolfssl
+    soname_patterns:
+      - libwolfssl.so
+    algorithms:
+      - TLS-1.3
+      - TLS-1.2
+      - AES-GCM
+      - AES-CBC
+      - ChaCha20-Poly1305
+      - ECDSA
+      - RSA
+      - SHA-256
+      - SHA-384
+      - X25519
+      - P-256
+      - P-384
+
+  # ------------------------------------------------------------
+  # mbedTLS (previous default, OpenWrt 23.05 and earlier)
+  # ------------------------------------------------------------
+  - id: mbedtls
+    pkg_patterns:
+      - libmbedtls
+      - mbedtls
+    soname_patterns:
+      - libmbedtls.so
+      - libmbedcrypto.so
+      - libmbedx509.so
+    algorithms:
+      - TLS-1.2
+      - AES-GCM
+      - AES-CBC
+      - SHA-256
+      - RSA
+      - ECDSA
+
+  # ------------------------------------------------------------
+  # OpenSSL (optional, manually installed)
+  # ------------------------------------------------------------
+  - id: openssl
+    pkg_patterns:
+      - libopenssl
+      - openssl-util
+    soname_patterns:
+      - libcrypto.so
+      - libssl.so
+    algorithms:
+      - RSA
+      - ECDSA
+      - AES
+      - ChaCha20-Poly1305
+      - SHA-256
+      - X25519
+      - P-256
+      - P-384
+
+  # ------------------------------------------------------------
+  # libsodium (modern crypto)
+  # ------------------------------------------------------------
+  - id: libsodium
+    pkg_patterns:
+      - libsodium
+    soname_patterns:
+      - libsodium.so
+    algorithms:
+      - X25519
+      - Ed25519
+      - ChaCha20-Poly1305
+      - BLAKE2b
+
+  # ------------------------------------------------------------
+  # Nettle / Hogweed (used by GnuTLS if installed)
+  # ------------------------------------------------------------
+  - id: nettle
+    pkg_patterns:
+      - libnettle
+      - libhogweed
+    soname_patterns:
+      - libnettle.so
+      - libhogweed.so
+    algorithms:
+      - RSA
+      - ECDSA
+      - AES
+      - SHA-256
+
+  # ------------------------------------------------------------
+  # ustream-ssl (OpenWrt TLS abstraction layer)
+  # ------------------------------------------------------------
+  - id: ustream-ssl
+    pkg_patterns:
+      - libustream-wolfssl
+      - libustream-mbedtls
+      - libustream-openssl
+    soname_patterns:
+      - libustream-ssl.so
+    algorithms:
+      - TLS-1.2
+      - TLS-1.3
+
+
+# =====================================================================
+# Embedded Crypto Providers (OpenWrt-specific services)
+# =====================================================================
+
+embedded_crypto_apps:
+
+  # ------------------------------------------------------------
+  # hostapd / wpad (WiFi access point with WPA2/WPA3)
+  # ------------------------------------------------------------
+  - provider_id: hostapd_internal
+    binary_names:
+      - hostapd
+      - wpad
+      - wpad-basic
+      - wpad-wolfssl
+      - wpad-mbedtls
+      - wpad-openssl
+    package_names:
+      - hostapd
+      - hostapd-wolfssl
+      - wpad
+      - wpad-wolfssl
+      - wpad-mbedtls
+    algorithms:
+      - WPA2
+      - WPA3
+      - AES-CCMP
+      - SAE
+      - 802.1X
+      - EAP-TLS
+      - PMKSA
+
+  # ------------------------------------------------------------
+  # dnsmasq (DNS/DHCP with optional DNSSEC)
+  # ------------------------------------------------------------
+  - provider_id: dnsmasq_internal
+    binary_names:
+      - dnsmasq
+    package_names:
+      - dnsmasq
+      - dnsmasq-full
+    algorithms:
+      - DNSSEC
+      - SHA-256
+      - RSA
+      - ECDSA
+
+  # ------------------------------------------------------------
+  # dropbear (lightweight SSH server)
+  # ------------------------------------------------------------
+  - provider_id: dropbear_internal
+    binary_names:
+      - dropbear
+      - dbclient
+      - dropbearkey
+    package_names:
+      - dropbear
+    algorithms:
+      - SSH
+      - AES-128-CTR
+      - AES-256-CTR
+      - ChaCha20-Poly1305
+      - Ed25519
+      - ECDSA
+      - RSA
+      - curve25519-sha256
+
+  # ------------------------------------------------------------
+  # uhttpd (lightweight HTTP/HTTPS server for LuCI)
+  # ------------------------------------------------------------
+  - provider_id: uhttpd_internal
+    binary_names:
+      - uhttpd
+    package_names:
+      - uhttpd
+      - uhttpd-mod-tls
+    algorithms:
+      - TLS-1.2
+      - TLS-1.3
+      - AES-GCM
+      - ChaCha20-Poly1305
+
+  # ------------------------------------------------------------
+  # OpenVPN (VPN client/server)
+  # ------------------------------------------------------------
+  - provider_id: openvpn_internal
+    binary_names:
+      - openvpn
+    package_names:
+      - openvpn-wolfssl
+      - openvpn-mbedtls
+      - openvpn-openssl
+    algorithms:
+      - TLS-1.2
+      - AES-GCM
+      - AES-CBC
+      - SHA-256
+      - RSA
+      - ECDSA
+
+  # ------------------------------------------------------------
+  # WireGuard (modern VPN)
+  # ------------------------------------------------------------
+  - provider_id: wireguard_internal
+    binary_names:
+      - wg
+      - wg-quick
+    package_names:
+      - wireguard-tools
+      - kmod-wireguard
+    algorithms:
+      - ChaCha20
+      - Poly1305
+      - BLAKE2s
+      - Curve25519
+      - X25519
+
+  # ------------------------------------------------------------
+  # OpenSSH (alternative to dropbear)
+  # ------------------------------------------------------------
+  - provider_id: openssh_internal
+    binary_names:
+      - ssh
+      - sshd
+      - ssh-keygen
+    package_names:
+      - openssh-server
+      - openssh-client
+    algorithms:
+      - chacha20-poly1305@openssh.com
+      - aes128-ctr
+      - aes256-ctr
+      - curve25519-sha256
+      - ssh-ed25519

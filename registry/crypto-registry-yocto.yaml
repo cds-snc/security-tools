@@ -1,0 +1,398 @@
+version: 1
+
+# =====================================================================
+#  Yocto / Embedded Crypto Registry
+#
+#  Notes:
+#    - pkg_patterns are omitted on purpose; many Yocto images have no
+#      dpkg/rpm database. We rely primarily on SONAME patterns.
+#    - "algorithms" are REPRESENTATIVE, not exhaustive.
+#    - This file is meant to be tuned per BSP / product.
+# =====================================================================
+
+crypto_libraries:
+  # -------------------------------------------------------------------
+  # OpenSSL-like engines (if present)
+  # -------------------------------------------------------------------
+  - id: openssl
+    soname_patterns:
+      - libcrypto.so
+      - libssl.so
+    algorithms:
+      - RSA
+      - ECDSA
+      - AES
+      - ChaCha20-Poly1305
+      - SHA-256
+
+  # -------------------------------------------------------------------
+  # mbedTLS (very common in embedded / Yocto)
+  # -------------------------------------------------------------------
+  - id: mbedtls
+    soname_patterns:
+      - libmbedtls.so
+      - libmbedcrypto.so
+    algorithms:
+      - AES
+      - ChaCha20
+      - SHA-256
+      - ECDSA
+
+  # -------------------------------------------------------------------
+  # wolfSSL (lightweight TLS implementation)
+  # -------------------------------------------------------------------
+  - id: wolfssl
+    soname_patterns:
+      - libwolfssl.so
+    algorithms:
+      - AES
+      - ChaCha20-Poly1305
+      - SHA-256
+      - ECDSA
+
+  # -------------------------------------------------------------------
+  # libsodium (if pulled into the image)
+  # -------------------------------------------------------------------
+  - id: libsodium
+    soname_patterns:
+      - libsodium.so
+    algorithms:
+      - X25519
+      - Ed25519
+      - ChaCha20-Poly1305
+      - BLAKE2b
+
+  # -------------------------------------------------------------------
+  # Generic vendor TLS engines (example placeholders)
+  #
+  # Tune these to your own BSP:
+  #   - libvendor_tls.so
+  #   - libmytls.so
+  #   - libcompanycrypto.so
+  # -------------------------------------------------------------------
+  - id: vendor_tls
+    soname_patterns:
+      - libvendor_tls.so
+      - libmytls.so
+    algorithms:
+      - AES-256-GCM
+      - ChaCha20-Poly1305
+
+  # -------------------------------------------------------------------
+  # Nettle / Hogweed (optional, often used in GNU-y stacks)
+  # -------------------------------------------------------------------
+  - id: nettle
+    soname_patterns:
+      - libnettle.so
+      - libhogweed.so
+    algorithms:
+      - RSA
+      - ECDSA
+      - AES
+      - SHA-256
+
+  # -------------------------------------------------------------------
+  # GnuTLS (if the image uses GNUTLS instead of OpenSSL/wolfSSL)
+  # -------------------------------------------------------------------
+  - id: gnutls
+    soname_patterns:
+      - libgnutls.so
+    algorithms:
+      - TLS-1.2
+      - TLS-1.3
+      - AES-GCM
+      - ChaCha20-Poly1305
+      - ECDSA
+
+  # -------------------------------------------------------------------
+  # libgcrypt (if GnuPG / IPsec tooling is present)
+  # -------------------------------------------------------------------
+  - id: libgcrypt
+    soname_patterns:
+      - libgcrypt.so
+    algorithms:
+      - RSA
+      - DSA
+      - AES
+      - SHA-256
+
+  # -------------------------------------------------------------------
+  # SRTP crypto (VoIP / WebRTC gateways / media stacks)
+  # -------------------------------------------------------------------
+  - id: libsrtp
+    soname_patterns:
+      - libsrtp.so
+      - libsrtp2.so
+    algorithms:
+      - AES-128-CTR
+      - AES-256-CTR
+      - HMAC-SHA1
+
+  # -------------------------------------------------------------------
+  # Argon2 (if image includes a password/KDF library)
+  # -------------------------------------------------------------------
+  - id: argon2
+    soname_patterns:
+      - libargon2.so
+    algorithms:
+      - Argon2id
+
+  # -------------------------------------------------------------------
+  # libcurl (TLS client library)
+  # -------------------------------------------------------------------
+  - id: curl
+    soname_patterns:
+      - libcurl.so
+    algorithms:
+      - TLS-1.2
+      - TLS-1.3
+
+  # -------------------------------------------------------------------
+  # libwebsockets (WebSocket with TLS support)
+  # -------------------------------------------------------------------
+  - id: websockets
+    soname_patterns:
+      - libwebsockets.so
+    algorithms:
+      - TLS-1.2
+      - TLS-1.3
+      - SHA-1
+
+  # -------------------------------------------------------------------
+  # libmosquitto (MQTT with TLS)
+  # -------------------------------------------------------------------
+  - id: mosquitto
+    soname_patterns:
+      - libmosquitto.so
+    algorithms:
+      - TLS-1.2
+      - TLS-1.3
+
+  # -------------------------------------------------------------------
+  # strongSwan IPsec VPN Core Library
+  # -------------------------------------------------------------------
+  - id: strongswan
+    soname_patterns:
+      - libstrongswan.so
+    algorithms:
+      - IKEv2
+      - IPsec
+      - AES-GCM
+      - AES-CBC
+      - SHA-256
+      - SHA-1
+      - DH-Group14
+      - X25519
+
+  # -------------------------------------------------------------------
+  # strongSwan Crypto Plugins (individual algorithm implementations)
+  # -------------------------------------------------------------------
+  - id: strongswan-aes
+    soname_patterns:
+      - libstrongswan-aes.so
+    algorithms:
+      - AES-CBC
+      - AES-CTR
+
+  - id: strongswan-gcm
+    soname_patterns:
+      - libstrongswan-gcm.so
+    algorithms:
+      - AES-GCM
+
+  - id: strongswan-curve25519
+    soname_patterns:
+      - libstrongswan-curve25519.so
+    algorithms:
+      - X25519
+      - Ed25519
+
+  - id: strongswan-des
+    soname_patterns:
+      - libstrongswan-des.so
+    algorithms:
+      - 3DES
+      - DES
+
+  - id: strongswan-hmac
+    soname_patterns:
+      - libstrongswan-hmac.so
+    algorithms:
+      - HMAC-SHA256
+      - HMAC-SHA1
+
+  - id: strongswan-sha1
+    soname_patterns:
+      - libstrongswan-sha1.so
+    algorithms:
+      - SHA-1
+
+  - id: strongswan-sha2
+    soname_patterns:
+      - libstrongswan-sha2.so
+    algorithms:
+      - SHA-256
+      - SHA-384
+      - SHA-512
+
+  - id: strongswan-md5
+    soname_patterns:
+      - libstrongswan-md5.so
+    algorithms:
+      - MD5
+
+  - id: strongswan-xcbc
+    soname_patterns:
+      - libstrongswan-xcbc.so
+    algorithms:
+      - AES-XCBC-MAC
+
+  - id: strongswan-cmac
+    soname_patterns:
+      - libstrongswan-cmac.so
+    algorithms:
+      - AES-CMAC
+
+  - id: strongswan-pubkey
+    soname_patterns:
+      - libstrongswan-pubkey.so
+    algorithms:
+      - RSA
+      - ECDSA
+
+  - id: strongswan-gmp
+    soname_patterns:
+      - libstrongswan-gmp.so
+    algorithms:
+      - RSA
+      - DH
+
+  - id: strongswan-pkcs1
+    soname_patterns:
+      - libstrongswan-pkcs1.so
+    algorithms:
+      - RSA
+      - PKCS1
+
+  - id: strongswan-pkcs7
+    soname_patterns:
+      - libstrongswan-pkcs7.so
+    algorithms:
+      - PKCS7
+
+  - id: strongswan-pkcs8
+    soname_patterns:
+      - libstrongswan-pkcs8.so
+    algorithms:
+      - PKCS8
+
+  - id: strongswan-x509
+    soname_patterns:
+      - libstrongswan-x509.so
+    algorithms:
+      - X.509
+
+  - id: strongswan-drbg
+    soname_patterns:
+      - libstrongswan-drbg.so
+    algorithms:
+      - DRBG
+      - HMAC-DRBG
+
+  - id: strongswan-kdf
+    soname_patterns:
+      - libstrongswan-kdf.so
+    algorithms:
+      - HKDF
+      - PBKDF2
+
+  - id: strongswan-fips-prf
+    soname_patterns:
+      - libstrongswan-fips-prf.so
+    algorithms:
+      - FIPS-PRF
+
+  - id: strongswan-mgf1
+    soname_patterns:
+      - libstrongswan-mgf1.so
+    algorithms:
+      - MGF1
+
+  - id: strongswan-nonce
+    soname_patterns:
+      - libstrongswan-nonce.so
+    algorithms:
+      - NONCE
+
+  - id: strongswan-openssl
+    soname_patterns:
+      - libstrongswan-openssl.so
+    algorithms:
+      - RSA
+      - ECDSA
+      - AES
+      - SHA-256
+
+
+# =====================================================================
+# Embedded Crypto Providers
+#
+# These model binaries that have internal crypto stacks, on top of
+# the shared libraries above. They’re intentionally generic.
+# =====================================================================
+
+embedded_crypto_apps:
+  # -------------------------------------------------------------------
+  # Example: internal TLS in a device management / agent binary
+  # (already in your original file)
+  # -------------------------------------------------------------------
+  - provider_id: device_agent_internal
+    binary_names:
+      - device-agent
+      - device-updater
+    algorithms:
+      - TLS-1.2
+      - TLS-1.3
+      - AES-256-GCM
+      - ChaCha20-Poly1305
+
+  # -------------------------------------------------------------------
+  # Example: HTTPS management UI / REST API daemon
+  # -------------------------------------------------------------------
+  - provider_id: mgmt_ui_internal
+    binary_names:
+      - web-ui
+      - mgmt-ui
+      - rest-gateway
+    algorithms:
+      - TLS-1.2
+      - TLS-1.3
+      - AES-GCM
+      - ChaCha20-Poly1305
+
+  # -------------------------------------------------------------------
+  # Example: MQTT over TLS (IoT telemetry / control)
+  # -------------------------------------------------------------------
+  - provider_id: mqtt_internal
+    binary_names:
+      - mqtt-gateway
+      - mqtt-agent
+      - iot-client
+    algorithms:
+      - TLS-1.2
+      - TLS-1.3
+      - AES-GCM
+      - ChaCha20-Poly1305
+
+  # -------------------------------------------------------------------
+  # Example: proprietary VPN / tunnel daemon
+  # -------------------------------------------------------------------
+  - provider_id: vpn_internal
+    binary_names:
+      - vpn-daemon
+      - tunnel-agent
+    algorithms:
+      - TLS-1.2
+      - TLS-1.3
+      - AES-GCM
+      - SHA-256

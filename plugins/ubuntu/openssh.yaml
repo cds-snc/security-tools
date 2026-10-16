@@ -1,0 +1,121 @@
+# OpenSSH Server SSL/TLS Scanner Plugin
+# CBOM Generator v1.5 - Plugin Schema v1.0
+
+plugin:
+  plugin_schema_version: "1.0"
+  name: "OpenSSH Server"
+  version: "1.0.0"
+  author: "Cipher IQ Team"
+  category: "security"
+  description: "Detects OpenSSH Server instances and extracts SSH cryptographic configuration"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+  crypto_protocol: "SSH"
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phase 1: False Positive Elimination)
+    - type: binary
+      paths:
+        - "/usr/sbin/sshd"
+        - "/usr/local/sbin/sshd"
+      required: true
+      confidence: 0.95
+
+    # Method 2: Detect by process name
+    - type: process
+      names:
+        - "sshd"
+      command_patterns:
+        - ".*sshd.*"
+
+    # Method 3: Detect by config file presence
+    - type: config_file
+      paths:
+        - "/etc/ssh/sshd_config"
+      required: true
+
+    # Method 4: Detect by systemd
+    - type: systemd
+      service_names:
+        - "sshd.service"
+        - "ssh.service"
+
+    # Method 5: Detect by package (Phase 2: Server/Exclude Validation)
+    - type: package
+      package_names:
+        - "openssh-server"
+        - "openssh"
+        - "openssh-client"
+      server_packages:
+        - "openssh-server"
+      exclude_packages:
+        - "openssh-client"
+        - "openssh-sftp-server"
+      confidence: 0.90
+
+config_extraction:
+  files:
+    - path: "/etc/ssh/sshd_config"
+      parser: "ini"
+      encoding: "utf-8"
+      crypto_directives:
+        # SSH Port
+        - key: "Port"
+          type: "integer"
+          maps_to: "service.port"
+          optional: true
+
+        # Key Exchange Algorithms
+        - key: "KexAlgorithms"
+          type: "string_list"
+          separator: ","
+          maps_to: "protocol.kex_algorithms"
+          optional: true
+
+        # Host Key Algorithms
+        - key: "HostKeyAlgorithms"
+          type: "string_list"
+          separator: ","
+          maps_to: "protocol.hostkey_algorithms"
+          optional: true
+
+        # MAC Algorithms
+        - key: "MACs"
+          type: "string_list"
+          separator: ","
+          maps_to: "protocol.mac_algorithms"
+          optional: true
+
+        # Encryption Ciphers
+        - key: "Ciphers"
+          type: "string_list"
+          separator: ","
+          maps_to: "cipher_suites"
+          optional: true
+
+        # Host Private Keys
+        - key: "HostKey"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.path"
+          optional: true
+
+        # Host Certificates
+        - key: "HostCertificate"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.path"
+          optional: true
+
+        # CA Trust Anchor
+        - key: "TrustedUserCAKeys"
+          type: "path"
+          resolve: true
+          maps_to: "ca_certificate.path"
+          optional: true
+
+metadata:
+  crypto_protocol: "SSH"
+  pqc_relevant: true
+  documentation: "https://man.openbsd.org/sshd_config"

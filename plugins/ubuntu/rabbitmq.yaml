@@ -1,0 +1,99 @@
+# RabbitMQ TLS Scanner Plugin
+# CBOM Generator v1.3 - Plugin Schema v1.0
+
+plugin:
+  plugin_schema_version: "1.0"
+  name: "RabbitMQ TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "message_queue"
+  description: "Detects RabbitMQ instances and extracts TLS/SSL configuration"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/rabbitmq-server"
+        - "/usr/lib/rabbitmq/bin/rabbitmq-server"
+      required: true
+      confidence: 0.95
+
+    # Method 2: Detect by process
+    - type: process
+      names:
+        - "beam.smp"
+        - "rabbitmq-server"
+      command_patterns:
+        - ".*rabbitmq.*"
+
+      exclude_patterns:
+        - ".*couchdb.*"
+    # Method 3: Detect by port
+      ports: [5671, 5672, 15671, 15672]
+      protocol: "tcp"
+      check_ssl: true
+
+    # Method 4: Detect by config file
+    - type: config_file
+      paths:
+        - "/etc/rabbitmq/rabbitmq.conf"
+        - "/etc/rabbitmq/advanced.config"
+      required: false
+
+    # Method 5: Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "rabbitmq-server"
+      server_packages:
+        - "rabbitmq-server"
+      confidence: 0.90
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/rabbitmq.conf"
+      parser: "ini"
+      encoding: "utf-8"
+      crypto_directives:
+        - key: "listeners.ssl.default"
+          type: "string"
+          maps_to: "service.ssl_listener"
+          optional: true
+
+        - key: "ssl_options.certfile"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.path"
+          optional: true
+
+        - key: "ssl_options.keyfile"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.path"
+          optional: true
+
+        - key: "ssl_options.cacertfile"
+          type: "path"
+          resolve: true
+          maps_to: "ca_certificate.path"
+          optional: true
+
+        - key: "ssl_options.versions"
+          type: "string_list"
+          separator: ","
+          maps_to: "protocol.tls_versions"
+          optional: true
+
+        - key: "ssl_options.ciphers"
+          type: "string_list"
+          separator: ","
+          maps_to: "cipher_suites"
+          optional: true
+
+        - key: "ssl_options.honor_cipher_order"
+          type: "boolean"
+          default: "false"
+          maps_to: "protocol.server_cipher_preference"
+          optional: true

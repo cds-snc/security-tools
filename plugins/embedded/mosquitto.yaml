@@ -1,0 +1,146 @@
+# plugins/embedded/mosquitto.yaml
+# Mosquitto - MQTT Broker with TLS Support
+plugin:
+  plugin_schema_version: "1.0"
+  name: "Mosquitto MQTT Broker Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "message_broker"
+  description: "Detects Mosquitto MQTT broker instances and extracts TLS configuration"
+  priority: 70
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/mosquitto"
+        - "/usr/local/sbin/mosquitto"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "mosquitto"
+
+    - type: port
+      ports: [1883, 8883, 8080, 8081]
+      protocol: "tcp"
+      check_ssl: true
+
+    - type: config_file
+      paths:
+        - "/etc/mosquitto/mosquitto.conf"
+        - "/etc/mosquitto/conf.d/*.conf"
+      required: false
+
+    - type: systemd
+      service_names:
+        - "mosquitto.service"
+
+    - type: package
+      package_names:
+        - "mosquitto"
+        - "mosquitto-clients"
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "mosquitto"
+      server_packages:
+        - "mosquitto"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/mosquitto.conf"
+      parser: "custom"
+      crypto_directives:
+        # Listener with TLS
+        - key: "listener"
+          type: "integer"
+          maps_to: "service.listener_port"
+          description: "Port number (1883=plain, 8883=TLS)"
+
+        # TLS Version
+        - key: "tls_version"
+          type: "string"
+          maps_to: "protocol.tls_version"
+          description: "tlsv1.2, tlsv1.3"
+
+        # Certificate Files
+        - key: "certfile"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.server_cert"
+
+        - key: "keyfile"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.server_key"
+
+        - key: "cafile"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.ca_file"
+
+        - key: "capath"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.ca_path"
+
+        # Cipher Suite
+        - key: "ciphers"
+          type: "string"
+          maps_to: "cipher_suites"
+          description: "OpenSSL cipher list format"
+
+        # Pre-Shared Keys (PSK)
+        - key: "psk_file"
+          type: "path"
+          resolve: true
+          maps_to: "key.psk_file"
+
+        - key: "use_identity_as_username"
+          type: "boolean"
+          maps_to: "service.psk_use_identity"
+
+        # Client Certificate
+        - key: "require_certificate"
+          type: "boolean"
+          maps_to: "service.require_client_cert"
+
+        - key: "use_identity_as_username"
+          type: "boolean"
+          maps_to: "service.use_cert_cn_as_username"
+
+        # CRL
+        - key: "crlfile"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.crl_file"
+
+        # Diffie-Hellman
+        - key: "dhparamfile"
+          type: "path"
+          resolve: true
+          maps_to: "key.dh_params_file"
+
+        # WebSocket Support
+        - key: "protocol"
+          type: "string"
+          maps_to: "service.protocol"
+          description: "mqtt, websockets"
+
+        # Authentication Plugin
+        - key: "auth_plugin"
+          type: "path"
+          resolve: true
+          maps_to: "service.auth_plugin"
+
+        # Password File
+        - key: "password_file"
+          type: "path"
+          resolve: true
+          maps_to: "service.password_file"

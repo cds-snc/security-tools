@@ -1,0 +1,106 @@
+# plugins/embedded/balena-engine.yaml
+# balena-engine - Container Engine for IoT (Docker Alternative)
+plugin:
+  plugin_schema_version: "1.0"
+  name: "balena-engine Container Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "container"
+  description: "Detects balena-engine container platform and extracts TLS/registry configuration"
+  priority: 60
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/bin/balena-engine"
+        - "/usr/local/bin/balena-engine"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "balena-engine"
+        - "balena-engined"
+        - "balenad"
+
+    - type: config_file
+      paths:
+        - "/etc/balena-engine/daemon.json"
+        - "/etc/balena-engine/certs.d"
+      required: false
+
+    - type: systemd
+      service_names:
+        - "balena.service"
+        - "balena-engine.service"
+
+    - type: package
+      package_names:
+        - "balena-engine"
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "balena-engine"
+      server_packages:
+        - "balena-engine"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    # Daemon Configuration
+    - path: "/etc/balena-engine/daemon.json"
+      parser: "json"
+      crypto_directives:
+        # TLS Configuration
+        - key: "tls"
+          type: "boolean"
+          maps_to: "service.tls_enabled"
+
+        - key: "tlsverify"
+          type: "boolean"
+          maps_to: "service.tls_verify"
+
+        - key: "tlscacert"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.tls_ca"
+
+        - key: "tlscert"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.tls_cert"
+
+        - key: "tlskey"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.tls_key"
+
+        # Insecure Registries
+        - key: "insecure-registries"
+          type: "string_list"
+          maps_to: "service.insecure_registries"
+          description: "Registries without TLS verification"
+
+        # Registry Mirrors
+        - key: "registry-mirrors"
+          type: "string_list"
+          maps_to: "service.registry_mirrors"
+
+        # Storage Driver
+        - key: "storage-driver"
+          type: "string"
+          maps_to: "service.storage_driver"
+
+    # Registry Certificates
+    - path: "/etc/balena-engine/certs.d"
+      parser: "custom"
+      crypto_directives:
+        - key: "registry_certs"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.registry_certs"
+          description: "Per-registry CA certificates"

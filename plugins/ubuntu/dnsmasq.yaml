@@ -1,0 +1,52 @@
+# plugins/dnsmasq.yaml
+plugin:
+  plugin_schema_version: "1.0"
+  name: "dnsmasq TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "dns_server"
+  description: "Detects dnsmasq instances and extracts TLS configuration"
+  priority: 50
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/dnsmasq"
+        - "/usr/local/sbin/dnsmasq"
+      required: true
+      confidence: 0.95
+
+    # Method 2: Detect by process
+    - type: process
+      names:
+        - "dnsmasq"
+
+    # Method 3: Detect by port
+      ports: [53]
+      protocol: "tcp"
+      check_ssl: true
+      validate_process: true
+      expected_processes:
+        - "dnsmasq"
+
+    # Method 4: Detect by config file
+    - type: config_file
+      paths:
+        - "/etc/dnsmasq.conf"
+        - "/etc/dnsmasq.d/*.conf"
+      required: false
+
+    # Method 5: Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "dnsmasq"
+        - "dnsmasq-base"
+      server_packages:
+        - "dnsmasq"
+      exclude_packages:
+        - "dnsmasq-base-lua"
+      confidence: 0.90
+
+# config_extraction removed - dnsmasq doesn't use TLS by default

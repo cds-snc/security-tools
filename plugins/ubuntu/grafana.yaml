@@ -1,0 +1,73 @@
+# plugins/grafana.yaml
+plugin:
+  plugin_schema_version: "1.0"
+  name: "Grafana TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "monitoring"
+  description: "Detects Grafana instances and extracts TLS configuration"
+  priority: 50
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/grafana-server"
+        - "/usr/local/bin/grafana-server"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "grafana"
+        - "grafana-server"
+
+    - type: port
+      ports: [3000]
+      protocol: "tcp"
+      check_ssl: true
+
+    - type: config_file
+      paths:
+        - "/etc/grafana/grafana.ini"
+        - "/opt/grafana/conf/grafana.ini"
+        - "/usr/share/grafana/conf/defaults.ini"
+      required: false
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "grafana"
+      server_packages:
+        - "grafana"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/grafana.ini"
+      parser: "ini"
+      crypto_directives:
+        - key: "server.protocol"
+          type: "string"
+          maps_to: "server.protocol"
+
+        - key: "server.cert_file"
+          type: "path"
+          resolve: true
+          maps_to: "server.certificate.path"
+
+        - key: "server.cert_key"
+          type: "path"
+          resolve: true
+          maps_to: "server.private_key.path"
+
+        - key: "server.tls_min_version"
+          type: "string"
+          maps_to: "server.protocol.min_version"
+
+        - key: "server.tls_cipher_suites"
+          type: "string_list"
+          separator: ","
+          maps_to: "cipher_suites"

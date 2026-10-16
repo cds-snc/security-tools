@@ -1,0 +1,99 @@
+# plugins/embedded/iwd.yaml
+# iwd - Intel Wireless Daemon (Modern WiFi Alternative to wpa_supplicant)
+plugin:
+  plugin_schema_version: "1.0"
+  name: "iwd Wireless Daemon Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "wireless"
+  description: "Detects iwd wireless daemon and extracts WiFi/WPA3 configuration"
+  priority: 60
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/libexec/iwd"
+        - "/usr/local/libexec/iwd"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "iwd"
+
+    - type: config_file
+      paths:
+        - "/etc/iwd/main.conf"
+        - "/var/lib/iwd"
+      required: false
+
+    - type: systemd
+      service_names:
+        - "iwd.service"
+
+    - type: package
+      package_names:
+        - "iwd"
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "iwd"
+      server_packages:
+        - "iwd"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    # Main Configuration
+    - path: "/etc/iwd/main.conf"
+      parser: "ini"
+      crypto_directives:
+        # General Settings
+        - key: "Country"
+          type: "string"
+          maps_to: "wifi.country_code"
+          description: "Country code (affects crypto regulations)"
+
+        - key: "EnableNetworkConfiguration"
+          type: "boolean"
+          maps_to: "wifi.network_config_enabled"
+
+        # WPA3 Support (Native)
+        - key: "ManagementFrameProtection"
+          type: "integer"
+          maps_to: "wifi.pmf"
+          description: "0=disabled, 1=optional, 2=required"
+
+        # Network Storage Directory (contains credentials)
+        - key: "NetworkConfigurationEnabled"
+          type: "boolean"
+          maps_to: "wifi.network_storage"
+
+    # Network Credentials (Auto-Stored in /var/lib/iwd/)
+    - path: "/var/lib/iwd"
+      parser: "custom"
+      crypto_directives:
+        # PSK Networks
+        - key: "psk_networks"
+          type: "path"
+          resolve: true
+          maps_to: "wifi.psk_network_files"
+          description: "PSK credentials (/var/lib/iwd/*.psk)"
+
+        # Open Networks
+        - key: "open_networks"
+          type: "path"
+          resolve: true
+          maps_to: "wifi.open_network_files"
+          description: "Open network configs"
+
+        # EAP Networks (802.1X)
+        - key: "eap_networks"
+          type: "path"
+          resolve: true
+          maps_to: "wifi.eap_network_files"
+          description: "EAP-TLS credentials (/var/lib/iwd/*.8021x)"

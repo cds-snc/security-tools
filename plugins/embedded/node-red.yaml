@@ -1,0 +1,85 @@
+# plugins/embedded/node-red.yaml
+# node-red - Flow-Based IoT Programming
+plugin:
+  plugin_schema_version: "1.0"
+  name: "Node-RED IoT Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "iot_platform"
+  description: "Detects Node-RED instances and extracts HTTPS/credential encryption configuration"
+  priority: 40
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/bin/node-red"
+        - "/usr/local/bin/node-red"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "node-red"
+        - "node"
+      command_line_patterns:
+        - "node-red"
+
+    - type: port
+      ports: [1880]
+      protocol: "tcp"
+      check_ssl: false
+
+    - type: config_file
+      paths:
+        - "~/.node-red/settings.js"
+        - "/usr/lib/node_modules/node-red/settings.js"
+      required: false
+
+    - type: package
+      package_names:
+        - "node-red"
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "node-red"
+      server_packages:
+        - "node-red"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    # Settings File (JavaScript)
+    - path: "${DETECTED_CONFIG_DIR}/settings.js"
+      parser: "custom"
+      crypto_directives:
+        # HTTPS Configuration
+        - key: "https"
+          type: "string"
+          maps_to: "service.https_enabled"
+          description: "HTTPS object in settings"
+
+        - key: "https.key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.https_key"
+
+        - key: "https.cert"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.https_cert"
+
+        # Credential Encryption
+        - key: "credentialSecret"
+          type: "string"
+          maps_to: "service.credential_secret_id"
+          description: "Credential encryption key identifier"
+
+        # Admin Auth
+        - key: "adminAuth"
+          type: "string"
+          maps_to: "service.admin_auth"
+          description: "Admin authentication config"

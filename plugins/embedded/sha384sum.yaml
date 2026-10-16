@@ -1,0 +1,18 @@
+plugin:
+  plugin_schema_version: "1.0"
+  name: "sha384sum Crypto Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "hash_utility"
+  description: "Coreutils/BusyBox SHA-384 hash utility - internal implementation (sha384_init_ctx)"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+
+detection:
+  methods:
+    - type: binary
+      paths:
+        - "/bin/sha384sum"
+        - "/usr/bin/sha384sum"
+      required: true
+      confidence: 0.98

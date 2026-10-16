@@ -1,0 +1,77 @@
+# plugins/vsftpd.yaml
+plugin:
+  plugin_schema_version: "1.0"
+  name: "vsftpd TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "ftp_server"
+  description: "Detects vsftpd instances and extracts TLS configuration"
+  priority: 50
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/vsftpd"
+        - "/usr/local/sbin/vsftpd"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "vsftpd"
+
+    - type: port
+      ports: [21]
+      protocol: "tcp"
+      check_ssl: true
+
+    - type: config_file
+      paths:
+        - "/etc/vsftpd/config"
+        - "/etc/vsftpd/vsftpd.conf"
+        - "/opt/vsftpd/conf/config"
+      required: false
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "vsftpd"
+      server_packages:
+        - "vsftpd"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/config"
+      parser: "ini"
+      crypto_directives:
+        - key: "ssl.enabled"
+          type: "boolean"
+          maps_to: "service.tls_enabled"
+
+        - key: "ssl.certificate"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.path"
+
+        - key: "ssl.key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.path"
+
+        - key: "ssl.ca_cert"
+          type: "path"
+          resolve: true
+          maps_to: "ca_cert.path"
+
+        - key: "ssl.protocols"
+          type: "string"
+          maps_to: "protocol.min_version"
+
+        - key: "ssl.ciphers"
+          type: "string_list"
+          separator: ":"
+          maps_to: "cipher_suites"

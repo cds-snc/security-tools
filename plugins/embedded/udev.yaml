@@ -1,0 +1,83 @@
+# plugins/embedded/udev.yaml
+# udev - Device Manager for Linux Kernel
+plugin:
+  plugin_schema_version: "1.0"
+  name: "udev Device Manager Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "system"
+  description: "Detects udev device manager and identifies crypto hardware devices"
+  priority: 40
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/lib/systemd/systemd-udevd"
+        - "/usr/lib/systemd/systemd-udevd"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "systemd-udevd"
+        - "udevd"
+
+    - type: config_file
+      paths:
+        - "/etc/udev/udev.conf"
+        - "/etc/udev/rules.d"
+        - "/lib/udev/rules.d"
+      required: false
+
+    - type: systemd
+      service_names:
+        - "systemd-udevd.service"
+
+    - type: package
+      package_names:
+        - "udev"
+        - "systemd-udev"
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "udev"
+      server_packages:
+        - "udev"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    # Main Configuration
+    - path: "/etc/udev/udev.conf"
+      parser: "ini"
+      crypto_directives:
+        # Log Priority
+        - key: "udev_log"
+          type: "string"
+          maps_to: "system.log_priority"
+
+    # Rules Files (Detect Crypto Hardware)
+    - path: "/etc/udev/rules.d/*.rules"
+      parser: "custom"
+      crypto_directives:
+        # TPM Devices
+        - key: "tpm_rules"
+          type: "string"
+          maps_to: "hardware.tpm_device_rules"
+          description: "Rules for /dev/tpm*"
+
+        # HSM Devices
+        - key: "hsm_rules"
+          type: "string"
+          maps_to: "hardware.hsm_device_rules"
+          description: "Rules for HSM devices"
+
+        # Crypto Accelerators
+        - key: "crypto_rules"
+          type: "string"
+          maps_to: "hardware.crypto_device_rules"
+          description: "Rules for /dev/crypto*"

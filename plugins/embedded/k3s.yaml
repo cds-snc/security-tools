@@ -1,0 +1,209 @@
+# plugins/embedded/k3s.yaml
+# K3s - Lightweight Kubernetes for Edge/IoT
+plugin:
+  plugin_schema_version: "1.0"
+  name: "K3s Lightweight Kubernetes Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "orchestration"
+  description: "Detects K3s Kubernetes instances and extracts TLS/certificate configuration"
+  priority: 85
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/local/bin/k3s"
+        - "/usr/bin/k3s"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "k3s"
+        - "k3s-server"
+        - "k3s-agent"
+        - "containerd-shim"
+
+    - type: port
+      ports: [6443, 10250]
+      protocol: "tcp"
+      check_ssl: true
+
+    - type: config_file
+      paths:
+        - "/etc/rancher/k3s/k3s.yaml"
+        - "/etc/rancher/k3s/config.yaml"
+        - "/var/lib/rancher/k3s/server/tls"
+      required: false
+
+    - type: systemd
+      service_names:
+        - "k3s.service"
+        - "k3s-server.service"
+        - "k3s-agent.service"
+
+    - type: package
+      package_names:
+        - "k3s"
+        - "k3s-selinux"
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "k3s"
+      server_packages:
+        - "k3s"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    # Kubeconfig File (contains base64-encoded certs/keys)
+    - path: "/etc/rancher/k3s/k3s.yaml"
+      parser: "yaml"
+      crypto_directives:
+        # Cluster CA Certificate
+        - key: "clusters[0].cluster.certificate-authority-data"
+          type: "string"
+          maps_to: "certificate.ca_data_base64"
+          description: "Base64-encoded CA certificate"
+
+        - key: "clusters[0].cluster.certificate-authority"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.ca_file"
+
+        # API Server URL (HTTPS)
+        - key: "clusters[0].cluster.server"
+          type: "string"
+          maps_to: "service.api_server_url"
+          description: "Kubernetes API server URL (https://)"
+
+        # Client Certificate
+        - key: "users[0].user.client-certificate-data"
+          type: "string"
+          maps_to: "certificate.client_cert_base64"
+          description: "Base64-encoded client certificate"
+
+        - key: "users[0].user.client-certificate"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.client_cert_file"
+
+        # Client Key
+        - key: "users[0].user.client-key-data"
+          type: "string"
+          maps_to: "private_key.client_key_base64"
+          description: "Base64-encoded client key"
+
+        - key: "users[0].user.client-key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.client_key_file"
+
+        # Context
+        - key: "current-context"
+          type: "string"
+          maps_to: "k8s.current_context"
+
+    # K3s Server Config (if exists)
+    - path: "/etc/rancher/k3s/config.yaml"
+      parser: "yaml"
+      crypto_directives:
+        # TLS SAN
+        - key: "tls-san"
+          type: "string_list"
+          maps_to: "certificate.tls_san"
+          description: "TLS Subject Alternative Names"
+
+        # Disable TLS (insecure)
+        - key: "disable-tls"
+          type: "boolean"
+          maps_to: "service.tls_disabled"
+
+        # Cluster Secret
+        - key: "cluster-secret"
+          type: "string"
+          maps_to: "k8s.cluster_secret_id"
+          description: "Cluster join secret identifier"
+
+        # Service Node Port Range
+        - key: "service-node-port-range"
+          type: "string"
+          maps_to: "k8s.node_port_range"
+
+    # TLS Certificate Directory (auto-generated)
+    - path: "/var/lib/rancher/k3s/server/tls"
+      parser: "custom"
+      crypto_directives:
+        # Server Certificates
+        - key: "server-ca.crt"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.server_ca"
+
+        - key: "server-ca.key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.server_ca_key"
+
+        - key: "serving-kube-apiserver.crt"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.apiserver_cert"
+
+        - key: "serving-kube-apiserver.key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.apiserver_key"
+
+        # Client Certificates
+        - key: "client-ca.crt"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.client_ca"
+
+        - key: "client-ca.key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.client_ca_key"
+
+        - key: "client-admin.crt"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.admin_cert"
+
+        - key: "client-admin.key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.admin_key"
+
+        # Request Header CA
+        - key: "request-header-ca.crt"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.request_header_ca"
+
+        # Service Account Keys
+        - key: "service.key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.service_account_key"
+
+        # Etcd Certificates
+        - key: "etcd/server-ca.crt"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.etcd_server_ca"
+
+        - key: "etcd/server-client.crt"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.etcd_client_cert"
+
+        - key: "etcd/peer-ca.crt"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.etcd_peer_ca"

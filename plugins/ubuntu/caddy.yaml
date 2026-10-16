@@ -1,0 +1,53 @@
+# Caddy Web Server TLS Scanner Plugin
+# CBOM Generator v1.3 - Plugin Schema v1.0
+
+plugin:
+  plugin_schema_version: "1.0"
+  name: "Caddy TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "webserver"
+  description: "Detects Caddy web server instances and extracts TLS configuration"
+  priority: 50
+  requires_cbom_version: "1.3.0"
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/bin/caddy"
+        - "/usr/local/bin/caddy"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "caddy"
+      command_patterns:
+        - ".*Caddyfile.*"
+        - ".*run.*"
+
+    - type: port
+      ports: [443, 2019]
+      protocol: "tcp"
+      check_ssl: true
+      validate_process: true
+      expected_processes:
+        - "caddy"
+
+    - type: config_file
+      paths:
+        - "/etc/caddy/Caddyfile"
+        - "/etc/caddy/caddy.json"
+      required: false
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "caddy"
+      server_packages:
+        - "caddy"
+      confidence: 0.90
+
+# config_extraction removed - Caddyfile format not supported by parsers

@@ -1,0 +1,79 @@
+# plugins/exim.yaml
+plugin:
+  plugin_schema_version: "1.0"
+  name: "Exim TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "mail_server"
+  description: "Detects Exim instances and extracts TLS configuration"
+  priority: 50
+
+detection:
+  methods:
+    # Method 1: Detect by binary executable (Phases 1-2)
+    - type: binary
+      paths:
+        - "/usr/sbin/exim4"
+        - "/usr/sbin/exim"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "exim"
+
+    - type: port
+      ports: [25]
+      protocol: "tcp"
+      check_ssl: true
+
+    - type: config_file
+      paths:
+        - "/etc/exim/config"
+        - "/etc/exim/exim.conf"
+        - "/opt/exim/conf/config"
+      required: false
+
+    # Detect by package (Phase 2)
+    - type: package
+      package_names:
+        - "exim4-daemon-heavy"
+        - "exim4-daemon-light"
+      server_packages:
+        - "exim4-daemon-heavy"
+        - "exim4-daemon-light"
+      confidence: 0.90
+
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/config"
+      parser: "ini"
+      crypto_directives:
+        - key: "ssl.enabled"
+          type: "boolean"
+          maps_to: "service.tls_enabled"
+
+        - key: "ssl.certificate"
+          type: "path"
+          resolve: true
+          maps_to: "certificate.path"
+
+        - key: "ssl.key"
+          type: "path"
+          resolve: true
+          maps_to: "private_key.path"
+
+        - key: "ssl.ca_cert"
+          type: "path"
+          resolve: true
+          maps_to: "ca_cert.path"
+
+        - key: "ssl.protocols"
+          type: "string"
+          maps_to: "protocol.min_version"
+
+        - key: "ssl.ciphers"
+          type: "string_list"
+          separator: ":"
+          maps_to: "cipher_suites"

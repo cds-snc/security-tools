@@ -1,0 +1,94 @@
+# plugins/cassandra.yaml
+plugin:
+  plugin_schema_version: "1.0"
+  name: "Apache Cassandra TLS Scanner"
+  version: "1.0.0"
+  author: "CipherIQ Team"
+  category: "database"
+  description: "Detects Apache Cassandra instances and extracts SSL/TLS configuration"
+  priority: 50
+
+detection:
+  methods:
+    - type: binary
+      paths:
+        - "/opt/cassandra/bin/cassandra"
+        - "/usr/local/cassandra/bin/cassandra"
+        - "/usr/bin/cassandra"
+      required: true
+      confidence: 0.95
+
+    - type: process
+      names:
+        - "cassandra"
+        - "java"
+      command_line_patterns:
+        - "org.apache.cassandra"
+
+    - type: port
+      ports: [7000, 7001, 9042, 9142, 9160]
+      protocol: "tcp"
+      check_ssl: true
+      description: "7000=internode, 7001=SSL internode, 9042=CQL, 9142=SSL CQL"
+
+    - type: config_file
+      paths:
+        - "/etc/cassandra/cassandra.yaml"
+        - "/opt/cassandra/conf/cassandra.yaml"
+        - "/usr/local/cassandra/conf/cassandra.yaml"
+      required: false
+
+    - type: package
+      package_names:
+        - "cassandra"
+      server_packages:
+        - "cassandra"
+      confidence: 0.90
+
+config_extraction:
+  files:
+    - path: "${DETECTED_CONFIG_DIR}/cassandra.yaml"
+      parser: "yaml"
+      crypto_directives:
+        # Client-to-node encryption
+        - key: "client_encryption_options.enabled"
+          type: "boolean"
+          maps_to: "service.tls_enabled"
+
+        - key: "client_encryption_options.keystore"
+          type: "path"
+          resolve: true
+          maps_to: "keystore.path"
+
+        - key: "client_encryption_options.keystore_password"
+          type: "string"
+          maps_to: "keystore.password"
+          sensitive: true
+
+        - key: "client_encryption_options.truststore"
+          type: "path"
+          resolve: true
+          maps_to: "truststore.path"
+
+        - key: "client_encryption_options.protocol"
+          type: "string"
+          maps_to: "protocol.name"
+
+        - key: "client_encryption_options.cipher_suites"
+          type: "string_list"
+          separator: ","
+          maps_to: "cipher_suites"
+
+        # Server-to-server encryption
+        - key: "server_encryption_options.internode_encryption"
+          type: "string"
+          maps_to: "internode.encryption_mode"
+
+        - key: "server_encryption_options.keystore"
+          type: "path"
+          resolve: true
+          maps_to: "internode.keystore.path"
+
+        - key: "server_encryption_options.require_client_auth"
+          type: "boolean"
+          maps_to: "internode.mutual_tls"
