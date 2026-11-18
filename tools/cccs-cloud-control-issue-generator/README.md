@@ -10,15 +10,15 @@ You will be working with two repositories:
 | Repository | Description |
 | --- | --- |
 | _target-repository_ | Repository where you want to create issues. |
-| _tool-repsitory_ | Repository where the tool resides: `security-tools` |
+| _tool-repository_ | Repository where the tool resides: `security-tools` |
 
 You will be working with the following input files:
 | File | Repository | Description |
 | --- | --- | --- |
 | tools/cccs-cloud-control-issue-generator/Annex-A-CCCS-LOW-Cloud-Profile-Template.xlsx | _tool-repository_ | Annex A CCCS Low Cloud profile with CDS supplementary attributes in .xlsx |
 | tools/cccs-cloud-control-issue-generator/Annex-B-CCCS-MEDIUM-Cloud-Profile-Template.xlsx | _tool-repository_ | Annex B CCCS Medium Cloud profile with CDS supplementary attributes in .xlsx |
+| tools/cccs-cloud-control-issue-generator/input/_target-repository_/_csv file_ | _tool-repository_ | csv file converted from _cccs control profile template_. |
 | _cccs control profile template_ | _target-repository_ | Copy of Annex A/B Cloud profile template for controls selection. |
-| tools/cccs-cloud-control-issue-generator/input/_target-repository_/_csv file_ | _tool-repsitory_ | csv file converted from _cccs control profile template_. |
 
 ## Preparation
 
