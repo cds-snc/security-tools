@@ -2,11 +2,11 @@
 # CREATE SSO PROXY LOAD BALANCER
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "aws_lb" "pomerium" {
-  name               = "pomerium-sso"
+resource "aws_lb" "sso_proxy" {
+  name               = "sso-proxy"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.pomerium.id]
+  security_groups    = [aws_security_group.sso_proxy.id]
   subnets            = var.vpc_public_subnet_ids
 
   drop_invalid_header_fields = true
@@ -55,7 +55,7 @@ resource "aws_lb_target_group" "oauth2_proxy" {
 }
 
 resource "aws_lb_listener" "http" {
-  load_balancer_arn = aws_lb.pomerium.arn
+  load_balancer_arn = aws_lb.sso_proxy.arn
   port              = "80"
   protocol          = "HTTP"
 
@@ -77,7 +77,7 @@ resource "aws_lb_listener" "http" {
 }
 
 resource "aws_lb_listener" "https" {
-  load_balancer_arn = aws_lb.pomerium.arn
+  load_balancer_arn = aws_lb.sso_proxy.arn
 
   port                                                           = 443
   protocol                                                       = "HTTPS"

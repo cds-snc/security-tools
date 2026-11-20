@@ -52,7 +52,7 @@ jobs:
             echo "::error::Configure the Google client secrets and OAUTH2_PROXY_COOKIE_SECRET before cutover."
             exit 1
           fi
-          entry="$(jq -ce '.[] | select(.repo == "sso_proxy_pomerium")' images/mirror.json)"
+          entry="$(jq -ce '.[] | select(.repo == "sso_proxy")' images/mirror.json)"
           repository="security-tools/$(jq -r '.repo' <<< "${entry}")"
           source="$(jq -r '.source' <<< "${entry}")"
           digest="$(aws ecr describe-images --repository-name "${repository}" \

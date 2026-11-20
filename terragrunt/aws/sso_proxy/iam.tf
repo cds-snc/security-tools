@@ -3,9 +3,9 @@
 # permission to make AWS API calls on your behalf
 ###
 
-resource "aws_iam_role" "pomerium_task_execution_role" {
-  name               = "pomerium_execution_role"
-  assume_role_policy = data.aws_iam_policy_document.pomerium_task_execution_role.json
+resource "aws_iam_role" "sso_proxy_task_execution_role" {
+  name               = "sso_proxy_execution_role"
+  assume_role_policy = data.aws_iam_policy_document.sso_proxy_task_execution_role.json
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
@@ -14,7 +14,7 @@ resource "aws_iam_role" "pomerium_task_execution_role" {
   }
 }
 
-data "aws_iam_policy_document" "pomerium_task_execution_role" {
+data "aws_iam_policy_document" "sso_proxy_task_execution_role" {
   statement {
     effect = "Allow"
 
@@ -28,22 +28,22 @@ data "aws_iam_policy_document" "pomerium_task_execution_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_task_execution_policy" {
-  role       = aws_iam_role.pomerium_task_execution_role.name
+  role       = aws_iam_role.sso_proxy_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_iam_role_policy_attachment" "cloudwatch_policies" {
-  role       = aws_iam_role.pomerium_task_execution_role.name
+  role       = aws_iam_role.sso_proxy_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchLambdaInsightsExecutionRolePolicy"
 }
 
 resource "aws_iam_role_policy_attachment" "ec2_container_registery_policies" {
-  role       = aws_iam_role.pomerium_task_execution_role.name
+  role       = aws_iam_role.sso_proxy_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_container_registery_policies" {
-  role       = aws_iam_role.pomerium_task_execution_role.name
+  role       = aws_iam_role.sso_proxy_task_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 

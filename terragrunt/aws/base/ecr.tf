@@ -70,8 +70,8 @@ resource "aws_ecr_repository" "neo4j" {
 # SSO Proxy ECR Repositories
 # ----------------------------------------------------------------#
 
-resource "aws_ecr_repository" "sso_proxy_pomerium" {
-  name                 = "${var.product_name}/sso_proxy_pomerium"
+resource "aws_ecr_repository" "sso_proxy" {
+  name                 = "${var.product_name}/sso_proxy"
   image_tag_mutability = "MUTABLE"
 
   encryption_configuration {
@@ -86,5 +86,13 @@ resource "aws_ecr_repository" "sso_proxy_pomerium" {
     (var.billing_tag_key) = var.billing_tag_value
     Terraform             = true
     Product               = var.product_name
+  }
+}
+
+removed {
+  from = aws_ecr_repository.sso_proxy_pomerium
+
+  lifecycle {
+    destroy = false
   }
 }

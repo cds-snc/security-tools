@@ -63,6 +63,6 @@ output "neo4j_repository_url" {
 }
 
 output "oauth2_proxy_repository_url" {
-  description = "ECR repository URL for oauth2-proxy (existing repository retained)"
-  value       = aws_ecr_repository.sso_proxy_pomerium.repository_url
+  description = "ECR repository URL for oauth2-proxy"
+  value       = aws_ecr_repository.sso_proxy.repository_url
 }

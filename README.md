@@ -57,13 +57,13 @@ sessions are not retained. Scheduled scans and S3 exports are unchanged.
    the GitHub Actions secret `OAUTH2_PROXY_COOKIE_SECRET`. Do not commit it.
 3. Merge the infrastructure/image changes. Wait for the base apply workflow to
    publish `oauth2_proxy_repository_url` and for the image-mirroring workflow to
-   publish the pinned image from [images/mirror.json](images/mirror.json).
-   The existing ECR repository, ALB, and IAM roles retain their Pomerium AWS names
-   to avoid needless replacement.
+   publish the pinned image from [images/mirror.json](images/mirror.json). The
+   proxy uses generic SSO proxy names for its new AWS resources. The old ECR
+   repository is left in place, outside Terraform state, for rollback.
 4. Run the **Terragrunt plan sso proxy** workflow and review the plan. Expect
-   replacement of the proxy service/task/log group, new proxy target groups and
-   a private task security group, and deletion of unused Pomerium SSM parameters.
-   The ALB, DNS, WAF, Neo4j, Cartography schedule, and export bucket must remain.
+   replacement of the ALB, security groups, IAM roles, proxy service/task/log
+   group, and SSM parameters; new proxy target groups; and DNS/WAF association
+   updates. Neo4j, Cartography schedule, and export bucket must remain.
 5. Merge the reviewed infrastructure/image changes to `main` to run
    **Terragrunt apply sso proxy**. The workflow checks that the required secrets
    are set and that the mirrored ECR image digest matches the manifest before
@@ -78,11 +78,13 @@ After verification, remove unused GitHub secrets `POMERIUM_CLIENT_ID`,
 `POMERIUM_CLIENT_SECRET`, `SESSION_KEY`, and `SESSION_COOKIE_SECRET`, and remove
 the obsolete Pomerium callback URI from the Google client.
 
-For recovery, retain the pre-migration Git revision, the Pomerium image's existing
-`latest` tag, and old GitHub secrets until verification completes. Restoring the
-previous proxy Terraform configuration and applying it recreates its service and
-SSM parameters. The new versioned image tag does not overwrite the old image.
-Keep the new Google callback while restoring the old one if needed.
+For recovery, retain the pre-migration Git revision, the old ECR repository and
+Pomerium image's existing `latest` tag, and old GitHub secrets until verification
+completes. The new SSO proxy image uses a separate ECR repository, so the old one
+is not overwritten. Restoring the previous proxy Terraform configuration and
+applying it recreates its service and SSM parameters. Keep the new Google callback
+while restoring the old one if needed. After the rollback window closes, remove
+the old ECR repository manually.
 
 ## License
 

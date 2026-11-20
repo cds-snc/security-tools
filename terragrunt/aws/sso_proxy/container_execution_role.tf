@@ -4,9 +4,9 @@
 # Role that the Amazon ECS container agent and the Docker daemon can assume
 ###
 
-resource "aws_iam_role" "pomerium_container_execution_role" {
-  name               = "pomerium_container_execution_role"
-  assume_role_policy = data.aws_iam_policy_document.pomerium_container_execution_role.json
+resource "aws_iam_role" "sso_proxy_container_execution_role" {
+  name               = "sso_proxy_container_execution_role"
+  assume_role_policy = data.aws_iam_policy_document.sso_proxy_container_execution_role.json
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value
@@ -16,7 +16,7 @@ resource "aws_iam_role" "pomerium_container_execution_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "ce_cs" {
-  role       = aws_iam_role.pomerium_container_execution_role.name
+  role       = aws_iam_role.sso_proxy_container_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
@@ -24,7 +24,7 @@ resource "aws_iam_role_policy_attachment" "ce_cs" {
 # Policy Documents
 ###
 
-data "aws_iam_policy_document" "pomerium_container_execution_role" {
+data "aws_iam_policy_document" "sso_proxy_container_execution_role" {
   statement {
     effect = "Allow"
 
@@ -47,12 +47,12 @@ data "aws_iam_policy_document" "pomerium_container_execution_role" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "pomerium_policies" {
-  role       = aws_iam_role.pomerium_container_execution_role.name
-  policy_arn = aws_iam_policy.pomerium_policies.arn
+resource "aws_iam_role_policy_attachment" "sso_proxy_container_policies" {
+  role       = aws_iam_role.sso_proxy_container_execution_role.name
+  policy_arn = aws_iam_policy.sso_proxy_container_policies.arn
 }
 
-data "aws_iam_policy_document" "pomerium_policies" {
+data "aws_iam_policy_document" "sso_proxy_container_policies" {
   statement {
 
     effect = "Allow"
@@ -68,10 +68,10 @@ data "aws_iam_policy_document" "pomerium_policies" {
   }
 }
 
-resource "aws_iam_policy" "pomerium_policies" {
-  name   = "PomeriumSSOContainerExecutionPolicies"
+resource "aws_iam_policy" "sso_proxy_container_policies" {
+  name   = "SSOProxyContainerExecutionPolicies"
   path   = "/"
-  policy = data.aws_iam_policy_document.pomerium_policies.json
+  policy = data.aws_iam_policy_document.sso_proxy_container_policies.json
 
   tags = {
     (var.billing_tag_key) = var.billing_tag_value

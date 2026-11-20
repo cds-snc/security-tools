@@ -67,7 +67,7 @@ jobs:
           OAUTH2_PROXY_COOKIE_SECRET: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
         run: |
           set -euo pipefail
-          version="$(jq -er '.[] | select(.repo == "sso_proxy_pomerium") | .version' images/mirror.json)"
+          version="$(jq -er '.[] | select(.repo == "sso_proxy") | .version' images/mirror.json)"
           archive="oauth2-proxy-${version}.linux-amd64.tar.gz"
           gh release download "${version}" --repo oauth2-proxy/oauth2-proxy \
             --pattern "${archive}" --pattern "${archive}-sha256sum.txt" --dir "${RUNNER_TEMP}"

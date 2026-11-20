@@ -2,7 +2,7 @@ locals {
   parent_vars = read_terragrunt_config("../root.hcl")
   oauth2_proxy_mirror = one([
     for image in jsondecode(file("${get_terragrunt_dir()}/../../../images/mirror.json")) :
-    image if image.repo == "sso_proxy_pomerium"
+    image if image.repo == "sso_proxy"
   ])
 }
 
@@ -28,7 +28,7 @@ dependency "base" {
     vpc_private_subnet_ids          = ["subnet-1234567890", "subnet-0987654321"]
     vpc_public_subnet_ids           = ["subnet-1122334455", "subnet-5544332211"]
     service_discovery_namespace_arn = "arn:aws:servicediscovery:ca-central-1:123456789012:namespace/ns-1234567890"
-    oauth2_proxy_repository_url     = "123456789012.dkr.ecr.ca-central-1.amazonaws.com/security-tools/sso_proxy_pomerium"
+    oauth2_proxy_repository_url     = "123456789012.dkr.ecr.ca-central-1.amazonaws.com/security-tools/sso_proxy"
   }
 
 }

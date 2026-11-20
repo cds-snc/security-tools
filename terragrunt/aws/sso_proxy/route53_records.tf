@@ -1,4 +1,4 @@
-resource "aws_route53_record" "pomerium_subdomains" {
+resource "aws_route53_record" "sso_proxy_subdomains" {
   for_each = toset([
     "auth.${var.security_tools_domain_name}",
     "neo4j.${var.security_tools_domain_name}",
@@ -10,8 +10,8 @@ resource "aws_route53_record" "pomerium_subdomains" {
   type    = "A"
 
   alias {
-    name                   = aws_lb.pomerium.dns_name
-    zone_id                = aws_lb.pomerium.zone_id
+    name                   = aws_lb.sso_proxy.dns_name
+    zone_id                = aws_lb.sso_proxy.zone_id
     evaluate_target_health = true
   }
 }

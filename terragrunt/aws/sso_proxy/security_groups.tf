@@ -21,12 +21,12 @@ resource "aws_network_acl_rule" "http_ingress" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# LOAD BALANCER SECURITY GROUP (retain its existing AWS name)
+# SSO PROXY LOAD BALANCER SECURITY GROUP
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "aws_security_group" "pomerium" {
-  name        = "pomerium"
-  description = "Allow inbound traffic to pomerium load balancer"
+resource "aws_security_group" "sso_proxy" {
+  name        = "sso-proxy"
+  description = "Allow inbound traffic to the SSO proxy load balancer"
   vpc_id      = var.security_tools_vpc_id
 
   egress {
@@ -128,7 +128,7 @@ resource "aws_security_group_rule" "oauth2_proxy_ingress" {
   type                     = "ingress"
   description              = "SSO ALB to oauth2-proxy"
   security_group_id        = aws_security_group.oauth2_proxy.id
-  source_security_group_id = aws_security_group.pomerium.id
+  source_security_group_id = aws_security_group.sso_proxy.id
   from_port                = 4180
   to_port                  = 4181
   protocol                 = "tcp"

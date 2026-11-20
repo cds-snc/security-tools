@@ -1,5 +1,5 @@
 resource "aws_ssm_parameter" "google_client_id" {
-  name  = "/${var.ssm_prefix}/pomerium_google_client_id"
+  name  = "/${var.ssm_prefix}/sso_proxy_google_client_id"
   type  = "SecureString"
   value = var.google_client_id
 
@@ -11,7 +11,7 @@ resource "aws_ssm_parameter" "google_client_id" {
 }
 
 resource "aws_ssm_parameter" "google_client_secret" {
-  name  = "/${var.ssm_prefix}/pomerium_google_client_secret"
+  name  = "/${var.ssm_prefix}/sso_proxy_google_client_secret"
   type  = "SecureString"
   value = var.google_client_secret
 
@@ -32,14 +32,4 @@ resource "aws_ssm_parameter" "oauth2_proxy_cookie_secret" {
     Terraform             = true
     Product               = "${var.product_name}-${var.tool_name}"
   }
-}
-
-moved {
-  from = aws_ssm_parameter.pomerium_google_client_id
-  to   = aws_ssm_parameter.google_client_id
-}
-
-moved {
-  from = aws_ssm_parameter.pomerium_google_client_secret
-  to   = aws_ssm_parameter.google_client_secret
 }

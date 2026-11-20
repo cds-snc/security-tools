@@ -63,7 +63,7 @@ override_resource {
 }
 
 override_resource {
-  target          = aws_security_group.pomerium
+  target          = aws_security_group.sso_proxy
   override_during = plan
   values = {
     id = "sg-23456789"
@@ -86,7 +86,7 @@ variables {
   service_discovery_namespace_arn = "arn:aws:servicediscovery:ca-central-1:123456789012:namespace/ns-test"
   security_tools_vpc_id           = "vpc-12345678"
   security_tools_domain_name      = "security.example.com"
-  oauth2_proxy_image              = "123456789012.dkr.ecr.ca-central-1.amazonaws.com/security-tools/sso_proxy_pomerium"
+  oauth2_proxy_image              = "123456789012.dkr.ecr.ca-central-1.amazonaws.com/security-tools/sso_proxy"
   oauth2_proxy_image_digest       = "sha256:c3415e8660af553f5e18f5d90db050614c02493c0ac6260ac59442f6d9b12048"
   google_client_id                = "test-client"
   google_client_secret            = "test-client-secret"
@@ -170,7 +170,7 @@ run "protected_routes" {
 
   assert {
     condition = (
-      aws_security_group_rule.oauth2_proxy_ingress.source_security_group_id == aws_security_group.pomerium.id &&
+      aws_security_group_rule.oauth2_proxy_ingress.source_security_group_id == aws_security_group.sso_proxy.id &&
       aws_security_group_rule.oauth2_proxy_ingress.from_port == min([for config in local.oauth2_proxy_routes : config.port]...) &&
       aws_security_group_rule.oauth2_proxy_ingress.to_port == max([for config in local.oauth2_proxy_routes : config.port]...)
     )

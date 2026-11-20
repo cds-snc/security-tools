@@ -2,7 +2,7 @@
 # WAF ACL association with ALB
 #
 resource "aws_wafv2_web_acl_association" "sso_proxy_assocation" {
-  resource_arn = aws_lb.pomerium.arn
+  resource_arn = aws_lb.sso_proxy.arn
   web_acl_arn  = aws_wafv2_web_acl.sso_proxy_waf.arn
 }
 
