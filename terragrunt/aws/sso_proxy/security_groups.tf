@@ -21,12 +21,12 @@ resource "aws_network_acl_rule" "http_ingress" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# CREATE A SECURITY GROUP TO ALLOW ACCESS TO POMERIUM SSO
+# SSO PROXY LOAD BALANCER SECURITY GROUP
 # ---------------------------------------------------------------------------------------------------------------------
 
-resource "aws_security_group" "pomerium" {
-  name        = "pomerium"
-  description = "Allow inbound traffic to pomerium load balancer"
+resource "aws_security_group" "sso_proxy" {
+  name        = "sso-proxy"
+  description = "Allow inbound traffic to the SSO proxy load balancer"
   vpc_id      = var.security_tools_vpc_id
 
   egress {
@@ -46,11 +46,11 @@ resource "aws_security_group" "pomerium" {
   }
 
   egress {
-    description = "Access to the http to https load balancer listener"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    self        = true
+    description     = "Access to oauth2-proxy listeners"
+    from_port       = 4180
+    to_port         = 4181
+    protocol        = "tcp"
+    security_groups = [aws_security_group.oauth2_proxy.id]
   }
 
   ingress {
@@ -110,4 +110,48 @@ resource "aws_security_group" "pomerium" {
     Terraform             = true
     Product               = "${var.product_name}-${var.tool_name}"
   }
+}
+
+resource "aws_security_group" "oauth2_proxy" {
+  name        = "oauth2-proxy"
+  description = "Private oauth2-proxy tasks, reachable only through the SSO ALB"
+  vpc_id      = var.security_tools_vpc_id
+
+  tags = {
+    (var.billing_tag_key) = var.billing_tag_value
+    Terraform             = true
+    Product               = "${var.product_name}-${var.tool_name}"
+  }
+}
+
+resource "aws_security_group_rule" "oauth2_proxy_ingress" {
+  type                     = "ingress"
+  description              = "SSO ALB to oauth2-proxy"
+  security_group_id        = aws_security_group.oauth2_proxy.id
+  source_security_group_id = aws_security_group.sso_proxy.id
+  from_port                = 4180
+  to_port                  = 4181
+  protocol                 = "tcp"
+}
+
+resource "aws_security_group_rule" "oauth2_proxy_https_egress" {
+  type              = "egress"
+  description       = "Google authentication and AWS endpoints"
+  security_group_id = aws_security_group.oauth2_proxy.id
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port         = 443
+  to_port           = 443
+  protocol          = "tcp"
+}
+
+resource "aws_security_group_rule" "oauth2_proxy_neo4j_egress" {
+  for_each = toset(["7474", "7687"])
+
+  type              = "egress"
+  description       = "Internal Neo4j upstream"
+  security_group_id = aws_security_group.oauth2_proxy.id
+  cidr_blocks       = var.vpc_private_subnet_cidrs
+  from_port         = tonumber(each.value)
+  to_port           = tonumber(each.value)
+  protocol          = "tcp"
 }
