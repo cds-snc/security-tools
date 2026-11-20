@@ -64,10 +64,10 @@ sessions are not retained. Scheduled scans and S3 exports are unchanged.
    replacement of the proxy service/task/log group, new proxy target groups and
    a private task security group, and deletion of unused Pomerium SSM parameters.
    The ALB, DNS, WAF, Neo4j, Cartography schedule, and export bucket must remain.
-5. Manually dispatch **Terragrunt apply sso proxy** from `main`. This workflow
-   deliberately no longer applies on push, so cutover cannot race image mirroring
-   or Google client setup. It checks that the required secrets are set and that
-   the mirrored ECR image digest matches the manifest before applying.
+5. Merge the reviewed infrastructure/image changes to `main` to run
+   **Terragrunt apply sso proxy**. The workflow checks that the required secrets
+   are set and that the mirrored ECR image digest matches the manifest before
+   applying.
 6. Verify both ALB target groups become healthy, sign in to Neo4j Browser, and
    execute `RETURN 1` over the advertised secure Bolt WebSocket endpoint. Verify
    a non-`cds-snc.ca` account is denied and a logged-out Bolt request returns 401.

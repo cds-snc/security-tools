@@ -17,8 +17,8 @@ env:
   TERRAFORM_VERSION: 1.15.5
   TERRAGRUNT_VERSION: 1.0.6
   TF_INPUT: false
-  TF_VAR_google_client_id: ${{ secrets.POMERIUM_GOOGLE_CLIENT_ID }}
-  TF_VAR_google_client_secret: ${{ secrets.POMERIUM_GOOGLE_CLIENT_SECRET }}
+  TF_VAR_google_client_id: ${{ secrets.SSO_PROXY_GOOGLE_CLIENT_ID }}
+  TF_VAR_google_client_secret: ${{ secrets.SSO_PROXY_GOOGLE_CLIENT_SECRET }}
   TF_VAR_oauth2_proxy_cookie_secret: ${{ secrets.OAUTH2_PROXY_COOKIE_SECRET }}
 
 permissions:
