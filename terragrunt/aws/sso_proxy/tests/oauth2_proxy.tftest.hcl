@@ -186,6 +186,14 @@ run "reject_invalid_cookie_secret" {
   expect_failures = [var.oauth2_proxy_cookie_secret]
 }
 
+run "reject_standard_base64_cookie_secret" {
+  command = plan
+  variables {
+    oauth2_proxy_cookie_secret = "ab+/MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmM="
+  }
+  expect_failures = [var.oauth2_proxy_cookie_secret]
+}
+
 run "reject_image_tag" {
   command = plan
   variables {

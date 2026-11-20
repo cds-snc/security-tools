@@ -57,13 +57,14 @@ variable "session_cookie_expires_in" {
 }
 
 variable "oauth2_proxy_cookie_secret" {
-  description = "A new base64-encoded 32-byte secret shared by both oauth2-proxy containers"
+  description = "A new URL-safe base64-encoded 32-byte secret shared by both oauth2-proxy containers"
   type        = string
   sensitive   = true
 
   validation {
-    condition     = can(regex("^[A-Za-z0-9+/]{43}=$", var.oauth2_proxy_cookie_secret))
-    error_message = "Generate a base64-encoded 32-byte cookie secret with openssl rand -base64 32."
+    # oauth2-proxy only decodes URL-safe base64; a standard "+/" secret is used as 44 raw bytes and rejected.
+    condition     = can(regex("^[A-Za-z0-9_-]{43}=$", var.oauth2_proxy_cookie_secret))
+    error_message = "Generate a URL-safe base64-encoded 32-byte cookie secret with: openssl rand -base64 32 | tr -- '+/' '-_'"
   }
 }
 

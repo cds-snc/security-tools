@@ -53,8 +53,11 @@ sessions are not retained. Scheduled scans and S3 exports are unchanged.
    `POMERIUM_GOOGLE_CLIENT_ID` and `POMERIUM_GOOGLE_CLIENT_SECRET`. Add this
    authorized redirect URI to the Google client:
    `https://auth.security.cdssandbox.xyz/oauth2/callback`.
-2. Generate a new cookie secret using `openssl rand -base64 32` and save it as
-   the GitHub Actions secret `OAUTH2_PROXY_COOKIE_SECRET`. Do not commit it.
+2. Generate a new URL-safe cookie secret using
+   `openssl rand -base64 32 | tr -- '+/' '-_'` and save it as the GitHub Actions
+   secret `OAUTH2_PROXY_COOKIE_SECRET`. Do not commit it. oauth2-proxy only
+   decodes URL-safe base64; a standard base64 secret containing `+` or `/` makes
+   the containers exit with "cookie_secret must be 16, 24, or 32 bytes".
 3. Merge the infrastructure/image changes. Wait for the base apply workflow to
    publish `oauth2_proxy_repository_url` and for the image-mirroring workflow to
    publish the pinned image from [images/mirror.json](images/mirror.json). The
