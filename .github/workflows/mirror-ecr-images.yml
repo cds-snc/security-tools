@@ -1,6 +1,6 @@
 name: Mirror third-party images to ECR
 
-# Mirrors third-party container images (Pomerium, Neo4j, Cartography) from their
+# Mirrors third-party container images (oauth2-proxy, Neo4j, Cartography) from their
 # upstream registries into our ECR, by digest, preserving the original manifest.
 
 on:

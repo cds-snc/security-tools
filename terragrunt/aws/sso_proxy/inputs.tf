@@ -13,36 +13,29 @@ variable "service_discovery_namespace_arn" {
   type        = string
 }
 
-variable "pomerium_client_id" {
-  description = "The pomerium client id"
+variable "oauth2_proxy_image" {
+  description = "The mirrored oauth2-proxy ECR repository URL"
+  type        = string
+}
+
+variable "oauth2_proxy_image_digest" {
+  description = "The SHA-256 manifest digest of the mirrored oauth2-proxy image"
+  type        = string
+
+  validation {
+    condition     = can(regex("^sha256:[0-9a-f]{64}$", var.oauth2_proxy_image_digest))
+    error_message = "Pin oauth2-proxy with a full sha256:<64 lowercase hex characters> image digest, not a tag."
+  }
+}
+
+variable "google_client_id" {
+  description = "The Google OAuth client ID for interactive Neo4j access"
   type        = string
   sensitive   = true
 }
 
-variable "pomerium_client_secret" {
-  description = "The pomerium client secret"
-  type        = string
-  sensitive   = true
-}
-
-variable "pomerium_image" {
-  description = "The pomerium image to use"
-  type        = string
-}
-
-variable "pomerium_image_tag" {
-  description = "The pomerium image tag to use"
-  type        = string
-}
-
-variable "pomerium_google_client_id" {
-  description = "The pomerium google sso client id"
-  type        = string
-  sensitive   = true
-}
-
-variable "pomerium_google_client_secret" {
-  description = "The pomerium google sso client secret"
+variable "google_client_secret" {
+  description = "The Google OAuth client secret for interactive Neo4j access"
   type        = string
   sensitive   = true
 }
@@ -59,20 +52,19 @@ variable "security_tools_domain_name" {
 
 
 variable "session_cookie_expires_in" {
-  description = "The duration the pomerium session cookie should last"
+  description = "The duration the oauth2-proxy session cookie should last"
   type        = string
 }
 
-variable "session_cookie_secret" {
-  description = "The pomerium seed string for secure cookies"
+variable "oauth2_proxy_cookie_secret" {
+  description = "A new base64-encoded 32-byte secret shared by both oauth2-proxy containers"
   type        = string
   sensitive   = true
-}
 
-variable "session_key" {
-  description = "The pomerium auth session key"
-  type        = string
-  sensitive   = true
+  validation {
+    condition     = can(regex("^[A-Za-z0-9+/]{43}=$", var.oauth2_proxy_cookie_secret))
+    error_message = "Generate a base64-encoded 32-byte cookie secret with openssl rand -base64 32."
+  }
 }
 
 variable "ssm_prefix" {

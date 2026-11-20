@@ -8,6 +8,8 @@ on:
       - "terragrunt/*/sso_proxy/**"
       - "terragrunt/*/common/**"
       - "terragrunt/env/terragrunt.hcl"
+      - "images/mirror.json"
+      - ".github/workflows/sso-proxy-terragrunt-apply.yml"
 
 env:
   AWS_REGION: ca-central-1
@@ -15,12 +17,9 @@ env:
   TERRAFORM_VERSION: 1.15.5
   TERRAGRUNT_VERSION: 1.0.6
   TF_INPUT: false
-  TF_VAR_pomerium_client_id: ${{ secrets.POMERIUM_CLIENT_ID }}
-  TF_VAR_pomerium_client_secret: ${{ secrets.POMERIUM_CLIENT_SECRET }}
-  TF_VAR_pomerium_google_client_id: ${{ secrets.POMERIUM_GOOGLE_CLIENT_ID }}
-  TF_VAR_pomerium_google_client_secret: ${{ secrets.POMERIUM_GOOGLE_CLIENT_SECRET }}
-  TF_VAR_session_cookie_secret: ${{ secrets.SESSION_COOKIE_SECRET }}
-  TF_VAR_session_key: ${{ secrets.SESSION_KEY }}
+  TF_VAR_google_client_id: ${{ secrets.POMERIUM_GOOGLE_CLIENT_ID }}
+  TF_VAR_google_client_secret: ${{ secrets.POMERIUM_GOOGLE_CLIENT_SECRET }}
+  TF_VAR_oauth2_proxy_cookie_secret: ${{ secrets.OAUTH2_PROXY_COOKIE_SECRET }}
 
 permissions:
   id-token: write
@@ -28,7 +27,60 @@ permissions:
   pull-requests: write
 
 jobs:
+  oauth2-proxy-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2.8.0
+
+      - name: Setup Terraform tools
+        uses: cds-snc/terraform-tools-setup@36df0d7572a15921998170395475093c183d720a # v1.3.0
+
+      - name: Validate Terraform and protected routes without AWS credentials
+        run: |
+          set -euo pipefail
+          validation_dir="${RUNNER_TEMP}/sso-proxy-validation"
+          mkdir -p "${validation_dir}"
+          cp terragrunt/aws/sso_proxy/*.tf "${validation_dir}/"
+          cp -r terragrunt/aws/sso_proxy/tests "${validation_dir}/"
+          cp terragrunt/env/common/{provider,common_variables}.tf "${validation_dir}/"
+          cp terragrunt/env/sso_proxy/.terraform.lock.hcl "${validation_dir}/"
+          terraform -chdir="${validation_dir}" init -backend=false -input=false
+          terraform -chdir="${validation_dir}" validate
+          if ! terraform -chdir="${validation_dir}" test -json -verbose > "${RUNNER_TEMP}/sso-proxy-tests.jsonl"; then
+            jq -r 'select(.type == "diagnostic") | .["@message"]' "${RUNNER_TEMP}/sso-proxy-tests.jsonl"
+            exit 1
+          fi
+          jq -r 'select(.type == "test_summary") | .["@message"]' "${RUNNER_TEMP}/sso-proxy-tests.jsonl"
+          jq -r 'select(.type == "test_plan" and .["@testrun"] == "protected_routes")
+            | .test_plan.resource_changes[]
+            | select(.address == "aws_ecs_task_definition.oauth2_proxy")
+            | .change.after.container_definitions' "${RUNNER_TEMP}/sso-proxy-tests.jsonl" \
+            > "${RUNNER_TEMP}/sso-proxy-containers.json"
+          jq -e 'length == 2' "${RUNNER_TEMP}/sso-proxy-containers.json"
+
+      - name: Validate rendered commands with the pinned oauth2-proxy release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OAUTH2_PROXY_CLIENT_ID: test-client
+          OAUTH2_PROXY_CLIENT_SECRET: test-client-secret
+          OAUTH2_PROXY_COOKIE_SECRET: MDEyMzQ1Njc4OWFiY2RlZjAxMjM0NTY3ODlhYmNkZWY=
+        run: |
+          set -euo pipefail
+          version="$(jq -er '.[] | select(.repo == "sso_proxy_pomerium") | .version' images/mirror.json)"
+          archive="oauth2-proxy-${version}.linux-amd64.tar.gz"
+          gh release download "${version}" --repo oauth2-proxy/oauth2-proxy \
+            --pattern "${archive}" --pattern "${archive}-sha256sum.txt" --dir "${RUNNER_TEMP}"
+          cd "${RUNNER_TEMP}"
+          sha256sum -c "${archive}-sha256sum.txt"
+          tar xzf "${archive}"
+          while IFS= read -r container; do
+            mapfile -t args < <(jq -r '.command[]' <<< "${container}")
+            "./oauth2-proxy-${version}.linux-amd64/oauth2-proxy" --config-test "${args[@]}"
+          done < <(jq -c '.[]' sso-proxy-containers.json)
+
   terragrunt-plan:
+    needs: oauth2-proxy-validation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -49,6 +101,7 @@ jobs:
               - '.github/workflows/sso-proxy-terragrunt-plan.yml'
               - 'terragrunt/env/common/**'
               - 'terragrunt/env/terragrunt.hcl'
+              - 'images/mirror.json'
 
       - name: configure aws credentials using OIDC
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
@@ -58,7 +111,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Terragrunt plan sso_proxy
-        if: ${{ steps.filter.outputs.sso_proxy == 'true' || steps.filter.outputs.common == 'true' }}
+        if: ${{ github.event_name == 'workflow_dispatch' || steps.filter.outputs.sso_proxy == 'true' || steps.filter.outputs.common == 'true' }}
         uses: cds-snc/terraform-plan@529b272050a8f718d14c59e62b59c124eead7efc # v5.0.4
         with:
           directory: "terragrunt/env/sso_proxy"

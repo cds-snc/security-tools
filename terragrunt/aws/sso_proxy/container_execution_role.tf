@@ -17,7 +17,7 @@ resource "aws_iam_role" "pomerium_container_execution_role" {
 
 resource "aws_iam_role_policy_attachment" "ce_cs" {
   role       = aws_iam_role.pomerium_container_execution_role.name
-  policy_arn = data.aws_iam_policy.ec2_container_service.arn
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 ###
@@ -47,10 +47,6 @@ data "aws_iam_policy_document" "pomerium_container_execution_role" {
   }
 }
 
-data "aws_iam_policy" "ec2_container_service" {
-  name = "AmazonEC2ContainerServiceforEC2Role"
-}
-
 resource "aws_iam_role_policy_attachment" "pomerium_policies" {
   role       = aws_iam_role.pomerium_container_execution_role.name
   policy_arn = aws_iam_policy.pomerium_policies.arn
@@ -62,16 +58,12 @@ data "aws_iam_policy_document" "pomerium_policies" {
     effect = "Allow"
 
     actions = [
-      "ssm:DescribeParameters",
       "ssm:GetParameters",
     ]
     resources = [
-      aws_ssm_parameter.pomerium_google_client_id.arn,
-      aws_ssm_parameter.pomerium_google_client_secret.arn,
-      aws_ssm_parameter.session_key.arn,
-      aws_ssm_parameter.session_cookie_secret.arn,
-      aws_ssm_parameter.pomerium_client_id.arn,
-      aws_ssm_parameter.pomerium_client_secret.arn,
+      aws_ssm_parameter.google_client_id.arn,
+      aws_ssm_parameter.google_client_secret.arn,
+      aws_ssm_parameter.oauth2_proxy_cookie_secret.arn,
     ]
   }
 }

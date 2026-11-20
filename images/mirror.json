@@ -1,9 +1,9 @@
 [
   {
-    "source": "pomerium/pomerium:sha-593eb81@sha256:bd7068164645c8a1a122f60a4c75359ddf726d981461d20efb5b74ad10cc7ad8",
-    "version": "v0.32.8 — Docker tag sha-593eb81 is the GitHub release commit short-sha",
+    "source": "quay.io/oauth2-proxy/oauth2-proxy:v7.15.6@sha256:c3415e8660af553f5e18f5d90db050614c02493c0ac6260ac59442f6d9b12048",
+    "version": "v7.15.6",
     "repo": "sso_proxy_pomerium",
-    "tag": "latest"
+    "tag": "v7.15.6"
   },
   {
     "source": "neo4j:5-community@sha256:0b5d3ab6ec1b866890dbfb53bf4fe1cf039f9e03c96165599a403005b7e7bcc3",
